@@ -168,13 +168,10 @@ int main(int argc, char *argv[])
     int evtGroup = 0,mtTrack=0,evtCount=0;
     bool isLastMt = false,onMtTracking=false;
     char evtGroupName[PATH_MAX];
-    sprintf(evtGroupName,"%s-%d.bin",argv[1],evtGroup);
-    int fd = open(evtGroupName, O_CREAT|O_WRONLY,0644);
-    if(fd < 0) {
-        fprintf(stderr, "could not open %s, %s\n",evtGroupName,strerror(errno));
-        return -1;
-    } 
-    printf("%s file opened\n",evtGroupName);
+    int fd = -1;
+
+    bool fileOpen[128]; //big enough I think
+    memset(&fileOpen,0,sizeof(fileOpen)); //When file is opened, must be true
 
     char selected[PATH_MAX];
     printf("entering while loop...\n");
@@ -191,6 +188,17 @@ int main(int argc, char *argv[])
                         return 1;
                     }
                     if(!isWatchTarget(device_names[i],devList)) continue;
+
+                    if(fileOpen[i]==false){
+                        sprintf(evtGroupName,"%s-%d.bin",argv[1],evtGroup++);
+                        fd = open(evtGroupName, O_CREAT|O_WRONLY,0644);
+                        if(fd < 0) {
+                            fprintf(stderr, "could not open %s, %s\n",evtGroupName,strerror(errno));
+                            return -1;
+                        } 
+                        fileOpen[i]=true;
+                        printf("%s file opened\n",evtGroupName);
+                    } 
 
                     int nWritten = write(fd,&event,sizeof(event));
                     if(nWritten!=sizeof(event)){
@@ -220,16 +228,10 @@ int main(int argc, char *argv[])
                     //SYN_REPORT 0x0
                     if(event.type==EV_SYN && event.code==0x0 && isLastMt==true){
                         close(fd);
+                        fileOpen[i]=false;
                         printf("End of event group(events:%d)\n",evtCount);
                         evtCount = 0;
                         isLastMt = false;
-                        sprintf(evtGroupName,"%s-%d.bin",argv[1],++evtGroup);
-                        fd = open(evtGroupName, O_CREAT|O_WRONLY,0644);
-                        if(fd < 0) {
-                            fprintf(stderr, "could not open %s, %s\n",evtGroupName,strerror(errno));
-                            return -1;
-                        }
-                        printf("%s file opened\n",evtGroupName);
                     }
                 }
             }
