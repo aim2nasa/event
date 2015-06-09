@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
     }
 
     int evtGroup = 0,mtTrack=0,evtCount=0;
-    bool isLastMt = false;
+    bool isLastMt = false,onMtTracking=false;
     char evtGroupName[PATH_MAX];
     sprintf(evtGroupName,"%s-%d.bin",argv[2],evtGroup);
     int fd = open(evtGroupName, O_CREAT|O_WRONLY,0644);
@@ -183,11 +183,15 @@ int main(int argc, char *argv[])
                     //ABS_MT_TRACKING_ID 0x39
                     if(event.type==EV_ABS && event.code==0x39){
                         if(event.value!=0xffffffff) {
+			    if(mtTrack==0) onMtTracking = true;
                             mtTrack++;
                             printf("MT Tracking(%d) started(%d)\n",mtTrack,event.value);
                         }else{
                             mtTrack--;
-                            if(mtTrack==0) isLastMt = true;
+                            if(mtTrack==0) {
+                                isLastMt = true;
+			        onMtTracking = false;
+                            }
                             printf("MT Tracking(%d) ended(%d)\n",mtTrack,event.value);
                         }
                     }
