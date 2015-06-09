@@ -228,6 +228,7 @@ int main(int argc, char *argv[])
                     //SYN_REPORT 0x0
                     if(event.type==EV_SYN && event.code==0x0 && isLastMt==true){
                         close(fd);
+                        printf("%s file closed\n",evtGroupName);
                         fileOpen[i]=false;
                         printf("End of event group(events:%d)\n",evtCount);
                         evtCount = 0;
