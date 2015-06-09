@@ -10,6 +10,7 @@
 #include <sys/poll.h>
 #include <linux/input.h> // this does not compile
 #include <errno.h>
+#include <list>
 
 static struct pollfd *ufds;
 static char **device_names;
@@ -112,6 +113,24 @@ static int scan_dir(const char *dirname)
     return 0;
 }
 
+bool isWatchTarget(std::list<int>& l)
+{
+    char tmp[PATH_MAX];
+    for(int i = 1; i < nfds; i++) {
+        printf("\tdev:%s ",device_names[i]);
+
+        for(std::list<int>::iterator it=l.begin();it!=l.end();it++){
+            sprintf(tmp,"/dev/input/event%d",*it);
+            if(strcmp(device_names[i],tmp)==0) {
+                printf(",found:%s\n",tmp);
+                return true; 
+            }
+        }
+    }
+    printf(",not found\n");
+    return false;
+}
+
 int main(int argc, char *argv[])
 {
     int res;
@@ -121,9 +140,12 @@ int main(int argc, char *argv[])
     const char *device_path = "/dev/input";
 
     if(argc<3) {
-        printf("usage:ge <dump file name> <event#>\n");
+        printf("usage:ge <dump file name> <event#> ... <event#>\n");
         return -1;
     }
+
+    std::list<int> devList;
+    for(int i=3;i<=argc;i++) devList.push_back(atoi(argv[i-1]));
 
     nfds = 1;
     ufds = (pollfd*)calloc(1, sizeof(ufds[0]));
@@ -168,8 +190,7 @@ int main(int argc, char *argv[])
                         fprintf(stderr, ",could not get event\n");
                         return 1;
                     }
-                    sprintf(selected,"/dev/input/event%d",atoi(argv[2]));
-                    if(strcmp(device_names[i],selected) != 0) continue; 
+                    if(!isWatchTarget(devList)) continue;
 
                     int nWritten = write(fd,&event,sizeof(event));
                     if(nWritten!=sizeof(event)){
