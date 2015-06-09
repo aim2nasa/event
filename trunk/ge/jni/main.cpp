@@ -190,7 +190,10 @@ int main(int argc, char *argv[])
                     if(!isWatchTarget(device_names[i],devList)) continue;
 
                     if(fileOpen[i]==false){
-                        sprintf(evtGroupName,"%s-%d.bin",argv[1],evtGroup++);
+                        int eventNo;
+                        sscanf(device_names[i],"/dev/input/event%d",&eventNo);
+                        printf("device name %s, extracted event no:%d\n",device_names[i],eventNo);
+                        sprintf(evtGroupName,"%s-%d-%d.bin",argv[1],evtGroup++,eventNo);
                         fd = open(evtGroupName, O_CREAT|O_WRONLY,0644);
                         if(fd < 0) {
                             fprintf(stderr, "could not open %s, %s\n",evtGroupName,strerror(errno));
