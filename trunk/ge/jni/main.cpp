@@ -113,18 +113,15 @@ static int scan_dir(const char *dirname)
     return 0;
 }
 
-bool isWatchTarget(std::list<int>& l)
+bool isWatchTarget(const char* devName,std::list<int>& l)
 {
+    printf("\tdevice:%s ",devName);
     char tmp[PATH_MAX];
-    for(int i = 1; i < nfds; i++) {
-        printf("\tdev:%s ",device_names[i]);
-
-        for(std::list<int>::iterator it=l.begin();it!=l.end();it++){
-            sprintf(tmp,"/dev/input/event%d",*it);
-            if(strcmp(device_names[i],tmp)==0) {
-                printf(",found:%s\n",tmp);
-                return true; 
-            }
+    for(std::list<int>::iterator it=l.begin();it!=l.end();it++){
+        sprintf(tmp,"/dev/input/event%d",*it);
+        if(strcmp(devName,tmp)==0) {
+            printf(",found:%s\n",tmp);
+            return true; 
         }
     }
     printf(",not found\n");
@@ -146,6 +143,9 @@ int main(int argc, char *argv[])
 
     std::list<int> devList;
     for(int i=3;i<=argc;i++) devList.push_back(atoi(argv[i-1]));
+    printf("event# :");
+    for(std::list<int>::iterator it=devList.begin();it!=devList.end();it++) printf(" %d ",*it);
+    printf("\n");
 
     nfds = 1;
     ufds = (pollfd*)calloc(1, sizeof(ufds[0]));
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
                         fprintf(stderr, ",could not get event\n");
                         return 1;
                     }
-                    if(!isWatchTarget(devList)) continue;
+                    if(!isWatchTarget(device_names[i],devList)) continue;
 
                     int nWritten = write(fd,&event,sizeof(event));
                     if(nWritten!=sizeof(event)){
