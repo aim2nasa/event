@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
     }
 
     int evtGroup = 0,mtTrack=0,evtCount=0;
-    bool isLastMt = false,onMtTracking=false;
+    bool isLastMt = false,onMtTracking=false,isKey=false;
     char evtGroupName[PATH_MAX];
     int fd = -1;
 
@@ -225,14 +225,21 @@ int main(int argc, char *argv[])
                         }
                     }
 
+                    //EV_KEY
+                    if(event.type==EV_KEY){
+                        isKey = true;
+                        printf("key(code:%d value:%d)\n",event.code,event.value);
+                    }
+
                     //SYN_REPORT 0x0
-                    if(event.type==EV_SYN && event.code==0x0 && isLastMt==true){
+                    if(event.type==EV_SYN && event.code==0x0 && (isLastMt==true||isKey==true)){
                         close(fd);
                         printf("%s file closed\n",evtGroupName);
                         fileOpen[i]=false;
                         printf("End of event group(events:%d)\n",evtCount);
                         evtCount = 0;
-                        isLastMt = false;
+                        if(isLastMt) isLastMt = false;
+                        if(isKey) isKey = false;
                     }
                 }
             }
