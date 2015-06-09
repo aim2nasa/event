@@ -120,8 +120,8 @@ int main(int argc, char *argv[])
     const char *device = NULL;
     const char *device_path = "/dev/input";
 
-    if(argc<2) {
-        printf("usage:gevt <event#>\n");
+    if(argc<3) {
+        printf("usage:ge <event#> <dump file name>\n");
         return -1;
     }
 
@@ -143,8 +143,16 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int fd = open("/data/local/tmp/event.bin", O_CREAT|O_WRONLY);
-    printf("open:%d\n",fd);
+    int evtGroup = 0,mtTrack=0,evtCount=0;
+    bool isLastMt = false;
+    char evtGroupName[PATH_MAX];
+    sprintf(evtGroupName,"%s-%d.bin",argv[2],evtGroup);
+    int fd = open(evtGroupName, O_CREAT|O_WRONLY,0644);
+    if(fd < 0) {
+        fprintf(stderr, "could not open %s, %s\n",evtGroupName,strerror(errno));
+        return -1;
+    } 
+    printf("%s file opened\n",evtGroupName);
 
     char selected[PATH_MAX];
     printf("entering while loop...\n");
@@ -162,10 +170,42 @@ int main(int argc, char *argv[])
                     }
                     sprintf(selected,"/dev/input/event%d",atoi(argv[1]));
                     if(strcmp(device_names[i],selected) != 0) continue; 
-                    printf("%d bytes %ld-%ld: %s %04x %04x %08x\n",
-			res,event.time.tv_sec, event.time.tv_usec,device_names[i],event.type, event.code, event.value);
+
                     int nWritten = write(fd,&event,sizeof(event));
-                    printf("written:%d\n",nWritten);
+                    if(nWritten!=sizeof(event)){
+                        fprintf(stderr, "write error(%dbytes)\n",nWritten);
+                        return -1;
+                    }
+                    evtCount++;
+                    printf("%d bytes %ld-%ld: %s %04x %04x %08x\n",
+			nWritten,event.time.tv_sec, event.time.tv_usec,device_names[i],event.type, event.code, event.value);
+
+                    //ABS_MT_TRACKING_ID 0x39
+                    if(event.type==EV_ABS && event.code==0x39){
+                        if(event.value!=0xffffffff) {
+                            mtTrack++;
+                            printf("MT Tracking(%d) started(%d)\n",mtTrack,event.value);
+                        }else{
+                            mtTrack--;
+                            if(mtTrack==0) isLastMt = true;
+                            printf("MT Tracking(%d) ended(%d)\n",mtTrack,event.value);
+                        }
+                    }
+
+                    //SYN_REPORT 0x0
+                    if(event.type==EV_SYN && event.code==0x0 && isLastMt==true){
+                        close(fd);
+                        printf("End of event group(events:%d)\n",evtCount);
+                        evtCount = 0;
+                        isLastMt = false;
+                        sprintf(evtGroupName,"%s-%d.bin",argv[2],++evtGroup);
+                        fd = open(evtGroupName, O_CREAT|O_WRONLY,0644);
+                        if(fd < 0) {
+                            fprintf(stderr, "could not open %s, %s\n",evtGroupName,strerror(errno));
+                            return -1;
+                        }
+                        printf("%s file opened\n",evtGroupName);
+                    }
                 }
             }
         }
