@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     const char *device_path = "/dev/input";
 
     if(argc<3) {
-        printf("usage:ge <event#> <dump file name>\n");
+        printf("usage:ge <dump file name> <event#>\n");
         return -1;
     }
 
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
     int evtGroup = 0,mtTrack=0,evtCount=0;
     bool isLastMt = false,onMtTracking=false;
     char evtGroupName[PATH_MAX];
-    sprintf(evtGroupName,"%s-%d.bin",argv[2],evtGroup);
+    sprintf(evtGroupName,"%s-%d.bin",argv[1],evtGroup);
     int fd = open(evtGroupName, O_CREAT|O_WRONLY,0644);
     if(fd < 0) {
         fprintf(stderr, "could not open %s, %s\n",evtGroupName,strerror(errno));
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
                         fprintf(stderr, ",could not get event\n");
                         return 1;
                     }
-                    sprintf(selected,"/dev/input/event%d",atoi(argv[1]));
+                    sprintf(selected,"/dev/input/event%d",atoi(argv[2]));
                     if(strcmp(device_names[i],selected) != 0) continue; 
 
                     int nWritten = write(fd,&event,sizeof(event));
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
                         printf("End of event group(events:%d)\n",evtCount);
                         evtCount = 0;
                         isLastMt = false;
-                        sprintf(evtGroupName,"%s-%d.bin",argv[2],++evtGroup);
+                        sprintf(evtGroupName,"%s-%d.bin",argv[1],++evtGroup);
                         fd = open(evtGroupName, O_CREAT|O_WRONLY,0644);
                         if(fd < 0) {
                             fprintf(stderr, "could not open %s, %s\n",evtGroupName,strerror(errno));
