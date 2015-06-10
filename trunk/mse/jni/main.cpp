@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
             }
         }
         sleep(sec);
-        printf("sleep(%dsec)\n",sec);
+        //printf("sleep(%dsec)\n",sec);
 
         close(fdw);
         close(fd);
