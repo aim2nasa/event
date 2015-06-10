@@ -3,7 +3,7 @@
 #include <errno.h>
 #include <dirent.h>
 
-static int scan_dir(const char *dirname)
+static int scan_dir(const char *dirname,const char *prefix)
 {
     char devname[PATH_MAX];
     char *filename;
@@ -22,6 +22,9 @@ static int scan_dir(const char *dirname)
     filename = devname + strlen(devname);
     *filename++ = '/';
 
+    char format[PATH_MAX];
+    sprintf(format,"%s-%%d-%%d.bin",prefix);
+    printf("comparing format=%s\n",format);
     //printf("filename=%s\n",filename);
     while((de = readdir(dir))) {
         //printf("readdir, (%s)\n",de->d_name);
@@ -33,7 +36,14 @@ static int scan_dir(const char *dirname)
 	}
 
         strcpy(filename, de->d_name);
+        
+        int order=-1,evtNo=-1,rtn=-1;
+        rtn = sscanf(de->d_name,format,&order,&evtNo);
         printf("device(%s) opening...\n",devname);
+        printf("order=%d,evtNo=%d,rtn=%d\n",order,evtNo,rtn); 
+        if(rtn==2){
+            printf("prefix matched file found %s-%d-%d.bin\n",prefix,order,evtNo);
+        }
         //open_device(devname);
     }
     closedir(dir);
@@ -52,7 +62,7 @@ int main(int argc, char *argv[])
     }
     
     path = argv[1];
-    if(scan_dir(path) < 0) {
+    if(scan_dir(path,argv[2]) < 0) {
         fprintf(stderr, "scan dir failed for %s\n", path);
         return 1;
     }
