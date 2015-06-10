@@ -24,7 +24,7 @@ static int scan_dir(const char *dirname,const char *prefix)
 
     char format[PATH_MAX];
     sprintf(format,"%s-%%d-%%d.bin",prefix);
-    printf("comparing format=%s\n",format);
+    printf("comparing pattern=%s\n",format);
     //printf("filename=%s\n",filename);
     while((de = readdir(dir))) {
         //printf("readdir, (%s)\n",de->d_name);
@@ -39,10 +39,10 @@ static int scan_dir(const char *dirname,const char *prefix)
         
         int order=-1,evtNo=-1,rtn=-1;
         rtn = sscanf(de->d_name,format,&order,&evtNo);
-        printf("device(%s) opening...\n",devname);
-        printf("order=%d,evtNo=%d,rtn=%d\n",order,evtNo,rtn); 
         if(rtn==2){
-            printf("prefix matched file found %s-%d-%d.bin\n",prefix,order,evtNo);
+            printf("selected file(%s) pattern matched(order:%d,evtNo:%d,match:%d)\n",de->d_name,order,evtNo,rtn);
+        }else{
+            printf("selected file(%s) pattern not matched\n",de->d_name);
         }
         //open_device(devname);
     }
