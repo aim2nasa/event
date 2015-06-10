@@ -118,12 +118,12 @@ static int scan_dir(const char *dirname)
 
 bool isWatchTarget(const char* devName,std::list<int>& l)
 {
-    printf("\tdevice:%s ",devName);
+    //printf("\tdevice:%s ",devName);
     char tmp[PATH_MAX];
     for(std::list<int>::iterator it=l.begin();it!=l.end();it++){
         sprintf(tmp,DEVICE_FORMAT,*it);
         if(strcmp(devName,tmp)==0) {
-            printf(",found:%s\n",tmp);
+            //printf(",found:%s\n",tmp);
             return true; 
         }
     }
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
                     if(fileOpen[i]==false){
                         int eventNo;
                         sscanf(device_names[i],DEVICE_FORMAT,&eventNo);
-                        printf("device name %s, extracted event no:%d\n",device_names[i],eventNo);
+                        //printf("device name %s, extracted event no:%d\n",device_names[i],eventNo);
                         sprintf(evtGroupName[i],"%s-%d-%d.bin",argv[1],evtGroup++,eventNo);
                         fd[i] = open(evtGroupName[i], O_CREAT|O_WRONLY,0644);
                         if(fd[i] < 0) {
