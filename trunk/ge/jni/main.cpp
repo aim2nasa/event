@@ -200,12 +200,12 @@ int main(int argc, char *argv[])
                             return -1;
                         } 
                         fileOpen[i]=true;
-                        printf("%s file opened\n",evtGroupName);
+                        printf("%s file opened(fd:%d)\n",evtGroupName,fd);
                     } 
 
                     int nWritten = write(fd,&event,sizeof(event));
                     if(nWritten!=sizeof(event)){
-                        fprintf(stderr, "write error(%dbytes)\n",nWritten);
+                        fprintf(stderr, "write error(%dbytes,fd:%d)\n",nWritten,fd);
                         return -1;
                     }
                     evtCount++;
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
                     //SYN_REPORT 0x0
                     if(event.type==EV_SYN && event.code==0x0 && (isLastMt==true||isKey==true)){
                         close(fd);
-                        printf("%s file closed\n",evtGroupName);
+                        printf("%s file closed(fd:%d)\n",evtGroupName,fd);
                         fileOpen[i]=false;
                         printf("End of event group(events:%d)\n",evtCount);
                         evtCount = 0;
