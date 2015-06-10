@@ -14,9 +14,6 @@ static int scan_dir(const char *dirname,const char *prefix,std::list<std::string
     DIR *dir;
     struct dirent *de;
 
-    //printf("scan_dir start %s\n",dirname);
-
-    //printf("dir(%s) opening...\n",dirname);
     dir = opendir(dirname);
     if(dir == NULL)
         return -1;
@@ -29,7 +26,6 @@ static int scan_dir(const char *dirname,const char *prefix,std::list<std::string
     char format[PATH_MAX];
     sprintf(format,"%s-%%d-%%d.bin",prefix);
     printf("comparing pattern=%s\n",format);
-    //printf("filename=%s\n",filename);
     while((de = readdir(dir))) {
         //printf("readdir, (%s)\n",de->d_name);
         if(de->d_name[0] == '.' &&
@@ -49,12 +45,9 @@ static int scan_dir(const char *dirname,const char *prefix,std::list<std::string
         }else{
             printf("selected file(%s) pattern not matched\n",de->d_name);
         }
-        //open_device(devname);
     }
     closedir(dir);
     printf("dir(%s) closed\n",dirname);
-
-    //printf("scan_dir end %s\n",dirname);
     return 0;
 }
 
