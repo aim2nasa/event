@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
 
     int evtGroup = 0,mtTrack=0,evtCount=0;
     bool isLastMt = false,onMtTracking=false,isKey=false;
-    char evtGroupName[PATH_MAX];
+    char evtGroupName[MAX_DEVICES][PATH_MAX];
     int fd[MAX_DEVICES];
     memset(&fd,-1,sizeof(fd));
 
@@ -197,14 +197,14 @@ int main(int argc, char *argv[])
                         int eventNo;
                         sscanf(device_names[i],DEVICE_FORMAT,&eventNo);
                         printf("device name %s, extracted event no:%d\n",device_names[i],eventNo);
-                        sprintf(evtGroupName,"%s-%d-%d.bin",argv[1],evtGroup++,eventNo);
-                        fd[i] = open(evtGroupName, O_CREAT|O_WRONLY,0644);
+                        sprintf(evtGroupName[i],"%s-%d-%d.bin",argv[1],evtGroup++,eventNo);
+                        fd[i] = open(evtGroupName[i], O_CREAT|O_WRONLY,0644);
                         if(fd[i] < 0) {
-                            fprintf(stderr, "could not open %s, %s\n",evtGroupName,strerror(errno));
+                            fprintf(stderr, "could not open %s, %s\n",evtGroupName[i],strerror(errno));
                             return -1;
                         } 
                         fileOpen[i]=true;
-                        printf("%s file opened(fd[%d]=%d)\n",evtGroupName,i,fd[i]);
+                        printf("%s file opened(fd[%d]=%d)\n",evtGroupName[i],i,fd[i]);
                     } 
 
                     int nWritten = write(fd[i],&event,sizeof(event));
@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
                     //SYN_REPORT 0x0
                     if(event.type==EV_SYN && event.code==0x0 && (isLastMt==true||isKey==true)){
                         close(fd[i]);
-                        printf("%s file closed(fd[%d]=%d)\n",evtGroupName,i,fd[i]);
+                        printf("%s file closed(fd[%d]=%d)\n",evtGroupName[i],i,fd[i]);
                         fileOpen[i]=false;
                         printf("End of event group(events:%d)\n",evtCount);
                         evtCount = 0;
