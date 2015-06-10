@@ -12,6 +12,8 @@
 #include <errno.h>
 #include <list>
 
+#define MAX_DEVICES 128
+
 static struct pollfd *ufds;
 static char **device_names;
 static int nfds;
@@ -170,7 +172,7 @@ int main(int argc, char *argv[])
     char evtGroupName[PATH_MAX];
     int fd = -1;
 
-    bool fileOpen[128]; //big enough I think
+    bool fileOpen[MAX_DEVICES]; //big enough I think
     memset(&fileOpen,0,sizeof(fileOpen)); //When file is opened, must be true
 
     char selected[PATH_MAX];
