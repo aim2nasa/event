@@ -10,7 +10,7 @@ static int scan_dir(const char *dirname)
     DIR *dir;
     struct dirent *de;
 
-    printf("scan_dir start %s\n",dirname);
+    //printf("scan_dir start %s\n",dirname);
 
     //printf("dir(%s) opening...\n",dirname);
     dir = opendir(dirname);
@@ -39,7 +39,7 @@ static int scan_dir(const char *dirname)
     closedir(dir);
     printf("dir(%s) closed\n",dirname);
 
-    printf("scan_dir end %s\n",dirname);
+    //printf("scan_dir end %s\n",dirname);
     return 0;
 }
 
