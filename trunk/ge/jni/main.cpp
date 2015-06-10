@@ -21,7 +21,7 @@ static int nfds;
 
 static int open_device(const char *device)
 {
-    printf("open_device start %s\n",device);
+    //printf("open_device start %s\n",device);
 
     int fd;
     struct pollfd *new_ufds;
@@ -40,7 +40,7 @@ static int open_device(const char *device)
         return -1;
     }
     ufds = new_ufds;
-    printf("mem alloc for ufds(sizeof(ufds[0]):%d x %d)\n",sizeof(ufds[0]),nfds+1);
+    //printf("mem alloc for ufds(sizeof(ufds[0]):%d x %d)\n",sizeof(ufds[0]),nfds+1);
 
     new_device_names = (char**)realloc(device_names, sizeof(device_names[0]) * (nfds + 1));
     if(new_device_names == NULL) {
@@ -48,7 +48,7 @@ static int open_device(const char *device)
         return -1;
     }
     device_names = new_device_names;
-    printf("mem alloc for dev names(sizeof(device_names[0]):%d x %d)\n",sizeof(device_names[0]),nfds+1);
+    //printf("mem alloc for dev names(sizeof(device_names[0]):%d x %d)\n",sizeof(device_names[0]),nfds+1);
 
     ufds[nfds].fd = fd;
     ufds[nfds].events = POLLIN;
@@ -83,34 +83,34 @@ static int scan_dir(const char *dirname)
     DIR *dir;
     struct dirent *de;
 
-    printf("scan_dir start %s,%d\n",dirname);
+    //printf("scan_dir start %s,%d\n",dirname);
 
-    printf("dir(%s) opening...\n",dirname);
+    //printf("dir(%s) opening...\n",dirname);
     dir = opendir(dirname);
     if(dir == NULL)
         return -1;
-    printf("dir(%s) opened\n",dirname);
+    //printf("dir(%s) opened\n",dirname);
 
     strcpy(devname, dirname);
     filename = devname + strlen(devname);
     *filename++ = '/';
 
-    printf("filename=%s\n",filename);
+    //printf("filename=%s\n",filename);
     while((de = readdir(dir))) {
-        printf("readdir, (%s)\n",de->d_name);
+        //printf("readdir, (%s)\n",de->d_name);
         if(de->d_name[0] == '.' &&
            (de->d_name[1] == '\0' ||
             (de->d_name[1] == '.' && de->d_name[2] == '\0'))) {
-	    printf("continue,d_name:%d,%d,%d\n",de->d_name[0],de->d_name[1],de->d_name[1],de->d_name[2]);
+	    //printf("continue,d_name:%d,%d,%d\n",de->d_name[0],de->d_name[1],de->d_name[1],de->d_name[2]);
             continue;
 	}
 
         strcpy(filename, de->d_name);
-        printf("device(%s) opening...\n",devname);
+        //printf("device(%s) opening...\n",devname);
         open_device(devname);
     }
     closedir(dir);
-    printf("dir(%s) closed\n",dirname);
+    //printf("dir(%s) closed\n",dirname);
 
     printf("scan_dir end %s\n",dirname);
     return 0;
