@@ -127,7 +127,7 @@ bool isWatchTarget(const char* devName,std::list<int>& l)
             return true; 
         }
     }
-    printf(",not found\n");
+    //printf(",not found\n");
     return false;
 }
 
