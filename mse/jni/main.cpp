@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
             assert(evtNo!=-1);
             char device[PATH_MAX];
             sprintf(device,"/dev/input/event%d",evtNo);
-            if((fdw=open(device,O_WRONLY)) < 0) {
+            if((fdw=open(device,O_WRONLY|O_SYNC)) < 0) {
                 fprintf(stderr, "could not open %s, %s\n",device,strerror(errno));
                 return 1;
             }
