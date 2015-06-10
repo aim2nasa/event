@@ -4,6 +4,7 @@
 #include <dirent.h>
 #include <list>
 #include <string>
+#include <linux/input.h>
 
 static int scan_dir(const char *dirname,const char *prefix,std::list<std::string>& list)
 {
@@ -81,7 +82,13 @@ int main(int argc, char *argv[])
             fprintf(stderr, "could not open %s, %s\n",fileName.c_str(),strerror(errno));
             return 1;
         }
-
+        
+        ssize_t size;
+        struct input_event event; 
+        while(1){
+            size = read(fd,&event,sizeof(event)); 
+            if(size!=(ssize_t)sizeof(event)) break;
+        }
         close(fd);
     }
     printf("end\n");
