@@ -2,8 +2,10 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <dirent.h>
+#include <list>
+#include <string>
 
-static int scan_dir(const char *dirname,const char *prefix)
+static int scan_dir(const char *dirname,const char *prefix,std::list<std::string>& list)
 {
     char devname[PATH_MAX];
     char *filename;
@@ -40,6 +42,7 @@ static int scan_dir(const char *dirname,const char *prefix)
         int order=-1,evtNo=-1,rtn=-1;
         rtn = sscanf(de->d_name,format,&order,&evtNo);
         if(rtn==2){
+            list.push_back(std::string(de->d_name));
             printf("selected file(%s) pattern matched(order:%d,evtNo:%d,match:%d)\n",de->d_name,order,evtNo,rtn);
         }else{
             printf("selected file(%s) pattern not matched\n",de->d_name);
@@ -61,11 +64,15 @@ int main(int argc, char *argv[])
         return 1;
     }
     
+    std::list<std::string> files;
     path = argv[1];
-    if(scan_dir(path,argv[2]) < 0) {
+    if(scan_dir(path,argv[2],files) < 0) {
         fprintf(stderr, "scan dir failed for %s\n", path);
         return 1;
     }
+    printf("list contains %d elements\n",files.size());
+    for(std::list<std::string>::iterator it=files.begin();it!=files.end();it++) printf("%s\n",(*it).c_str());
+    printf("list done\n");
 
     int fd;
     while(1)
