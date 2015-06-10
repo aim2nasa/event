@@ -5,6 +5,7 @@
 #include <list>
 #include <string>
 #include <linux/input.h>
+#include <assert.h>
 
 static int scan_dir(const char *dirname,const char *prefix,std::list<std::string>& list)
 {
@@ -73,6 +74,8 @@ int main(int argc, char *argv[])
     }
     printf("list contains %d elements\n",files.size());
 
+    char format[PATH_MAX];
+    sprintf(format,"%s-%%d-%%d.bin",argv[2]);
     for(std::list<std::string>::iterator it=files.begin();it!=files.end();it++) 
     {
         std::string fileName = std::string(path)+std::string("/")+(*it);
@@ -82,13 +85,35 @@ int main(int argc, char *argv[])
             fprintf(stderr, "could not open %s, %s\n",fileName.c_str(),strerror(errno));
             return 1;
         }
-        
+
+        int order=-1,evtNo=-1,rtn=-1,fdw=-1;
+        rtn = sscanf((*it).c_str(),format,&order,&evtNo);
+        if(rtn!=2){
+            fprintf(stderr, "error sscanf for evtNo %s\n",(*it).c_str());
+            return 1;
+        }else{
+            assert(evtNo!=-1);
+            char device[PATH_MAX];
+            sprintf(device,"/dev/input/event%d",evtNo);
+            if((fdw=open(device,O_WRONLY)) < 0) {
+                fprintf(stderr, "could not open %s, %s\n",device,strerror(errno));
+                return 1;
+            }
+        }
+
         ssize_t size;
         struct input_event event; 
         while(1){
             size = read(fd,&event,sizeof(event)); 
             if(size!=(ssize_t)sizeof(event)) break;
+
+            size = write(fdw,&event,sizeof(event));
+            if(size!=(ssize_t)sizeof(event)){
+                printf("write error(%d)\n",size);
+                break;
+            } 
         }
+        close(fdw);
         close(fd);
     }
     printf("end\n");
