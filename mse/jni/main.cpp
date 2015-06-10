@@ -71,14 +71,14 @@ int main(int argc, char *argv[])
         return 1;
     }
     printf("list contains %d elements\n",files.size());
-    for(std::list<std::string>::iterator it=files.begin();it!=files.end();it++) printf("%s\n",(*it).c_str());
-    printf("list done\n");
 
-    int fd;
-    while(1)
+    for(std::list<std::string>::iterator it=files.begin();it!=files.end();it++) 
     {
-        if((fd=open(argv[1],O_RDONLY)) < 0) {
-            fprintf(stderr, "could not open %s, %s\n", argv[1], strerror(errno));
+        std::string fileName = std::string(path)+std::string("/")+(*it);
+        printf("sending %s...\n",fileName.c_str());
+        int fd;
+        if((fd=open(fileName.c_str(),O_RDONLY)) < 0) {
+            fprintf(stderr, "could not open %s, %s\n",fileName.c_str(),strerror(errno));
             return 1;
         }
 
