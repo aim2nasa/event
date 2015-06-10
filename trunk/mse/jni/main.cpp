@@ -6,6 +6,7 @@
 #include <string>
 #include <linux/input.h>
 #include <assert.h>
+#include <stdlib.h>
 
 static int scan_dir(const char *dirname,const char *prefix,std::list<std::string>& list)
 {
@@ -54,10 +55,15 @@ static int scan_dir(const char *dirname,const char *prefix,std::list<std::string
 int main(int argc, char *argv[])
 {
     const char *path = ".";
-    if(argc<3) {
-        fprintf(stderr, "usage: %s [path of files] [file prefix]\n", argv[0]);
+    if(argc<4) {
+        fprintf(stderr, "usage: %s [path of files] [file prefix] [sleep(sec)]\n", argv[0]);
         return 1;
     }
+
+    int sec =  atoi(argv[3]);
+    printf("path of files:%s\n",argv[1]);
+    printf("file prefix:%s\n",argv[2]);
+    printf("sleep(sec):%d\n",sec);
     
     std::list<std::string> files;
     path = argv[1];
@@ -104,8 +110,11 @@ int main(int argc, char *argv[])
             if(size!=(ssize_t)sizeof(event)){
                 printf("write error(%d)\n",size);
                 break;
-            } 
+            }
         }
+        sleep(sec);
+        printf("sleep(%dsec)\n",sec);
+
         close(fdw);
         close(fd);
     }
