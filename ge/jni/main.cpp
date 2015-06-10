@@ -140,9 +140,13 @@ int main(int argc, char *argv[])
     const char *device_path = "/dev/input";
 
     if(argc<3) {
-        printf("usage:ge <dump file name> <event#> ... <event#>\n");
+        printf("usage:ge <dump file name> <touch event#> <other event#>... <other event#>\n");
+        printf("Note: touch event# MUST be in the first\n");
         return -1;
     }
+
+    int touchEvtNo = atoi(argv[2]);
+    printf("touch event#:%d\n",touchEvtNo);
 
     std::list<int> devList;
     for(int i=3;i<=argc;i++) devList.push_back(atoi(argv[i-1]));
@@ -193,10 +197,10 @@ int main(int argc, char *argv[])
                     }
                     if(!isWatchTarget(device_names[i],devList)) continue;
 
+                    int eventNo;
+                    sscanf(device_names[i],DEVICE_FORMAT,&eventNo);
+                    //printf("device name %s, extracted event no:%d\n",device_names[i],eventNo);
                     if(fileOpen[i]==false){
-                        int eventNo;
-                        sscanf(device_names[i],DEVICE_FORMAT,&eventNo);
-                        //printf("device name %s, extracted event no:%d\n",device_names[i],eventNo);
                         sprintf(evtGroupName[i],"%s-%d-%d.bin",argv[1],evtGroup++,eventNo);
                         fd[i] = open(evtGroupName[i], O_CREAT|O_WRONLY,0644);
                         if(fd[i] < 0) {
@@ -239,7 +243,8 @@ int main(int argc, char *argv[])
                     }
 
                     //SYN_REPORT 0x0
-                    if(event.type==EV_SYN && event.code==0x0 && (isLastMt==true||isKey==true)){
+                    if(event.type==EV_SYN && event.code==0x0 &&
+                        (isLastMt==true||((touchEvtNo!=eventNo)&&isKey==true))){
                         close(fd[i]);
                         printf("%s file closed(fd[%d]=%d)\n",evtGroupName[i],i,fd[i]);
                         fileOpen[i]=false;
