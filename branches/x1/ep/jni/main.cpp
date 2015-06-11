@@ -4,6 +4,9 @@
 #include <sys/stat.h>
 #include <linux/input.h>
 #include <map>
+#include <assert.h>
+
+#define DEVICE_FORMAT "/dev/input/event%d"
 
 int play(int fdRead,long long maxRead)
 {
@@ -13,6 +16,7 @@ int play(int fdRead,long long maxRead)
     timerclear(&tdiff);
 
     std::map<int,int> fdMap;    
+    std::map<int,int>::iterator it;
     int device;
     for(int i=0; i<maxRead;i++)
     {
@@ -22,6 +26,20 @@ int play(int fdRead,long long maxRead)
 	    fprintf(stderr,"can't read device number\n",strerror(errno));
 	    return -1;
 	}
+
+        int deviceFd=-1;
+        if((it=fdMap.find(device))!=fdMap.end()) {
+            deviceFd = it->second;
+        }else{
+            char name[PATH_MAX];
+            sprintf(name,DEVICE_FORMAT,device);
+            deviceFd = open(name,O_WRONLY | O_NDELAY);
+            if(deviceFd<0) {
+                fprintf(stderr,"can't open file %s\n",name,strerror(errno));
+                return -1;
+            }
+            fdMap.insert(std::pair<int,int>(device,deviceFd));
+        }
 
 	if(read(fdRead,&event,sizeof(event))!=sizeof(event)) {
 	    fprintf(stderr,"can't read event\n",strerror(errno));
@@ -39,15 +57,15 @@ int play(int fdRead,long long maxRead)
 
 	event.time = tevent;
 
-/*
-	if(write(out_fds[outputdev],&event,sizeof(event))!=sizeof(event)) {
-	    fprintf(stderr,"can't write to device\n",strerror(errno));
+        assert(deviceFd!=-1);
+	if(write(deviceFd,&event,sizeof(event))!=sizeof(event)) {
+	    fprintf(stderr,"can't write to device(%d)\n",device,strerror(errno));
 	    return -1;
 	}
-*/
         printf("%d dev:%02d,time:%ld.%06ld,type:%04x,code:%04x,val:%08x\n", 
             i+1,device,event.time.tv_sec,event.time.tv_usec,event.type,event.code,event.value);
     }
+    for(it=fdMap.begin();it!=fdMap.end();++it) close(it->second);
 }
 
 int main(int argc, char *argv[])
