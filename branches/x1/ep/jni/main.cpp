@@ -4,6 +4,50 @@
 #include <sys/stat.h>
 #include <linux/input.h>
 
+int play(int fdRead,long long maxRead)
+{
+    struct timeval tdiff;
+    struct input_event event;
+
+    timerclear(&tdiff);
+    
+    int device;
+    for(int i=0; i<maxRead;i++)
+    {
+        struct timeval now, tevent, tsleep;
+
+        if(read(fdRead,&device,sizeof(device))!=sizeof(device)) {
+	    fprintf(stderr,"can't read device number\n",strerror(errno));
+	    return -1;
+	}
+
+	if(read(fdRead,&event,sizeof(event))!=sizeof(event)) {
+	    fprintf(stderr,"can't read event\n",strerror(errno));
+	    return -1;
+	}
+
+	gettimeofday(&now, NULL);
+	if(!timerisset(&tdiff)) timersub(&now, &event.time, &tdiff); 
+
+	timeradd(&event.time, &tdiff, &tevent);
+	timersub(&tevent, &now, &tsleep);
+
+	if(tsleep.tv_sec > 0 || tsleep.tv_usec > 100)
+	    select(0, NULL, NULL, NULL, &tsleep);
+
+	event.time = tevent;
+
+/*
+	if(write(out_fds[outputdev],&event,sizeof(event))!=sizeof(event)) {
+	    fprintf(stderr,"can't write to device\n",strerror(errno));
+	    return -1;
+	}
+*/
+        printf("%d dev:%02d,time:%ld.%06ld,type:%04x,code:%04x,val:%08x\n", 
+            i+1,device,event.time.tv_sec,event.time.tv_usec,event.type,event.code,event.value);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     printf("event play x1 version\n");
@@ -26,6 +70,8 @@ int main(int argc, char *argv[])
         fprintf(stderr, "could not open %s, %s\n",argv[1],strerror(errno));
         return -1;
     }
+
+    play(fd,eventCount);
 
     close(fd);
     printf("end\n");
