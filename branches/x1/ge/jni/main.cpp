@@ -58,5 +58,6 @@ int main(int argc, char *argv[])
 
     delete [] in_fds;
     close(fdw);
+    printf("end\n");
     return 0;
 }
