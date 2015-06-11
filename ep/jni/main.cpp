@@ -3,6 +3,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <linux/input.h>
+#include <map>
 
 int play(int fdRead,long long maxRead)
 {
@@ -10,7 +11,8 @@ int play(int fdRead,long long maxRead)
     struct input_event event;
 
     timerclear(&tdiff);
-    
+
+    std::map<int,int> fdMap;    
     int device;
     for(int i=0; i<maxRead;i++)
     {
