@@ -30,7 +30,22 @@ POLLFD* init(std::list<int>& list)
     return pFds;
 }
 
-int record(POLLFD* pFds,std::list<int>& list)
+int dump(int fd,int device,struct input_event& event)
+{
+    if(write(fd,&device,sizeof(device))!=sizeof(device)){
+        fprintf(stderr,"device,write error to device(%d),%s\n",device,strerror(errno));
+        return -1;
+    }
+    if(write(fd,&event,sizeof(event))!=sizeof(event)){
+        fprintf(stderr,"event,write error to device(%d),%s\n",device,strerror(errno));
+        return -1;
+    }
+    printf("device:%02d,type:0x%04x,code:0x%04x,value:0x%08x,%dbytes\n",
+        device,event.type,event.code,event.value,sizeof(device)+sizeof(event));
+    return 0;
+}
+ 
+int record(POLLFD* pFds,std::list<int>& list,int fdOut)
 {
     struct input_event event;
     ssize_t size;
@@ -49,7 +64,7 @@ int record(POLLFD* pFds,std::list<int>& list)
                     printf("read error(%d)\n",size);
                     return -1;
                 }
-                printf("device:%d read %dbytes\n",*it,size);
+		if(dump(fdOut,*it,event)!=0) return -1;
             }
             it++;
         }
@@ -77,14 +92,14 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    int fdw = open(argv[1],O_WRONLY | O_CREAT | O_TRUNC);
+    int fdw = open(argv[1],O_WRONLY | O_CREAT | O_TRUNC,0644);
     if(fdw<0){
         fprintf(stderr, "could not open %s, %s\n",argv[1],strerror(errno));
         return -1;
     }
 
     printf("recording for %d devices...\n",devList.size());
-    record(in_fds,devList);
+    record(in_fds,devList,fdw);
 
     delete [] in_fds;
     close(fdw);
