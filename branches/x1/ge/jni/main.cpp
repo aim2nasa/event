@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <poll.h>
+#include <linux/input.h>
 
 #define DEVICE_FORMAT "/dev/input/event%d"
 
@@ -27,6 +28,32 @@ POLLFD* init(std::list<int>& list)
         i++;
     }
     return pFds;
+}
+
+int record(POLLFD* pFds,std::list<int>& list)
+{
+    struct input_event event;
+    ssize_t size;
+    while(1)
+    {
+        if(poll(pFds,list.size(),-1) <0) {
+            printf("poll failed\n");
+            return -1;
+        }
+
+        std::list<int>::iterator it=list.begin();
+        for(int i=0;i<list.size();i++) {
+            if(pFds[i].revents & POLLIN) {
+                size = read(pFds[i].fd,&event,sizeof(event));
+                if(size!=sizeof(event)) {
+                    printf("read error(%d)\n",size);
+                    return -1;
+                }
+                printf("device:%d read %dbytes\n",*it,size);
+            }
+            it++;
+        }
+    }
 }
 
 int main(int argc, char *argv[])
@@ -55,6 +82,9 @@ int main(int argc, char *argv[])
         fprintf(stderr, "could not open %s, %s\n",argv[1],strerror(errno));
         return -1;
     }
+
+    printf("recording for %d devices...\n",devList.size());
+    record(in_fds,devList);
 
     delete [] in_fds;
     close(fdw);
