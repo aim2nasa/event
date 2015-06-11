@@ -56,14 +56,14 @@ int main(int argc, char *argv[])
 {
     const char *path = ".";
     if(argc<4) {
-        fprintf(stderr, "usage: %s [path of files] [file prefix] [sleep(sec)]\n", argv[0]);
+        fprintf(stderr, "usage: %s [path of files] [file prefix] [sleep(usec)]\n", argv[0]);
         return 1;
     }
 
-    int sec =  atoi(argv[3]);
+    int usec =  atoi(argv[3]);
     printf("path of files:%s\n",argv[1]);
     printf("file prefix:%s\n",argv[2]);
-    printf("sleep(sec):%d\n",sec);
+    printf("sleep(usec):%d\n",usec);
     
     std::list<std::string> files;
     path = argv[1];
@@ -101,18 +101,32 @@ int main(int argc, char *argv[])
         }
 
         ssize_t size;
+        struct timeval tdiff;
         struct input_event event; 
+
+        timerclear(&tdiff);
         while(1){
+            struct timeval now,tevent,tsleep;
+
             size = read(fd,&event,sizeof(event)); 
             if(size!=(ssize_t)sizeof(event)) break;
 
+            gettimeofday(&now,NULL);
+            if(!timerisset(&tdiff)) timersub(&now,&event.time,&tdiff);
+
+            timeradd(&event.time,&tdiff,&tevent);
+            timersub(&tevent,&now,&tsleep);
+            if(tsleep.tv_sec>0 || tsleep.tv_usec>100) 
+                select(0,NULL,NULL,NULL,&tsleep);
+
+            event.time = tevent;
             size = write(fdw,&event,sizeof(event));
             if(size!=(ssize_t)sizeof(event)){
                 printf("write error(%d)\n",size);
                 break;
             }
         }
-        sleep(sec);
+        usleep(usec);
         //printf("sleep(%dsec)\n",sec);
 
         close(fdw);
