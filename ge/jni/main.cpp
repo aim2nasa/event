@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <list>
+#include <fcntl.h>
+#include <errno.h>
 
 int main(int argc, char *argv[])
 {
@@ -17,5 +19,11 @@ int main(int argc, char *argv[])
         printf(" %d ",*it);
     printf("\n"); 
 
+    int fdw = open(argv[1],O_WRONLY | O_CREAT | O_TRUNC);
+    if(fdw<0){
+        fprintf(stderr, "could not open %s, %s\n",argv[1],strerror(errno));
+        return -1;
+    }
+    close(fdw);
     return 0;
 }
