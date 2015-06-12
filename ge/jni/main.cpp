@@ -1,13 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #include "CEvtRec.h"
 
-class CMsg : public IEvtDump{
+class CDump : public IEvtDump{
 public:
+    CDump():_fd(-1){}
+    virtual ~CDump(){}
+
+    bool dumpOpen(const char *file)
+    {
+        int fd = open(file,O_WRONLY | O_CREAT | O_TRUNC,0644);
+        if(fd<0) return false;
+        _fd = fd;
+        return true;
+    } 
+
+    int dumpClose() { return close(_fd); }
+
     int evtDmp(int dev,int type,int code,int value)
     {
+        if(write(_fd,&dev,sizeof(int))!=sizeof(int)) return -1;
+        if(write(_fd,&type,sizeof(int))!=sizeof(int)) return -2;
+        if(write(_fd,&code,sizeof(int))!=sizeof(int)) return -3;
+        if(write(_fd,&value,sizeof(int))!=sizeof(int)) return -4;
         printf("dev:%02d,type:%04x,code:%04x,value:%08x\n",dev,type,code,value);
+        return 0;
     }
+
+protected:
+    int _fd;
 };
 
 int main(int argc, char *argv[])
@@ -18,9 +40,16 @@ int main(int argc, char *argv[])
         return -1;
     }
    
-    CMsg m;
+    CDump d;
+    if(d.dumpOpen(argv[1]))
+        printf("dump file:%s opened\n",argv[1]);
+    else{
+        printf("dump file:%s open failure\n",argv[1]);
+        return -1;
+    }   
+        
     CEvtRec er;
-    er.evtDump(&m);
+    er.evtDump(&d);
     for(int i=3;i<=argc;i++) er.addDevice(atoi(argv[i-1]));
 
     printf("event# :");
@@ -35,15 +64,12 @@ int main(int argc, char *argv[])
         return -1;
     }
  
-    if(!er.recOpen(argv[1])) {
-        printf("error in opening %s\n",argv[1]);
-        return -1;
-    }
+    printf("reading for %d devices...\n",er.devices());
+    int rtn = 0;
+    if((rtn=er.readEvent()!=0))
+        printf("error(%d) in readEvent()\n",rtn);
 
-    printf("recording for %d devices...\n",er.devices());
-    er.rec();
-
-    er.recClose();
+    d.dumpClose();
     printf("end\n");
     return 0;
 }
