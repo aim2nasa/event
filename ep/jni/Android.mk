@@ -3,8 +3,8 @@ LOCAL_PATH := $(call my-dir)
 #Executable
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := se
+LOCAL_MODULE := ep
 LOCAL_SRC_FILES := main.cpp
-LOCAL_LDFLAGS:=-fPIE -pie
+LOCAL_MODULE_PATH := $(TARGET_OUT_EXECUTABLES)
 
 include $(BUILD_EXECUTABLE)
