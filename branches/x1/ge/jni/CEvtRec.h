@@ -19,8 +19,9 @@ public:
 };
 
 class CEvtRec{
-public:
+protected:
     CEvtRec();
+public:
     virtual ~CEvtRec();
 
     std::size_t addDevice(int n);
@@ -35,6 +36,8 @@ public:
     int stop();
     int wait();
 
+    static CEvtRec* instance();
+
 protected:
     static void* readEvent(void *arg);
 
@@ -44,6 +47,7 @@ protected:
     int _errDev;
     IEvtDump *_pEvtDump;
     pthread_t _id;
+    static CEvtRec *_sInstance;
 };
 
 #endif
