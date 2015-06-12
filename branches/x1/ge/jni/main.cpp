@@ -1,10 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <list>
-#include <fcntl.h>
-#include <errno.h>
-#include <poll.h>
-#include <linux/input.h>
 #include "CEvtRec.h"
 
 class CMsg : public IEvtDump{
