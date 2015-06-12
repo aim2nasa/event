@@ -25,18 +25,12 @@ public:
     bool devOpen();
     int errDev();
 
-    bool recOpen(const char *dumpFile);
-    int recClose();
-    int rec();
-
-protected:
-    static int dump(IEvtDump *p,int fd,int device,struct input_event& event);
+    int readEvent();
 
 protected:
     std::list<int> _devList;
     _POLLFD *_pFds;
     int _errDev;
-    int _fdw;
     IEvtDump *_pEvtDump;
 };
 
