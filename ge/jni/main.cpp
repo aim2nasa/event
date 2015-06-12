@@ -4,9 +4,12 @@
 #include "CEvtRec.h"
 #include "CDump.h"
 
+CEvtRec er;
+
 void sig_handler(int signo)
 {
-  printf("\nsig_handler(%d)\n",signo);
+    printf("\nsignal(%d) received(%d)\n",signo);
+    er.stop();
 }
 
 int main(int argc, char *argv[])
@@ -25,7 +28,7 @@ int main(int argc, char *argv[])
         return -1;
     }   
         
-    CEvtRec er;
+    //CEvtRec er;
     er.evtDump(&d);
     for(int i=3;i<=argc;i++) er.addDevice(atoi(argv[i-1]));
 
@@ -47,9 +50,9 @@ int main(int argc, char *argv[])
     sigaction(SIGINT,&act,0);
 
     printf("reading for %d devices...\n",er.devices());
-    int rtn;
-    if((rtn=er.readEvent())!=0) //this function won't return until signal comes
-        printf("error(%d) in readEvent()\n",rtn);
+    er.start();
+    er.wait();
+    printf("reading done\n");
 
     d.dumpClose();
     printf("end\n");
