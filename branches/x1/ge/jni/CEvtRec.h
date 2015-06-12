@@ -15,7 +15,7 @@ public:
 class CEvtRec{
 public:
     CEvtRec();
-    ~CEvtRec();
+    virtual ~CEvtRec();
 
     std::size_t addDevice(int n);
     std::size_t devices();
@@ -28,10 +28,10 @@ public:
     int recClose();
     int rec();
 
-private:
+protected:
     static int dump(int fd,int device,struct input_event& event);
 
-private:
+protected:
     std::list<int> _devList;
     _POLLFD *_pFds;
     int _errDev;
