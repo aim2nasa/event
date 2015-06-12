@@ -7,7 +7,7 @@
 #define DEVICE_FORMAT "/dev/input/event%d"
 
 CEvtRec::CEvtRec()
-:_pFds(NULL),_errDev(-1),_pEvtDump(NULL)
+:_pFds(NULL),_errDev(-1),_pEvtDump(NULL),_id(-1)
 {
 }
 
@@ -63,28 +63,46 @@ bool CEvtRec::devOpen()
     return true;
 }
 
-int CEvtRec::readEvent()
+void* CEvtRec::readEvent(void *arg)
 {
+    CEvtRec *p = reinterpret_cast<CEvtRec*>(arg);
+
     struct input_event event;
     ssize_t size;
     while(1)
     {
-        if(poll(_pFds,_devList.size(),-1) <0) {
-            return REVT_ERR_POLL; //poll failed
+        if(poll(p->_pFds,p->_devList.size(),-1) <0) {
+            return (void*)REVT_ERR_POLL; //poll failed
         }
 
-        std::list<int>::iterator it=_devList.begin();
-        for(int i=0;i<_devList.size();i++) {
-            if(_pFds[i].revents & POLLIN) {
-                size = read(_pFds[i].fd,&event,sizeof(event));
+        std::list<int>::iterator it=p->_devList.begin();
+        for(int i=0;i<p->_devList.size();i++) {
+            if(p->_pFds[i].revents & POLLIN) {
+                size = read(p->_pFds[i].fd,&event,sizeof(event));
                 if(size!=sizeof(event)) {
-                    return REVT_ERR_READ; //read error
+                    return (void*)REVT_ERR_READ; //read error
                 }
-                if(_pEvtDump)
-                    if(_pEvtDump->evtDmp(*it,event.type,event.code,event.value)!=0)
-                        return REVT_ERR_DUMP;
+                if(p->_pEvtDump)
+                    if(p->_pEvtDump->evtDmp(*it,event.type,event.code,event.value)!=0)
+                        return (void*)REVT_ERR_DUMP;
             }
             it++;
         }
     }
+}
+
+int CEvtRec::start()
+{
+    return pthread_create(&_id,0,readEvent,this);
+}
+
+int CEvtRec::stop()
+{
+    return pthread_kill(_id,SIGUSR1);
+}
+
+int CEvtRec::wait()
+{
+    int status=0;
+    return pthread_join(_id,(void**)&status);
 }

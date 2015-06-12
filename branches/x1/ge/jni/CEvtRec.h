@@ -3,6 +3,7 @@
 
 #include <list>
 #include <poll.h>
+#include <pthread.h>
 
 #define REVT_OK        0
 #define REVT_ERR_POLL -1
@@ -30,13 +31,19 @@ public:
     bool devOpen();
     int errDev();
 
-    int readEvent();
+    int start();
+    int stop();
+    int wait();
+
+protected:
+    static void* readEvent(void *arg);
 
 protected:
     std::list<int> _devList;
     _POLLFD *_pFds;
     int _errDev;
     IEvtDump *_pEvtDump;
+    pthread_t _id;
 };
 
 #endif
