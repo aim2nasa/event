@@ -1,1 +1,1 @@
-adb shell "/data/local/tmp/ge 1"
+adb shell "LD_LIBRARY_PATH=/data/local/tmp /data/local/tmp/ge"
