@@ -4,6 +4,11 @@
 #include <list>
 #include <poll.h>
 
+#define REVT_OK        0
+#define REVT_ERR_POLL -1
+#define REVT_ERR_READ -2
+#define REVT_ERR_DUMP -3
+
 typedef pollfd _POLLFD;
 
 class IEvtDump{

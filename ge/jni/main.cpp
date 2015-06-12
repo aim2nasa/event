@@ -32,6 +32,11 @@ protected:
     int _fd;
 };
 
+void sig_handler(int signo)
+{
+  printf("\nsig_handler(%d)\n",signo);
+}
+
 int main(int argc, char *argv[])
 {
     printf("get event x1 version\n");
@@ -64,9 +69,14 @@ int main(int argc, char *argv[])
         return -1;
     }
  
+    struct sigaction act;
+    memset(&act,0,sizeof(act));
+    act.sa_handler = sig_handler; 
+    sigaction(SIGINT,&act,0);
+
     printf("reading for %d devices...\n",er.devices());
-    int rtn = 0;
-    if((rtn=er.readEvent()!=0))
+    int rtn;
+    if((rtn=er.readEvent())!=0) //this function won't return until signal comes
         printf("error(%d) in readEvent()\n",rtn);
 
     d.dumpClose();
