@@ -4,12 +4,10 @@
 #include "CEvtRec.h"
 #include "CDump.h"
 
-CEvtRec er;
-
 void sig_handler(int signo)
 {
     printf("\nsignal(%d) received(%d)\n",signo);
-    er.stop();
+    CEvtRec::instance()->stop();
 }
 
 int main(int argc, char *argv[])
@@ -28,7 +26,7 @@ int main(int argc, char *argv[])
         return -1;
     }   
         
-    //CEvtRec er;
+    CEvtRec& er=*CEvtRec::instance();
     er.evtDump(&d);
     for(int i=3;i<=argc;i++) er.addDevice(atoi(argv[i-1]));
 

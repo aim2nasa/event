@@ -6,6 +6,14 @@
 
 #define DEVICE_FORMAT "/dev/input/event%d"
 
+CEvtRec *CEvtRec::_sInstance=NULL;
+
+CEvtRec* CEvtRec::instance()
+{
+    if(!_sInstance) _sInstance = new CEvtRec();
+    return _sInstance;
+}
+
 CEvtRec::CEvtRec()
 :_pFds(NULL),_errDev(-1),_pEvtDump(NULL),_id(-1)
 {
