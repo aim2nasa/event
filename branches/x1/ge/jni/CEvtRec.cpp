@@ -70,7 +70,7 @@ int CEvtRec::readEvent()
     while(1)
     {
         if(poll(_pFds,_devList.size(),-1) <0) {
-            return -1; //poll failed
+            return REVT_ERR_POLL; //poll failed
         }
 
         std::list<int>::iterator it=_devList.begin();
@@ -78,11 +78,11 @@ int CEvtRec::readEvent()
             if(_pFds[i].revents & POLLIN) {
                 size = read(_pFds[i].fd,&event,sizeof(event));
                 if(size!=sizeof(event)) {
-                    return -2; //read error
+                    return REVT_ERR_READ; //read error
                 }
                 if(_pEvtDump)
                     if(_pEvtDump->evtDmp(*it,event.type,event.code,event.value)!=0)
-                        return -3;
+                        return REVT_ERR_DUMP;
             }
             it++;
         }
