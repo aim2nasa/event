@@ -7,6 +7,14 @@
 #include <linux/input.h>
 #include "CEvtRec.h"
 
+class CMsg : public IEvtDump{
+public:
+    int evtDmp(int dev,int type,int code,int value)
+    {
+        printf("dev:%02d,type:%04x,code:%04x,value:%08x\n",dev,type,code,value);
+    }
+};
+
 int main(int argc, char *argv[])
 {
     printf("get event x1 version\n");
@@ -15,7 +23,9 @@ int main(int argc, char *argv[])
         return -1;
     }
    
+    CMsg m;
     CEvtRec er;
+    er.evtDump(&m);
     for(int i=3;i<=argc;i++) er.addDevice(atoi(argv[i-1]));
 
     printf("event# :");

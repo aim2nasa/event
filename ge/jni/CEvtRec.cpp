@@ -7,7 +7,7 @@
 #define DEVICE_FORMAT "/dev/input/event%d"
 
 CEvtRec::CEvtRec()
-:_pFds(NULL),_errDev(-1),_fdw(-1)
+:_pFds(NULL),_errDev(-1),_fdw(-1),_pEvtDump(NULL)
 {
 }
 
@@ -30,6 +30,11 @@ std::size_t CEvtRec::devices()
 std::list<int>& CEvtRec::devList()
 {
     return _devList;
+}
+
+void CEvtRec::evtDump(IEvtDump *p)
+{
+    _pEvtDump = p;
 }
 
 int CEvtRec::errDev()
@@ -88,16 +93,17 @@ int CEvtRec::rec()
                 if(size!=sizeof(event)) {
                     return -2; //read error
                 }
-                if(dump(_fdw,*it,event)!=0) return -3;
+                if(dump(_pEvtDump,_fdw,*it,event)!=0) return -3;
             }
             it++;
         }
     }
 }
 
-int CEvtRec::dump(int fd,int device,struct input_event& event)
+int CEvtRec::dump(IEvtDump *p,int fd,int device,struct input_event& event)
 {
     if(write(fd,&device,sizeof(device))!=sizeof(device)) return -1;
     if(write(fd,&event,sizeof(event))!=sizeof(event)) return -2;
+    if(p) p->evtDmp(device,event.type,event.code,event.value);
     return 0;
 }

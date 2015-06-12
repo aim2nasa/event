@@ -20,6 +20,7 @@ public:
     std::size_t addDevice(int n);
     std::size_t devices();
     std::list<int>& devList();
+    void evtDump(IEvtDump *p);
 
     bool devOpen();
     int errDev();
@@ -29,13 +30,14 @@ public:
     int rec();
 
 protected:
-    static int dump(int fd,int device,struct input_event& event);
+    static int dump(IEvtDump *p,int fd,int device,struct input_event& event);
 
 protected:
     std::list<int> _devList;
     _POLLFD *_pFds;
     int _errDev;
     int _fdw;
+    IEvtDump *_pEvtDump;
 };
 
 #endif
