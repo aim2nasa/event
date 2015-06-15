@@ -36,8 +36,23 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
     if ((recv_cnt = this->peer().recv_n(&msg,sizeof(int))) <= 0) {
 	return -1;
     }
+    ACE_DEBUG((LM_DEBUG, "command msg(0x%x)\n",msg));
 
-    ACE_DEBUG((LM_DEBUG, "command msg(%x)\n",msg));
+    switch(msg){
+    case EVENT_RECORD_START:
+        ACE_DEBUG((LM_DEBUG, "Event record start command(0x%x)\n",msg));
+        break; 
+    case EVENT_RECORD_STOP:
+        ACE_DEBUG((LM_DEBUG, "Event record stop command(0x%x)\n",msg));
+        break; 
+    case TERMINATE_SERVER:
+        ACE_DEBUG((LM_DEBUG, "Terminate server command(0x%x)\n",msg));
+        break; 
+    default:
+        ACE_DEBUG((LM_DEBUG, "Undefined command(0x%x)\n",msg));
+        break; 
+    }
+
     ACE_DEBUG((LM_INFO, "(%t) Stream_Handler::handle_input received(%d)\n", recv_cnt));
     return 0;
 }
