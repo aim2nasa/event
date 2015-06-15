@@ -1,6 +1,10 @@
 #include "CStreamHandler.h"
 #include <ace/Log_Msg.h>
 
+#define EVENT_RECORD_START      (0xffabc001)
+#define EVENT_RECORD_STOP       (0xffabc002)
+#define TERMINATE_SERVER        (0xffabcfff)
+
 CStreamHandler::CStreamHandler()
 : noti_(0, this, ACE_Event_Handler::WRITE_MASK)
 {
@@ -30,12 +34,13 @@ int CStreamHandler::open(void *)
 int CStreamHandler::handle_input(ACE_HANDLE handle)
 {
     ACE_TRACE("Stream_Handler::handle_input");
-    char buf[1024];
+    int msg;
     ssize_t recv_cnt;
-    if ((recv_cnt = this->peer().recv(buf, 1024)) <= 0) {
+    if ((recv_cnt = this->peer().recv_n(&msg,sizeof(int))) <= 0) {
 	return -1;
     }
 
+    ACE_DEBUG((LM_DEBUG, "command msg(%x)\n",msg));
     ACE_DEBUG((LM_INFO, "(%t) Stream_Handler::handle_input received(%d)\n", recv_cnt));
     return 0;
 }
