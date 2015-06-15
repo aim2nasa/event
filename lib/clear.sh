@@ -1,3 +1,3 @@
 rm -r libs
 rm -r obj
-adb shell "rm /data/local/tmp/liber"
+adb shell "rm /data/local/tmp/libevt.so"
