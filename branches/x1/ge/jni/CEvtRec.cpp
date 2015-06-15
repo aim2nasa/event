@@ -109,7 +109,7 @@ void* CEvtRec::readEvent(void *arg)
                         return (void*)REVT_ERR_READ; //read error
                     }
                     if(p->_pEvtDump)
-                        if(p->_pEvtDump->evtDmp(*it,event.type,event.code,event.value)!=0)
+                        if(p->_pEvtDump->evtDmp(*it,event)!=0)
                             return (void*)REVT_ERR_DUMP;
                 }
             }

@@ -15,7 +15,7 @@ typedef pollfd _POLLFD;
 class IEvtDump{
 public:
     virtual ~IEvtDump(){}
-    virtual int evtDmp(int dev,int type,int code,int value)=0; 
+    virtual int evtDmp(int dev,struct input_event& event)=0; 
 };
 
 class CEvtRec{
