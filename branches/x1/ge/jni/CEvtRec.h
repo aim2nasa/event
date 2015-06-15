@@ -48,6 +48,7 @@ protected:
     IEvtDump *_pEvtDump;
     pthread_t _id;
     static CEvtRec *_sInstance;
+    int _fdPipe[2];
 };
 
 #endif

@@ -17,6 +17,8 @@ CEvtRec* CEvtRec::instance()
 CEvtRec::CEvtRec()
 :_pFds(NULL),_errDev(-1),_pEvtDump(NULL),_id(-1)
 {
+    memset(_fdPipe,-1,sizeof(_fdPipe));
+    _devList.push_back(-1); //for internal pipe
 }
 
 CEvtRec::~CEvtRec()
@@ -27,12 +29,12 @@ CEvtRec::~CEvtRec()
 std::size_t CEvtRec::addDevice(int n)
 {
     _devList.push_back(n);
-    return _devList.size();
+    return devices();
 }
 
 std::size_t CEvtRec::devices()
 {
-    return _devList.size();
+    return _devList.size()-1; //exclude pipe
 }
 
 std::list<int>& CEvtRec::devList()
@@ -57,13 +59,23 @@ bool CEvtRec::devOpen()
     char name[PATH_MAX];
     _POLLFD *pFds = new _POLLFD[_devList.size()];
     for(std::list<int>::iterator it=_devList.begin();it!=_devList.end();it++){
-        sprintf(name,DEVICE_FORMAT,*it);
         pFds[i].events = POLLIN;
-        pFds[i].fd = open(name,O_RDONLY|O_NDELAY);
-        if(pFds[i].fd<0) {
-            delete [] pFds;
-            _errDev = *it;
-            return false;
+
+        if(*it!=-1){
+            sprintf(name,DEVICE_FORMAT,*it);
+            pFds[i].fd = open(name,O_RDONLY|O_NDELAY);
+            if(pFds[i].fd<0) {
+                delete [] pFds;
+                _errDev = *it;
+                return false;
+            }
+        }else{
+            if(pipe(_fdPipe)<0) {
+                delete [] pFds;
+                _errDev = *it;
+                return false;
+            }
+            pFds[i].fd = _fdPipe[0];
         }
         i++;
     }
@@ -86,13 +98,20 @@ void* CEvtRec::readEvent(void *arg)
         std::list<int>::iterator it=p->_devList.begin();
         for(int i=0;i<p->_devList.size();i++) {
             if(p->_pFds[i].revents & POLLIN) {
-                size = read(p->_pFds[i].fd,&event,sizeof(event));
-                if(size!=sizeof(event)) {
-                    return (void*)REVT_ERR_READ; //read error
+                if(*it==-1) {
+                    char q;
+                    size = read(p->_pFds[i].fd,&q,sizeof(q));
+                    printf("quit readEvent(%c)\n",q);
+                    return (void*)REVT_OK;
+                }else{
+                    size = read(p->_pFds[i].fd,&event,sizeof(event));
+                    if(size!=sizeof(event)) {
+                        return (void*)REVT_ERR_READ; //read error
+                    }
+                    if(p->_pEvtDump)
+                        if(p->_pEvtDump->evtDmp(*it,event.type,event.code,event.value)!=0)
+                            return (void*)REVT_ERR_DUMP;
                 }
-                if(p->_pEvtDump)
-                    if(p->_pEvtDump->evtDmp(*it,event.type,event.code,event.value)!=0)
-                        return (void*)REVT_ERR_DUMP;
             }
             it++;
         }
@@ -106,7 +125,7 @@ int CEvtRec::start()
 
 int CEvtRec::stop()
 {
-    return pthread_kill(_id,SIGUSR1);
+    return write(_fdPipe[1],"Q",1);
 }
 
 int CEvtRec::wait()

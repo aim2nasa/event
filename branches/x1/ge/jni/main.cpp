@@ -6,7 +6,7 @@
 
 void sig_handler(int signo)
 {
-    printf("\nsignal(%d) received(%d)\n",signo);
+    printf("\nsignal(%d) received\n",signo);
     CEvtRec::instance()->stop();
 }
 
