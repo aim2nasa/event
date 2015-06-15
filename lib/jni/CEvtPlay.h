@@ -15,7 +15,7 @@ public:
     int init(const char *file,IEvtPlay *p=0);
     long long fileSize();
     long long events();
-    int play(long long maxRead);
+    int play(long long startLoc,long long endLoc);
 
 protected:
     int _fd;

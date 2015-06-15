@@ -45,8 +45,13 @@ long long CEvtPlay::events()
     return _count;
 }
 
-int CEvtPlay::play(long long maxRead)
+int CEvtPlay::play(long long startLoc,long long endLoc)
 {
+    if((startLoc<0)||(endLoc<0)) return -100; 
+    if(startLoc>endLoc) return -101; 
+    if(endLoc>(_count-1)) return -102;
+    long long maxRead = endLoc-startLoc+1;
+
     struct timeval tdiff;
     struct input_event event;
 
@@ -55,6 +60,8 @@ int CEvtPlay::play(long long maxRead)
     std::map<int,int> fdMap;    
     std::map<int,int>::iterator it;
     int device;
+
+    lseek(_fd,(sizeof(device)+sizeof(event))*(startLoc),SEEK_CUR);
     for(int i=0; i<maxRead;i++)
     {
         struct timeval now, tevent, tsleep;
