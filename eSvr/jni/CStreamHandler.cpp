@@ -1,9 +1,6 @@
 #include "CStreamHandler.h"
 #include <ace/Log_Msg.h>
-
-#define EVENT_RECORD_START      (0xffabc001)
-#define EVENT_RECORD_STOP       (0xffabc002)
-#define TERMINATE_SERVER        (0xffabcfff)
+#include "../../common/def.h"
 
 CStreamHandler::CStreamHandler()
 : noti_(0, this, ACE_Event_Handler::WRITE_MASK)
