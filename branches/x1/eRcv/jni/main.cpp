@@ -4,6 +4,10 @@
 #include "CEvtRcv.h"
 #include <iostream>
 
+#define EVENT_RECORD_START	(0xffabc001)
+#define EVENT_RECORD_STOP	(0xffabc002)
+#define TERMINATE_SERVER        (0xffabcfff)
+
 static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 25252;
 
@@ -59,15 +63,20 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	{
 	case 'r':
             //Record start
+            if(sendCmd(client_stream,EVENT_RECORD_START)!=sizeof(unsigned int))
+	        ACE_ERROR_RETURN((LM_ERROR,"(%P|%t) %p\n","error sendCmd(EVENT_RECORD_START)"),-1);
 	    ACE_DEBUG((LM_INFO, "(%P|%t) EVENT Record start\n"));
 	    break;
 	case 't':
             //Record stop
+            if(sendCmd(client_stream,EVENT_RECORD_STOP)!=sizeof(unsigned int))
+	        ACE_ERROR_RETURN((LM_ERROR,"(%P|%t) %p\n","error sendCmd(EVENT_RECORD_STOP)"),-1);
 	    ACE_DEBUG((LM_INFO, "(%P|%t) EVENT Record stop\n"));
 	    break;
 	case 'x':
             //Terminate
 	    bRun = false;
+            sendCmd(client_stream,TERMINATE_SERVER);
 	    ACE_DEBUG((LM_INFO, "(%P|%t) terminate server\n"));
 	    break;
 	default:
