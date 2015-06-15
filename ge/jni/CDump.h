@@ -10,7 +10,7 @@ public:
 
     bool dumpOpen(const char *file);
     int dumpClose();
-    int evtDmp(int dev,int type,int code,int value);
+    int evtDmp(int dev,struct input_event& event);
 
 protected:
     int _fd;

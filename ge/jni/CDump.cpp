@@ -1,6 +1,7 @@
 #include "CDump.h"
 #include <fcntl.h>
 #include <stdio.h>
+#include <linux/input.h>
 
 CDump::CDump()
 :_fd(-1)
@@ -26,12 +27,10 @@ int CDump::dumpClose()
     return close(_fd);
 }
 
-int CDump::evtDmp(int dev,int type,int code,int value)
+int CDump::evtDmp(int dev,struct input_event& event)
 {
-    if(write(_fd,&dev,sizeof(int))!=sizeof(int)) return -1;
-    if(write(_fd,&type,sizeof(int))!=sizeof(int)) return -2;
-    if(write(_fd,&code,sizeof(int))!=sizeof(int)) return -3;
-    if(write(_fd,&value,sizeof(int))!=sizeof(int)) return -4;
-    printf("dev:%02d,type:%04x,code:%04x,value:%08x\n",dev,type,code,value);
+    if(write(_fd,&dev,sizeof(dev))!=sizeof(dev)) return -1;
+    if(write(_fd,&event,sizeof(event))!=sizeof(event)) return -2;
+    printf("dev:%02d,type:%04x,code:%04x,value:%08x\n",dev,event.type,event.code,event.value);
     return 0;
 }
