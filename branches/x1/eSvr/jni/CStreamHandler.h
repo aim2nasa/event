@@ -17,6 +17,8 @@ public:
     virtual int handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask);
 
     int send(int msg);
+
+    int onEventRecordInit();
 private:
     typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> super;
 
