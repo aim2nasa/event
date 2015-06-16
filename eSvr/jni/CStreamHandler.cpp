@@ -1,11 +1,12 @@
 #include "CStreamHandler.h"
 #include <ace/Log_Msg.h>
 #include "../../common/def.h"
+#include "CEvtRec.h"
 
 CStreamHandler::CStreamHandler()
-: noti_(0, this, ACE_Event_Handler::WRITE_MASK)
+: noti_(0, this, ACE_Event_Handler::WRITE_MASK),er_(NULL)
 {
-
+    er_ = CEvtRec::instance();
 }
 
 CStreamHandler::~CStreamHandler()
