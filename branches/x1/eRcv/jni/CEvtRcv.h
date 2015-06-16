@@ -3,6 +3,7 @@
 
 #include "ace/Task.h"
 #include <list>
+#include "ace/Auto_Event.h"
 
 class ACE_SOCK_Stream;
 class ACE_Auto_Event;
@@ -30,10 +31,12 @@ public:
 
     virtual int svc(void);
 
+    static ACE_THR_FUNC_RETURN initResponse(void *p);
+
 protected:
     ACE_SOCK_Stream* _pStream;
     std::list<int> _devList;
-    ACE_Auto_Event *_pInit;
+    ACE_Auto_Event _iEvt;
 };
 
 #endif
