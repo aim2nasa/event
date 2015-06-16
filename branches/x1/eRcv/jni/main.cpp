@@ -46,7 +46,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
         ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Connection test failed"), -1);
 
     CEvtRcv er(&client_stream);
-    er.activate();
+    er.start();
 
     bool bRun = true;
     while (bRun)

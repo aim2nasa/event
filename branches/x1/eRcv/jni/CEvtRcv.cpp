@@ -13,6 +13,11 @@ CEvtRcv::~CEvtRcv()
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtRcv() Destructor\n")));
 }
 
+int CEvtRcv::start()
+{
+    return activate();
+}
+
 int CEvtRcv::stop()
 {
     ACE_TRACE("CEvtRcv::stop");

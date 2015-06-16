@@ -13,7 +13,9 @@ public:
     CEvtRcv(ACE_SOCK_Stream* p);
     ~CEvtRcv();
 
+    int start();
     int stop();
+
     virtual int svc(void);
 
 private:
