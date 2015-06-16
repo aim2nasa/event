@@ -47,10 +47,12 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
         ACE_DEBUG((LM_DEBUG, "Event record init command(0x%x) processed\n",msg));
         break; 
     case EVENT_RECORD_START:
+        onEventRecordStart();
         send(EVENT_RECORD_START); //ack
         ACE_DEBUG((LM_DEBUG, "Event record start command(0x%x)\n",msg));
         break; 
     case EVENT_RECORD_STOP:
+        onEventRecordStop();
         send(EVENT_RECORD_STOP); //ack
         ACE_DEBUG((LM_DEBUG, "Event record stop command(0x%x)\n",msg));
         break; 
@@ -142,4 +144,15 @@ int CStreamHandler::onEventRecordInit()
     if(CEvtRec::instance()->devices()<=0) return ERROR_EVTREC_NO_DEV;
     if(!CEvtRec::instance()->devOpen()) return ERROR_EVTREC_DEVOPEN;
     return 0;
+}
+
+int CStreamHandler::onEventRecordStart()
+{
+    return CEvtRec::instance()->start();
+}
+
+int CStreamHandler::onEventRecordStop()
+{
+    CEvtRec::instance()->stop();
+    return CEvtRec::instance()->wait();
 }

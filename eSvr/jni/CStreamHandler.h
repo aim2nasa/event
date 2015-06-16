@@ -20,6 +20,8 @@ public:
     int recv_int(int& msg);
 
     int onEventRecordInit();
+    int onEventRecordStart();
+    int onEventRecordStop();
 private:
     typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> super;
 
