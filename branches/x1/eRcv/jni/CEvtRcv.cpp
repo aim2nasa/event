@@ -29,6 +29,18 @@ std::list<int>& CEvtRcv::devList()
     return _devList;
 }
 
+int CEvtRcv::init()
+{
+    std::list<int> seq;
+    seq.push_back(EVENT_RECORD_INIT);
+    seq.push_back(_devList.size());
+
+    for(std::list<int>::iterator it=_devList.begin();it!=_devList.end();++it)
+        seq.push_back(*it);
+
+    send(seq);
+}
+
 int CEvtRcv::start()
 {
     return activate();
@@ -55,6 +67,14 @@ int CEvtRcv::send(int msg)
         return -1;
     }
     return 0;
+}
+
+int CEvtRcv::send(std::list<int>& seq)
+{
+    int sent=0;
+    for(std::list<int>::iterator it=seq.begin();it!=seq.end();++it)
+        if(send(*it)==0) sent++;
+    return sent;
 }
 
 int CEvtRcv::recordStart()

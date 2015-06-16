@@ -17,10 +17,12 @@ public:
     std::size_t devices();
     std::list<int>& devList();
 
+    int init();
     int start();
     int stop();
 
     int send(int msg);
+    int send(std::list<int>& seq);
     int recordStart();
     int recordStop();
 
