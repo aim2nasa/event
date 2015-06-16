@@ -3,7 +3,7 @@
 #include "ace/OS.h"
 #include "CEvtRcv.h"
 #include <iostream>
-#include "../../common/def.h"
+#include "def.h"
 
 int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
