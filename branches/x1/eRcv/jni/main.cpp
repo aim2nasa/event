@@ -14,7 +14,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
     ACE_TRACE(ACE_TEXT("main"));
 
-    ACE_LOG_MSG->priority_mask( LM_INFO|LM_ERROR, ACE_Log_Msg::PROCESS);
+    ACE_LOG_MSG->priority_mask( LM_INFO|LM_ERROR|LM_DEBUG, ACE_Log_Msg::PROCESS);
 
     const char *server_host = argc > 1 ? argv[1] : SERVER_HOST;
     u_short server_port = argc > 2 ? ACE_OS::atoi(argv[2]) : SERVER_PORT;
@@ -73,18 +73,20 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	case 'x':
             //Terminate
 	    bRun = false;
-            sendCmd(client_stream,TERMINATE_SERVER);
-	    ACE_DEBUG((LM_INFO, "(%P|%t) terminate server\n"));
+	    ACE_DEBUG((LM_INFO, "(%P|%t) terminating...\n"));
+            er.stop();
 	    break;
 	default:
 	    break;
 	}
     }
 
+    ACE_DEBUG((LM_INFO, "(%P|%t) waiting...\n"));
+    er.wait();
+    ACE_DEBUG((LM_INFO, "(%P|%t) waiting done\n"));
+
     if (client_stream.close() == -1)
         ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "close"), -1);
-
-    er.wait();
 
     ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) end\n")));
     ACE_RETURN(0);
