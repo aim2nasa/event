@@ -132,8 +132,11 @@ int CStreamHandler::onEventRecordInit()
     for(int i=0;i<bytes;i++) {
         int msg;
         if(recv_int(msg)<0) return -1;
+     
+        CEvtRec::instance()->addDevice(msg);
         ACE_DEBUG((LM_DEBUG," %d ",msg));
     }
     ACE_DEBUG((LM_DEBUG,"\n"));
+    ACE_DEBUG((LM_DEBUG,"CEvtRec devices:%d\n",CEvtRec::instance()->devices()));
     return 0;
 }
