@@ -1,17 +1,15 @@
 #include "CEvtRcv.h"
 #include "ace/SOCK_Stream.h"
 #include "../../common/def.h"
-#include "ace/Auto_Event.h"
 
 CEvtRcv::CEvtRcv(ACE_SOCK_Stream* p)
-:_pStream(p),_pInit(new ACE_Auto_Event)
+:_pStream(p)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtRcv Constructor\n")));
 }
 
 CEvtRcv::~CEvtRcv()
 {
-    delete _pInit;
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtRcv() Destructor\n")));
 }
 
@@ -31,6 +29,22 @@ std::list<int>& CEvtRcv::devList()
     return _devList;
 }
 
+ACE_THR_FUNC_RETURN CEvtRcv::initResponse(void *p)
+{
+    CEvtRcv *pThis = reinterpret_cast<CEvtRcv*>(p);
+
+    int resp[2];
+    memset(resp,-1,sizeof(resp));
+    for(int i=0;i<2;i++){
+        int msg;
+        if(pThis->recv_int(msg)>0) resp[i]=msg;
+    }
+
+    if(resp[0]==EVENT_RECORD_INIT && resp[1]==OK) pThis->_iEvt.signal();
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) initResponse end,[0]:%x[1]:%x\n"),resp[0],resp[1]));
+    return 0;
+}
+
 int CEvtRcv::init()
 {
     std::list<int> seq;
@@ -41,8 +55,17 @@ int CEvtRcv::init()
         seq.push_back(*it);
 
     int sent = send(seq);
-    ACE_Time_Value tv(2); 
-    if(_pInit->wait(&tv,0)!=0) return ERROR_EVTREC_IN_TIMEOUT;
+
+    ACE_thread_t tid;
+    if(ACE_Thread_Manager::instance()->spawn(CEvtRcv::initResponse,
+        (void*)this,THR_NEW_LWP|THR_JOINABLE,&tid)==-1) return -2;
+
+    ACE_Time_Value tv(3); 
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting init response(%dsec)...\n"),tv.sec()));
+    int wait=-1;
+    if((wait=_iEvt.wait(&tv,0))!=0) return -3;
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting(%dsec)=%d done\n"),tv.sec(),wait));
+
     return sent;
 }
 
@@ -116,12 +139,6 @@ int CEvtRcv::svc()
 
         int r;
         switch(msg){
-        case EVENT_RECORD_INIT:
-            recv_int(r);
-            if(r!=OK)
-                ACE_ERROR_RETURN((LM_ERROR,ACE_TEXT("(%P|%t) Event Record Init Err(0x%x)\n"),r),-1);
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Init(0x%x),Res=(0x%x)\n"),msg,r));
-            break;
         case EVENT_RECORD_START:
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Started(0x%x)\n"),msg));
             break;
