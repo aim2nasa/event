@@ -8,8 +8,6 @@
 static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 25252;
 
-ssize_t sendCmd(ACE_SOCK_Stream& stream, unsigned int cmdCode);
-
 int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
     ACE_TRACE(ACE_TEXT("main"));
@@ -60,14 +58,14 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	{
 	case 'r':
             //Record start
-            if(sendCmd(client_stream,EVENT_RECORD_START)!=sizeof(unsigned int))
-	        ACE_ERROR_RETURN((LM_ERROR,"(%P|%t) %p\n","error sendCmd(EVENT_RECORD_START)"),-1);
+            if(er.recordStart()<0)
+                ACE_ERROR_RETURN((LM_ERROR,"(%P|%t) %p\n","error recordStart"),-1); ;
 	    ACE_DEBUG((LM_INFO, "(%P|%t) EVENT Record start\n"));
 	    break;
 	case 't':
             //Record stop
-            if(sendCmd(client_stream,EVENT_RECORD_STOP)!=sizeof(unsigned int))
-	        ACE_ERROR_RETURN((LM_ERROR,"(%P|%t) %p\n","error sendCmd(EVENT_RECORD_STOP)"),-1);
+            if(er.recordStop()<0)
+                ACE_ERROR_RETURN((LM_ERROR,"(%P|%t) %p\n","error recordStop"),-1); ;
 	    ACE_DEBUG((LM_INFO, "(%P|%t) EVENT Record stop\n"));
 	    break;
 	case 'x':
@@ -90,11 +88,4 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
     ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) end\n")));
     ACE_RETURN(0);
-}
-
-ssize_t sendCmd(ACE_SOCK_Stream& stream,unsigned int cmdCode)
-{
-    ssize_t nSent = stream.send_n(&cmdCode, sizeof(unsigned int));
-    ACE_ASSERT(nSent == sizeof(unsigned int));
-    return nSent;
 }
