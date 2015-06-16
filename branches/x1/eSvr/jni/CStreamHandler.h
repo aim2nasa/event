@@ -6,6 +6,8 @@
 #include <ace/Reactor_Notification_Strategy.h>
 #include <ace/Svc_Handler.h>
 
+class CEvtRec;
+
 class CStreamHandler : public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_MT_SYNCH > {
 public:
     CStreamHandler();
@@ -22,6 +24,7 @@ private:
 
     ACE_INET_Addr remote_addr_;
     ACE_Reactor_Notification_Strategy noti_;
+    CEvtRec *er_;
 };
 
 #endif
