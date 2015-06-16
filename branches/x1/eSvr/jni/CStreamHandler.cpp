@@ -46,8 +46,7 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
         ACE_DEBUG((LM_DEBUG, "Event record stop command(0x%x)\n",msg));
         break; 
     case TERMINATE_SERVER:
-        msg = TERMINATE_CLIENT;
-        this->peer().send_n(&msg,sizeof(int));
+        send(TERMINATE_CLIENT);
         ACE_DEBUG((LM_DEBUG, "Terminate server command(0x%x)\n",msg));
         break; 
     default:
@@ -95,4 +94,12 @@ int CStreamHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask)
     ACE_DEBUG((LM_INFO, "(%t) Close connection %s:%u\n",
         remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
     return super::handle_close(handle, close_mask);
+}
+
+int CStreamHandler::send(int msg)
+{
+    ssize_t rcvSize = this->peer().send_n(&msg,sizeof(int));
+    if (rcvSize <= 0)
+        ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) send error(0x%x)\n"),msg),-1);
+    return 0;
 }
