@@ -40,9 +40,11 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
 
     switch(msg){
     case EVENT_RECORD_START:
+        send(EVENT_RECORD_START); //ack
         ACE_DEBUG((LM_DEBUG, "Event record start command(0x%x)\n",msg));
         break; 
     case EVENT_RECORD_STOP:
+        send(EVENT_RECORD_STOP); //ack
         ACE_DEBUG((LM_DEBUG, "Event record stop command(0x%x)\n",msg));
         break; 
     case TERMINATE_SERVER:
