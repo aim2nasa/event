@@ -14,6 +14,12 @@ CEvtRec* CEvtRec::instance()
     return _sInstance;
 }
 
+void CEvtRec::delInstance()
+{
+    delete _sInstance;
+    _sInstance = NULL;
+}
+
 CEvtRec::CEvtRec()
 :_pFds(NULL),_errDev(-1),_pEvtDump(NULL),_id(-1)
 {

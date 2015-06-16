@@ -37,6 +37,7 @@ public:
     int wait();
 
     static CEvtRec* instance();
+    static void delInstance();
 
 protected:
     static void* readEvent(void *arg);
