@@ -43,7 +43,7 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
     case EVENT_RECORD_INIT:
         ACE_DEBUG((LM_DEBUG, "Event record init command(0x%x)...\n",msg));
         send(EVENT_RECORD_INIT); //ack
-        onEventRecordInit();
+        send(onEventRecordInit());
         ACE_DEBUG((LM_DEBUG, "Event record init command(0x%x) processed\n",msg));
         break; 
     case EVENT_RECORD_START:
