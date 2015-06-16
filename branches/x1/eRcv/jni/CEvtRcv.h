@@ -16,9 +16,13 @@ public:
     int start();
     int stop();
 
+    int send(int msg);
+    int recordStart();
+    int recordStop();
+
     virtual int svc(void);
 
-private:
+protected:
     ACE_SOCK_Stream* _pStream;
 };
 

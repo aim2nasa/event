@@ -31,6 +31,28 @@ int CEvtRcv::stop()
     return 0;
 }
 
+int CEvtRcv::send(int msg)
+{
+    ssize_t rcvSize = _pStream->send_n(&msg,sizeof(int));
+    if (rcvSize <= 0) {
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) error in sending msg(0x%x)\n"),msg));
+        return -1;
+    }
+    return 0;
+}
+
+int CEvtRcv::recordStart()
+{
+    ACE_TRACE("CEvtRcv::recordStart");
+    return send(EVENT_RECORD_START);
+}
+
+int CEvtRcv::recordStop()
+{
+    ACE_TRACE("CEvtRcv::recordStop");
+    return send(EVENT_RECORD_STOP);
+}
+
 int CEvtRcv::svc()
 {
     ACE_TRACE("CEvtRcv::svc");
