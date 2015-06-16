@@ -16,8 +16,6 @@ CSender::~CSender()
 
 int CSender::evtDmp(int dev,struct input_event& event)
 {
-    ACE_DEBUG((LM_DEBUG,ACE_TEXT("(%P|%t) evtDump start\n")));
-
     if(_pPeer)
     {
         ssize_t size;
@@ -29,6 +27,5 @@ int CSender::evtDmp(int dev,struct input_event& event)
         ACE_DEBUG((LM_DEBUG,ACE_TEXT("(%P|%t)dev:%02d,type:%04x,code:%04x,value:%08x\n"),
             dev,event.type,event.code,event.value));
     }
-    ACE_DEBUG((LM_DEBUG,ACE_TEXT("(%P|%t) evtDump end\n")));
     return 0;
 }
