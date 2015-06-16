@@ -113,6 +113,14 @@ int CStreamHandler::send(int msg)
     return 0;
 }
 
+int CStreamHandler::recv_int(int& msg)
+{
+    ssize_t size;
+    if((size = this->peer().recv_n(&msg,sizeof(int))) <= 0)
+	return -1;
+    return size;
+}
+
 int CStreamHandler::onEventRecordInit()
 {
     ACE_TRACE("onEventRecordInit");

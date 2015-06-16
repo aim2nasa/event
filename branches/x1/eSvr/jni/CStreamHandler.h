@@ -17,6 +17,7 @@ public:
     virtual int handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask);
 
     int send(int msg);
+    int recv_int(int& msg);
 
     int onEventRecordInit();
 private:
