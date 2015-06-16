@@ -70,13 +70,13 @@ int CEvtRcv::svc()
 
         switch(msg){
         case EVENT_RECORD_START:
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Start(0x%x)\n"),msg));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Started(0x%x)\n"),msg));
             break;
         case EVENT_RECORD_DATA:
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Data(0x%x)\n"),msg));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Data received(0x%x)\n"),msg));
             break;
         case EVENT_RECORD_STOP:
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Stop(0x%x)\n"),msg));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Stopped(0x%x)\n"),msg));
             break;
         case TERMINATE_CLIENT:
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Connection Terminated(0x%x)\n"),msg));
