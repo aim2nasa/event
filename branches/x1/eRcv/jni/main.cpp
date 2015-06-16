@@ -5,17 +5,20 @@
 #include <iostream>
 #include "../../common/def.h"
 
-static char* SERVER_HOST = "127.0.0.1";
-static u_short SERVER_PORT = 25252;
-
 int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
     ACE_TRACE(ACE_TEXT("main"));
 
     ACE_LOG_MSG->priority_mask( LM_INFO|LM_ERROR|LM_DEBUG, ACE_Log_Msg::PROCESS);
 
-    const char *server_host = argc > 1 ? argv[1] : SERVER_HOST;
-    u_short server_port = argc > 2 ? ACE_OS::atoi(argv[2]) : SERVER_PORT;
+    if(argc<4) {
+        ACE_DEBUG((LM_DEBUG, "argument is %d\n",argc));
+        ACE_DEBUG((LM_INFO, "usage:eRcv <ip> <port> <event#> ... <event#>\n"));
+        ACE_RETURN(-1);
+    }
+
+    const char *server_host = argv[1];
+    u_short server_port = ACE_OS::atoi(argv[2]);
 
     ACE_DEBUG((LM_INFO, "(%P|%t) server info(addr:%s,port:%d)\n",server_host, server_port));
 
