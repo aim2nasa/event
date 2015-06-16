@@ -1,6 +1,6 @@
 #include "CEvtRcv.h"
 #include "ace/SOCK_Stream.h"
-#include "../../common/def.h"
+#include "def.h"
 #include <linux/input.h>
 
 CEvtRcv::CEvtRcv(ACE_SOCK_Stream* p)
