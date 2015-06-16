@@ -9,6 +9,7 @@
 #define TERMINATE_SERVER        (0xffabcfff)
 
 //error codes
+#define OK                      (0x00000000)
 #define ERROR_RECV_INT          (0xe0000001)
 #define ERROR_RECV_INT_SIZE     (0xe0000002)
 #define ERROR_EVTREC_NO_DEV     (0xe0000003)
