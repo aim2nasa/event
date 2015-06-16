@@ -2,9 +2,10 @@
 #include <ace/Log_Msg.h>
 #include "../../common/def.h"
 #include "CEvtRec.h"
+#include "CSender.h"
 
 CStreamHandler::CStreamHandler()
-: noti_(0, this, ACE_Event_Handler::WRITE_MASK)
+: noti_(0, this, ACE_Event_Handler::WRITE_MASK),snd_(NULL)
 {
 
 }
@@ -25,6 +26,9 @@ int CStreamHandler::open(void *)
     if (this->peer().get_remote_addr(remote_addr_) == 0) {
 	ACE_DEBUG((LM_INFO, "(%t) Connected: %s:%u\n",
 		remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
+        snd_ = new CSender();
+        snd_->_pPeer = &peer();
+        CEvtRec::instance()->evtDump(snd_);
     }
     return 0;
 }
@@ -102,6 +106,7 @@ int CStreamHandler::handle_output(ACE_HANDLE handle)
 int CStreamHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask)
 {
     ACE_TRACE("Stream_Handler::handle_close");
+    delete snd_;
     ACE_DEBUG((LM_INFO, "(%t) Close connection %s:%u\n",
         remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
     return super::handle_close(handle, close_mask);
