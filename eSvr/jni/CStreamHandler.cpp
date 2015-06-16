@@ -4,14 +4,14 @@
 #include "CEvtRec.h"
 
 CStreamHandler::CStreamHandler()
-: noti_(0, this, ACE_Event_Handler::WRITE_MASK),er_(NULL)
+: noti_(0, this, ACE_Event_Handler::WRITE_MASK)
 {
-    er_ = CEvtRec::instance();
+
 }
 
 CStreamHandler::~CStreamHandler()
 {
-
+    CEvtRec::delInstance();
 }
 
 int CStreamHandler::open(void *)
