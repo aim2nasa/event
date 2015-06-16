@@ -126,17 +126,20 @@ int CStreamHandler::onEventRecordInit()
     ACE_TRACE("onEventRecordInit");
 
     int bytes;
-    if(recv_int(bytes)<0) return -1;
+    if(recv_int(bytes)<0) return ERROR_RECV_INT_SIZE;
 
     ACE_DEBUG((LM_DEBUG,"msg:"));
     for(int i=0;i<bytes;i++) {
         int msg;
-        if(recv_int(msg)<0) return -1;
+        if(recv_int(msg)<0) return ERROR_RECV_INT;
      
         CEvtRec::instance()->addDevice(msg);
         ACE_DEBUG((LM_DEBUG," %d ",msg));
     }
     ACE_DEBUG((LM_DEBUG,"\n"));
     ACE_DEBUG((LM_DEBUG,"CEvtRec devices:%d\n",CEvtRec::instance()->devices()));
+
+    if(CEvtRec::instance()->devices()<=0) return ERROR_EVTREC_NO_DEV;
+    if(!CEvtRec::instance()->devOpen()) return ERROR_EVTREC_DEVOPEN;
     return 0;
 }
