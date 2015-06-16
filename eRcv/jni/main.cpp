@@ -4,6 +4,7 @@
 #include "CEvtRcv.h"
 #include <iostream>
 #include "def.h"
+#include <list>
 
 int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
@@ -16,9 +17,16 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
         ACE_DEBUG((LM_INFO, "usage:eRcv <ip> <port> <event#> ... <event#>\n"));
         ACE_RETURN(-1);
     }
-
     const char *server_host = argv[1];
     u_short server_port = ACE_OS::atoi(argv[2]);
+
+    std::list<int> evtNos;
+    for(int i=3;i<argc;i++) evtNos.push_back(atoi(argv[i]));
+
+    ACE_DEBUG((LM_INFO, "event#: "));
+    for(std::list<int>::iterator it=evtNos.begin();it!=evtNos.end();it++)
+        ACE_DEBUG((LM_INFO, " %d ",*it));
+    ACE_DEBUG((LM_INFO, "\n%d event# read\n",evtNos.size()));
 
     ACE_DEBUG((LM_INFO, "(%P|%t) server info(addr:%s,port:%d)\n",server_host, server_port));
 
