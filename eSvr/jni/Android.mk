@@ -17,7 +17,8 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := eSvr 
 LOCAL_SRC_FILES := server.cpp \
-                   CStreamHandler.cpp
+                   CStreamHandler.cpp \
+                   CSender.cpp
 LOCAL_LDFLAGS:=-fPIE -pie
 LOCAL_SHARED_LIBRARIES := libACE \
                           libevt
