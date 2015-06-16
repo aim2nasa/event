@@ -1,15 +1,17 @@
 #include "CEvtRcv.h"
 #include "ace/SOCK_Stream.h"
 #include "../../common/def.h"
+#include "ace/Auto_Event.h"
 
 CEvtRcv::CEvtRcv(ACE_SOCK_Stream* p)
-:_pStream(p)
+:_pStream(p),_pInit(new ACE_Auto_Event)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtRcv Constructor\n")));
 }
 
 CEvtRcv::~CEvtRcv()
 {
+    delete _pInit;
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtRcv() Destructor\n")));
 }
 
@@ -38,7 +40,10 @@ int CEvtRcv::init()
     for(std::list<int>::iterator it=_devList.begin();it!=_devList.end();++it)
         seq.push_back(*it);
 
-   return send(seq);
+    int sent = send(seq);
+    ACE_Time_Value tv(2); 
+    if(_pInit->wait(&tv,0)!=0) return ERROR_EVTREC_IN_TIMEOUT;
+    return sent;
 }
 
 int CEvtRcv::start()

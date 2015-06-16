@@ -5,6 +5,7 @@
 #include <list>
 
 class ACE_SOCK_Stream;
+class ACE_Auto_Event;
 
 class CEvtRcv : public ACE_Task < ACE_MT_SYNCH >
 {
@@ -32,6 +33,7 @@ public:
 protected:
     ACE_SOCK_Stream* _pStream;
     std::list<int> _devList;
+    ACE_Auto_Event *_pInit;
 };
 
 #endif
