@@ -13,6 +13,22 @@ CEvtRcv::~CEvtRcv()
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtRcv() Destructor\n")));
 }
 
+std::size_t CEvtRcv::addDevice(int n)
+{
+    _devList.push_back(n);
+    return devices();
+}
+
+std::size_t CEvtRcv::devices()
+{
+    return _devList.size();
+}
+
+std::list<int>& CEvtRcv::devList()
+{
+    return _devList;
+}
+
 int CEvtRcv::start()
 {
     return activate();
