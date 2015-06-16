@@ -19,15 +19,6 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     }
     const char *server_host = argv[1];
     u_short server_port = ACE_OS::atoi(argv[2]);
-
-    std::list<int> evtNos;
-    for(int i=3;i<argc;i++) evtNos.push_back(atoi(argv[i]));
-
-    ACE_DEBUG((LM_INFO, "event#: "));
-    for(std::list<int>::iterator it=evtNos.begin();it!=evtNos.end();it++)
-        ACE_DEBUG((LM_INFO, " %d ",*it));
-    ACE_DEBUG((LM_INFO, "\n%d event# read\n",evtNos.size()));
-
     ACE_DEBUG((LM_INFO, "(%P|%t) server info(addr:%s,port:%d)\n",server_host, server_port));
 
     ACE_SOCK_Stream client_stream;
@@ -55,6 +46,15 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
         ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Connection test failed"), -1);
 
     CEvtRcv er(&client_stream);
+
+    std::list<int>& evtNos = er.devList();
+    for(int i=3;i<argc;i++) evtNos.push_back(atoi(argv[i]));
+
+    ACE_DEBUG((LM_INFO, "event#: "));
+    for(std::list<int>::iterator it=evtNos.begin();it!=evtNos.end();it++)
+        ACE_DEBUG((LM_INFO, " %d ",*it));
+    ACE_DEBUG((LM_INFO, "\n%d event# read\n",evtNos.size()));
+
     er.start();
 
     bool bRun = true;
