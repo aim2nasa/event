@@ -109,11 +109,13 @@ int CEvtRcv::svc()
 
 	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %d received\n"),rcvSize));
 
+        int r;
         switch(msg){
         case EVENT_RECORD_INIT:
-            int res;
-            recv_int(res);
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Init(0x%x),Res=(0x%x)\n"),msg,res));
+            recv_int(r);
+            if(r!=OK)
+                ACE_ERROR_RETURN((LM_ERROR,ACE_TEXT("(%P|%t) Event Record Init Err(0x%x)\n"),r),-1);
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Init(0x%x),Res=(0x%x)\n"),msg,r));
             break;
         case EVENT_RECORD_START:
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Started(0x%x)\n"),msg));
