@@ -126,17 +126,12 @@ int CStreamHandler::onEventRecordInit()
     ACE_TRACE("onEventRecordInit");
 
     int bytes;
-    ssize_t size;
-    if ((size = this->peer().recv_n(&bytes,sizeof(int))) <= 0) {
-	return -1;
-    }
+    if(recv_int(bytes)<0) return -1;
 
     ACE_DEBUG((LM_DEBUG,"msg:"));
     for(int i=0;i<bytes;i++) {
         int msg;
-        if ((size = this->peer().recv_n(&msg,sizeof(int))) <= 0) {
-	    return -1;
-        }
+        if(recv_int(msg)<0) return -1;
         ACE_DEBUG((LM_DEBUG," %d ",msg));
     }
     ACE_DEBUG((LM_DEBUG,"\n"));
