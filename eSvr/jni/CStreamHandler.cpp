@@ -40,6 +40,12 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
     ACE_DEBUG((LM_DEBUG, "command msg(0x%x)\n",msg));
 
     switch(msg){
+    case EVENT_RECORD_INIT:
+        ACE_DEBUG((LM_DEBUG, "Event record init command(0x%x)...\n",msg));
+        send(EVENT_RECORD_INIT); //ack
+        onEventRecordInit();
+        ACE_DEBUG((LM_DEBUG, "Event record init command(0x%x) processed\n",msg));
+        break; 
     case EVENT_RECORD_START:
         send(EVENT_RECORD_START); //ack
         ACE_DEBUG((LM_DEBUG, "Event record start command(0x%x)\n",msg));
@@ -104,5 +110,27 @@ int CStreamHandler::send(int msg)
     ssize_t rcvSize = this->peer().send_n(&msg,sizeof(int));
     if (rcvSize <= 0)
         ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) send error(0x%x)\n"),msg),-1);
+    return 0;
+}
+
+int CStreamHandler::onEventRecordInit()
+{
+    ACE_TRACE("onEventRecordInit");
+
+    int bytes;
+    ssize_t size;
+    if ((size = this->peer().recv_n(&bytes,sizeof(int))) <= 0) {
+	return -1;
+    }
+
+    ACE_DEBUG((LM_DEBUG,"msg:"));
+    for(int i=0;i<bytes;i++) {
+        int msg;
+        if ((size = this->peer().recv_n(&msg,sizeof(int))) <= 0) {
+	    return -1;
+        }
+        ACE_DEBUG((LM_DEBUG," %d ",msg));
+    }
+    ACE_DEBUG((LM_DEBUG,"\n"));
     return 0;
 }

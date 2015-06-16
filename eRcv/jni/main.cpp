@@ -55,7 +55,10 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
         ACE_DEBUG((LM_INFO, " %d ",*it));
     ACE_DEBUG((LM_INFO, "\n%d event# read\n",evtNos.size()));
 
-    er.init();
+    int rtn = er.init();
+    
+    ACE_DEBUG((LM_INFO, "init result:%d\n",rtn));
+    ACE_ASSERT(rtn==(evtNos.size()+2)); //include message,size
     er.start();
 
     bool bRun = true;

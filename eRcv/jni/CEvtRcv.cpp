@@ -38,7 +38,7 @@ int CEvtRcv::init()
     for(std::list<int>::iterator it=_devList.begin();it!=_devList.end();++it)
         seq.push_back(*it);
 
-    send(seq);
+   return send(seq);
 }
 
 int CEvtRcv::start()
@@ -105,6 +105,9 @@ int CEvtRcv::svc()
 	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %d received\n"),rcvSize));
 
         switch(msg){
+        case EVENT_RECORD_INIT:
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Init Ack(0x%x)\n"),msg));
+            break;
         case EVENT_RECORD_START:
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Started(0x%x)\n"),msg));
             break;
