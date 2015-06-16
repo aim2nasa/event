@@ -56,8 +56,13 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     ACE_DEBUG((LM_INFO, "\n%d event# read\n",evtNos.size()));
 
     int rtn = er.init();
-    
-    ACE_DEBUG((LM_INFO, "init result:%d\n",rtn));
+    if(rtn!=0) {
+        ACE_DEBUG((LM_ERROR, "init error(0x%x)",rtn));
+        if(rtn==ERROR_EVTREC_IN_TIMEOUT) ACE_DEBUG((LM_ERROR, ",Init time out\n")); 
+        return -1;
+    }
+    ACE_DEBUG((LM_INFO, "init ok,result:0x%x\n",rtn));
+
     ACE_ASSERT(rtn==(evtNos.size()+2)); //include message,size
     er.start();
 
