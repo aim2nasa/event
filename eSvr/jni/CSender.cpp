@@ -2,6 +2,7 @@
 #include <linux/input.h>
 #include "ace/SOCK_Stream.h"
 #include "ace/Log_Msg.h"
+#include "def.h"
 
 CSender::CSender()
 :_pPeer(NULL)
@@ -19,7 +20,9 @@ int CSender::evtDmp(int dev,struct input_event& event)
     if(_pPeer)
     {
         ssize_t size;
-        int recSize = 2*sizeof(int)+sizeof(event);
+        int recSize = 3*sizeof(int)+sizeof(event);
+        int msg = EVENT_RECORD_DATA;
+        if((size=_pPeer->send_n(&msg,sizeof(int)))!=sizeof(int)) return -1;
         if((size=_pPeer->send_n(&recSize,sizeof(int)))!=sizeof(int)) return -1;
         if((size=_pPeer->send_n(&dev,sizeof(int)))!=sizeof(int)) return -2;
         if((size=_pPeer->send_n(&event,sizeof(event)))!=sizeof(event)) return -3;

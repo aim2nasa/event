@@ -29,6 +29,8 @@ public:
     int recordStart();
     int recordStop();
 
+    int onEventRecordData();
+
     virtual int svc(void);
 
     static ACE_THR_FUNC_RETURN initResponse(void *p);
@@ -37,6 +39,7 @@ protected:
     ACE_SOCK_Stream* _pStream;
     std::list<int> _devList;
     ACE_Auto_Event _iEvt;
+    char _buffer[BUFSIZ];
 };
 
 #endif

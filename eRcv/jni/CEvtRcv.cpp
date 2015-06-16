@@ -1,6 +1,7 @@
 #include "CEvtRcv.h"
 #include "ace/SOCK_Stream.h"
 #include "../../common/def.h"
+#include <linux/input.h>
 
 CEvtRcv::CEvtRcv(ACE_SOCK_Stream* p)
 :_pStream(p)
@@ -124,6 +125,19 @@ int CEvtRcv::recordStop()
     return send(EVENT_RECORD_STOP);
 }
 
+int CEvtRcv::onEventRecordData()
+{
+    int size,rcvSize;
+    if((rcvSize=recv_int(size))<0)
+        ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) size read error\n")),-1);;
+
+    rcvSize = _pStream->recv_n(_buffer,sizeof(int)+sizeof(struct input_event));
+    if(rcvSize <= 0) return -1;
+
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) EventRecordData(%d)\n"),rcvSize));
+    return 0;
+}
+
 int CEvtRcv::svc()
 {
     ACE_TRACE("CEvtRcv::svc");
@@ -143,6 +157,7 @@ int CEvtRcv::svc()
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Started(0x%x)\n"),msg));
             break;
         case EVENT_RECORD_DATA:
+            onEventRecordData();
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Data received(0x%x)\n"),msg));
             break;
         case EVENT_RECORD_STOP:
