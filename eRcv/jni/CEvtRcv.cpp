@@ -111,7 +111,9 @@ int CEvtRcv::svc()
 
         switch(msg){
         case EVENT_RECORD_INIT:
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Init Ack(0x%x)\n"),msg));
+            int res;
+            recv_int(res);
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Init(0x%x),Res=(0x%x)\n"),msg,res));
             break;
         case EVENT_RECORD_START:
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Started(0x%x)\n"),msg));
