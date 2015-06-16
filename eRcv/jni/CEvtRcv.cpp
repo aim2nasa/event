@@ -77,6 +77,13 @@ int CEvtRcv::send(std::list<int>& seq)
     return sent;
 }
 
+int CEvtRcv::recv_int(int& msg)
+{
+    ssize_t rcvSize = _pStream->recv_n(&msg,sizeof(int));
+    if (rcvSize <= 0) return -1;
+    return rcvSize;
+}
+
 int CEvtRcv::recordStart()
 {
     ACE_TRACE("CEvtRcv::recordStart");
@@ -93,15 +100,13 @@ int CEvtRcv::svc()
 {
     ACE_TRACE("CEvtRcv::svc");
 
-    int msg;
+    int msg,rcvSize;
     char buf[BUFSIZ];
     while (1){
 	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting to receive...\n")));
-        ssize_t rcvSize = _pStream->recv_n(&msg,sizeof(int));
-	if (rcvSize <= 0) {
-	    ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) error in receiving msg\n")));
-	    return -1;
-	}
+        if((rcvSize=recv_int(msg))<0)
+            ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) recv error\n")),-1);;
+
 	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %d received\n"),rcvSize));
 
         switch(msg){

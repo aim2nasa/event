@@ -23,6 +23,7 @@ public:
 
     int send(int msg);
     int send(std::list<int>& seq);
+    int recv_int(int& msg);
     int recordStart();
     int recordStop();
 
