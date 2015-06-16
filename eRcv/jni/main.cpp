@@ -88,7 +88,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     if (client_stream.close() == -1)
         ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "close"), -1);
 
-    ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) end\n")));
+    ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) end\n")));
     ACE_RETURN(0);
 }
 
