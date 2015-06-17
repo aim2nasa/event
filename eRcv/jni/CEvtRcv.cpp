@@ -2,9 +2,10 @@
 #include "ace/SOCK_Stream.h"
 #include "def.h"
 #include <linux/input.h>
+#include "ace/Date_Time.h"
 
 CEvtRcv::CEvtRcv(ACE_SOCK_Stream* p)
-:_pStream(p)
+:_pStream(p),_fp(NULL)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtRcv Constructor\n")));
 }
@@ -116,12 +117,20 @@ int CEvtRcv::recv_int(int& msg)
 int CEvtRcv::recordStart()
 {
     ACE_TRACE("CEvtRcv::recordStart");
+
+    ACE_Date_Time dt(ACE_OS::gettimeofday());
+    ACE_TCHAR filename[512];
+    ACE_OS::sprintf(filename,ACE_TEXT("Evt_%04d%02d%02d_%02d%02d%02d_%03d.bin"),
+        dt.year(), dt.month(), dt.day(), dt.hour(), dt.minute(), dt.second(), dt.microsec());
+
+    _fp = ACE_OS::fopen(filename, ACE_TEXT("wb"));
     return send(EVENT_RECORD_START);
 }
 
 int CEvtRcv::recordStop()
 {
     ACE_TRACE("CEvtRcv::recordStop");
+    ACE_OS::fclose(_fp);
     return send(EVENT_RECORD_STOP);
 }
 
@@ -132,7 +141,10 @@ int CEvtRcv::onEventRecordData()
         ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) size read error\n")),-1);;
 
     rcvSize = _pStream->recv_n(_buffer,sizeof(int)+sizeof(struct input_event));
-    if(rcvSize <= 0) return -1;
+    if(rcvSize <= 0) return -2;
+
+    size_t written = ACE_OS::fwrite(_buffer,1,rcvSize,_fp);
+    if(written!=rcvSize) return -3;
 
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) EventRecordData(%d)\n"),rcvSize));
     return 0;
