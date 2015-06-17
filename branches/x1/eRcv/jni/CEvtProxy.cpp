@@ -1,39 +1,39 @@
-#include "CEvtRcv.h"
+#include "CEvtProxy.h"
 #include "ace/SOCK_Stream.h"
 #include "def.h"
 #include <linux/input.h>
 #include "ace/Date_Time.h"
 
-CEvtRcv::CEvtRcv(ACE_SOCK_Stream* p)
+CEvtProxy::CEvtProxy(ACE_SOCK_Stream* p)
 :_pStream(p),_fp(NULL)
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtRcv Constructor\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy Constructor\n")));
 }
 
-CEvtRcv::~CEvtRcv()
+CEvtProxy::~CEvtProxy()
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtRcv() Destructor\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy() Destructor\n")));
 }
 
-std::size_t CEvtRcv::addDevice(int n)
+std::size_t CEvtProxy::addDevice(int n)
 {
     _devList.push_back(n);
     return devices();
 }
 
-std::size_t CEvtRcv::devices()
+std::size_t CEvtProxy::devices()
 {
     return _devList.size();
 }
 
-std::list<int>& CEvtRcv::devList()
+std::list<int>& CEvtProxy::devList()
 {
     return _devList;
 }
 
-ACE_THR_FUNC_RETURN CEvtRcv::initResponse(void *p)
+ACE_THR_FUNC_RETURN CEvtProxy::initResponse(void *p)
 {
-    CEvtRcv *pThis = reinterpret_cast<CEvtRcv*>(p);
+    CEvtProxy *pThis = reinterpret_cast<CEvtProxy*>(p);
 
     int resp[2];
     memset(resp,-1,sizeof(resp));
@@ -47,7 +47,7 @@ ACE_THR_FUNC_RETURN CEvtRcv::initResponse(void *p)
     return 0;
 }
 
-int CEvtRcv::init()
+int CEvtProxy::init()
 {
     std::list<int> seq;
     seq.push_back(EVENT_RECORD_INIT);
@@ -59,7 +59,7 @@ int CEvtRcv::init()
     int sent = send(seq);
 
     ACE_thread_t tid;
-    if(ACE_Thread_Manager::instance()->spawn(CEvtRcv::initResponse,
+    if(ACE_Thread_Manager::instance()->spawn(CEvtProxy::initResponse,
         (void*)this,THR_NEW_LWP|THR_JOINABLE,&tid)==-1) return -2;
 
     ACE_Time_Value tv(3); 
@@ -71,14 +71,14 @@ int CEvtRcv::init()
     return sent;
 }
 
-int CEvtRcv::start()
+int CEvtProxy::start()
 {
     return activate();
 }
 
-int CEvtRcv::stop()
+int CEvtProxy::stop()
 {
-    ACE_TRACE("CEvtRcv::stop");
+    ACE_TRACE("CEvtProxy::stop");
 
     int msg = TERMINATE_SERVER;
     ssize_t rcvSize = _pStream->send_n(&msg,sizeof(int));
@@ -89,7 +89,7 @@ int CEvtRcv::stop()
     return 0;
 }
 
-int CEvtRcv::send(int msg)
+int CEvtProxy::send(int msg)
 {
     ssize_t rcvSize = _pStream->send_n(&msg,sizeof(int));
     if (rcvSize <= 0) {
@@ -99,7 +99,7 @@ int CEvtRcv::send(int msg)
     return 0;
 }
 
-int CEvtRcv::send(std::list<int>& seq)
+int CEvtProxy::send(std::list<int>& seq)
 {
     int sent=0;
     for(std::list<int>::iterator it=seq.begin();it!=seq.end();++it)
@@ -107,16 +107,16 @@ int CEvtRcv::send(std::list<int>& seq)
     return sent;
 }
 
-int CEvtRcv::recv_int(int& msg)
+int CEvtProxy::recv_int(int& msg)
 {
     ssize_t rcvSize = _pStream->recv_n(&msg,sizeof(int));
     if (rcvSize <= 0) return -1;
     return rcvSize;
 }
 
-int CEvtRcv::recordStart()
+int CEvtProxy::recordStart()
 {
-    ACE_TRACE("CEvtRcv::recordStart");
+    ACE_TRACE("CEvtProxy::recordStart");
 
     ACE_Date_Time dt(ACE_OS::gettimeofday());
     ACE_TCHAR filename[512];
@@ -127,14 +127,14 @@ int CEvtRcv::recordStart()
     return send(EVENT_RECORD_START);
 }
 
-int CEvtRcv::recordStop()
+int CEvtProxy::recordStop()
 {
-    ACE_TRACE("CEvtRcv::recordStop");
+    ACE_TRACE("CEvtProxy::recordStop");
     ACE_OS::fclose(_fp);
     return send(EVENT_RECORD_STOP);
 }
 
-int CEvtRcv::onEventRecordData()
+int CEvtProxy::onEventRecordData()
 {
     int size,rcvSize;
     if((rcvSize=recv_int(size))<0)
@@ -150,9 +150,9 @@ int CEvtRcv::onEventRecordData()
     return 0;
 }
 
-int CEvtRcv::svc()
+int CEvtProxy::svc()
 {
-    ACE_TRACE("CEvtRcv::svc");
+    ACE_TRACE("CEvtProxy::svc");
 
     int msg,rcvSize;
     char buf[BUFSIZ];

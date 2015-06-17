@@ -11,7 +11,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := eRcv 
 LOCAL_SRC_FILES := main.cpp \
-                   CEvtRcv.cpp
+                   CEvtProxy.cpp
 LOCAL_LDFLAGS:=-fPIE -pie
 LOCAL_SHARED_LIBRARIES := libACE
 LOCAL_LDLIBS += -lz

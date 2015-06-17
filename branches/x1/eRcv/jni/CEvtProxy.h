@@ -1,5 +1,5 @@
-#ifndef __CEVTRCV_H__
-#define __CEVTRCV_H__
+#ifndef __CEVTPROXY_H__
+#define __CEVTPROXY_H__
 
 #include "ace/Task.h"
 #include <list>
@@ -8,12 +8,12 @@
 class ACE_SOCK_Stream;
 class ACE_Auto_Event;
 
-class CEvtRcv : public ACE_Task < ACE_MT_SYNCH >
+class CEvtProxy : public ACE_Task < ACE_MT_SYNCH >
 {
-    CEvtRcv();
+    CEvtProxy();
 public:
-    CEvtRcv(ACE_SOCK_Stream* p);
-    ~CEvtRcv();
+    CEvtProxy(ACE_SOCK_Stream* p);
+    ~CEvtProxy();
 
     std::size_t addDevice(int n);
     std::size_t devices();
