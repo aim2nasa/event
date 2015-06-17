@@ -134,6 +134,24 @@ int CEvtProxy::recordStop()
     return send(EVENT_RECORD_STOP);
 }
 
+int CEvtProxy::upload(const char* file)
+{
+    size_t length;
+    if((length=ACE_OS::strlen(file))<=0) return -1;
+    if(send(EVENT_FILE_UPLOAD)<0) return -2;
+    if(send(length)<0) return -3;
+
+    ssize_t size = _pStream->send_n(file,length);
+    if(size!=length) return -4;
+
+    return 0;
+}
+
+int CEvtProxy::play(const char* file)
+{
+    return 0;
+}
+
 int CEvtProxy::onEventRecordData()
 {
     int size,rcvSize;

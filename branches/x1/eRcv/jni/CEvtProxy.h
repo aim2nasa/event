@@ -28,6 +28,8 @@ public:
     int recv_int(int& msg);
     int recordStart();
     int recordStop();
+    int upload(const char* file);
+    int play(const char* file);
 
     int onEventRecordData();
 
