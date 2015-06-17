@@ -36,7 +36,6 @@ public:
     virtual int svc(void);
 
     static ACE_THR_FUNC_RETURN initResponse(void *p);
-    static ACE_THR_FUNC_RETURN uploadResponse(void *p);
 
 protected:
     ACE_SOCK_Stream* _pStream;

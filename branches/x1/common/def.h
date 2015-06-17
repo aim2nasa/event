@@ -5,6 +5,9 @@
 #define EVENT_RECORD_START      (0xffabc001)
 #define EVENT_RECORD_DATA       (0xffabc002)
 #define EVENT_RECORD_STOP       (0xffabc003)
+#define EVENT_FILE_UPLOAD       (0xffabc004)
+#define EVENT_PLAY_FULL         (0xffabc005)
+#define EVENT_PLAY_PART         (0xffabc006)
 #define TERMINATE_CLIENT        (0xffabcffe)
 #define TERMINATE_SERVER        (0xffabcfff)
 
@@ -15,5 +18,6 @@
 #define ERROR_EVTREC_NO_DEV     (0xe0000003)
 #define ERROR_EVTREC_DEVOPEN    (0xe0000004)
 #define ERROR_EVTREC_IN_TIMEOUT (0xe0000005)
+#define ERROR_RECEIVE           (0xe0000006)
 
 #endif

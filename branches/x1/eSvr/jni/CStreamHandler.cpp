@@ -60,6 +60,11 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
         send(EVENT_RECORD_STOP); //ack
         ACE_DEBUG((LM_DEBUG, "Event record stop command(0x%x)\n",msg));
         break; 
+    case EVENT_FILE_UPLOAD:
+        send(EVENT_FILE_UPLOAD); //ack
+        send(onEventFileUpload());
+        ACE_DEBUG((LM_DEBUG, "Event record stop command(0x%x)\n",msg));
+        break; 
     case TERMINATE_SERVER:
         send(TERMINATE_CLIENT);
         ACE_DEBUG((LM_DEBUG, "Terminate server command(0x%x)\n",msg));
@@ -160,4 +165,20 @@ int CStreamHandler::onEventRecordStop()
 {
     CEvtRec::instance()->stop();
     return CEvtRec::instance()->wait();
+}
+
+int CStreamHandler::onEventFileUpload()
+{
+    ACE_TRACE("onEventFileUpload");
+
+    int bytes;
+    if(recv_int(bytes)<0) return ERROR_RECV_INT_SIZE;
+
+    ssize_t size;
+    char buffer[BUFSIZ];
+    if((size = this->peer().recv_n(buffer,bytes))!=bytes) return ERROR_RECEIVE;
+    buffer[bytes]=0;
+
+    ACE_DEBUG((LM_DEBUG,"Upload file:%s\n",buffer));
+    return 0;
 }

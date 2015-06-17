@@ -24,6 +24,8 @@ public:
     int onEventRecordInit();
     int onEventRecordStart();
     int onEventRecordStop();
+    int onEventFileUpload();
+
 private:
     typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> super;
 
