@@ -1,7 +1,7 @@
 #include "ace/SOCK_Connector.h" 
 #include "ace/Log_Msg.h" 
 #include "ace/OS.h"
-#include "CEvtRcv.h"
+#include "CEvtProxy.h"
 #include <iostream>
 #include "def.h"
 #include <list>
@@ -45,7 +45,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     else
         ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Connection test failed"), -1);
 
-    CEvtRcv er(&client_stream);
+    CEvtProxy er(&client_stream);
 
     std::list<int>& evtNos = er.devList();
     for(int i=3;i<argc;i++) evtNos.push_back(atoi(argv[i]));
