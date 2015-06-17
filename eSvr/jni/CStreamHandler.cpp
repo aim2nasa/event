@@ -3,9 +3,10 @@
 #include "../../common/def.h"
 #include "CEvtRec.h"
 #include "CSender.h"
+#include <linux/input.h>
 
 CStreamHandler::CStreamHandler()
-: noti_(0, this, ACE_Event_Handler::WRITE_MASK),snd_(NULL)
+: noti_(0, this, ACE_Event_Handler::WRITE_MASK),snd_(NULL),fSize_(0)
 {
 
 }
@@ -51,30 +52,40 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
         ACE_DEBUG((LM_DEBUG, "Event record init command(0x%x) processed\n",msg));
         break; 
     case EVENT_RECORD_START:
+        ACE_DEBUG((LM_DEBUG, "Event record start command(0x%x)...\n",msg));
         onEventRecordStart();
         send(EVENT_RECORD_START); //ack
-        ACE_DEBUG((LM_DEBUG, "Event record start command(0x%x)\n",msg));
+        ACE_DEBUG((LM_DEBUG, "Event record start command(0x%x) processed\n",msg));
         break; 
     case EVENT_RECORD_STOP:
+        ACE_DEBUG((LM_DEBUG, "Event record stop command(0x%x)...\n",msg));
         onEventRecordStop();
         send(EVENT_RECORD_STOP); //ack
-        ACE_DEBUG((LM_DEBUG, "Event record stop command(0x%x)\n",msg));
+        ACE_DEBUG((LM_DEBUG, "Event record stop command(0x%x) processed\n",msg));
+        break; 
+    case EVENT_FILE_UP_PREPARE:
+        ACE_DEBUG((LM_DEBUG, "Event file upload prepare command(0x%x)...\n",msg));
+        send(EVENT_FILE_UP_PREPARE); //ack
+        send(onEventFileUpPrepare());
+        ACE_DEBUG((LM_DEBUG, "Event file upload prepare command(0x%x) processed\n",msg));
         break; 
     case EVENT_FILE_UPLOAD:
+        ACE_DEBUG((LM_DEBUG, "Event file upload command(0x%x)...\n",msg));
         send(EVENT_FILE_UPLOAD); //ack
         send(onEventFileUpload());
-        ACE_DEBUG((LM_DEBUG, "Event record stop command(0x%x)\n",msg));
+        ACE_DEBUG((LM_DEBUG, "Event file upload command(0x%x) processed\n",msg));
         break; 
     case TERMINATE_SERVER:
+        ACE_DEBUG((LM_DEBUG, "Terminate server command(0x%x)...\n",msg));
         send(TERMINATE_CLIENT);
-        ACE_DEBUG((LM_DEBUG, "Terminate server command(0x%x)\n",msg));
+        ACE_DEBUG((LM_DEBUG, "Terminate server command(0x%x) processed\n",msg));
         break; 
     default:
         ACE_DEBUG((LM_DEBUG, "Undefined command(0x%x)\n",msg));
         break; 
     }
 
-    ACE_DEBUG((LM_INFO, "(%t) Stream_Handler::handle_input received(%d)\n",size));
+    ACE_DEBUG((LM_INFO, "(%t) Stream_Handler::handle_input received(%d),msg(0x%x)\n",size,msg));
     return 0;
 }
 
@@ -167,6 +178,26 @@ int CStreamHandler::onEventRecordStop()
     return CEvtRec::instance()->wait();
 }
 
+int CStreamHandler::onEventFileUpPrepare()
+{
+    ACE_TRACE("onEventFileUpPrepare");
+
+    int bytes;
+    if(recv_int(bytes)<0) return ERROR_RECV_INT_SIZE;
+
+    ssize_t size;
+    if((size = this->peer().recv_n(buffer_,bytes))!=bytes) return ERROR_RECEIVE;
+    buffer_[bytes]=0;
+    fName_ = buffer_;
+
+    long fSize;
+    if((size = this->peer().recv_n(&fSize,sizeof(long)))!=sizeof(long)) return ERROR_RECEIVE;
+    fSize_ = fSize;
+
+    ACE_DEBUG((LM_DEBUG,"Upload file:%s size:%dbytes\n",fName_.c_str(),fSize_));
+    return 0;
+}
+
 int CStreamHandler::onEventFileUpload()
 {
     ACE_TRACE("onEventFileUpload");
@@ -174,14 +205,22 @@ int CStreamHandler::onEventFileUpload()
     int bytes;
     if(recv_int(bytes)<0) return ERROR_RECV_INT_SIZE;
 
-    ssize_t size;
-    char buffer[BUFSIZ];
-    if((size = this->peer().recv_n(buffer,bytes))!=bytes) return ERROR_RECEIVE;
-    buffer[bytes]=0;
+    ACE_TString dumpFile("_");
+    dumpFile+=fName_;
+    
+    FILE *fp = ACE_OS::fopen(dumpFile.c_str(),ACE_TEXT("wb"));
+    size_t readUnit = sizeof(int)+sizeof(struct input_event),totalRead=0,totalWrite=0,size;
+    while(totalRead<bytes){
+        if((size = this->peer().recv_n(buffer_,readUnit))!=readUnit) break;
+        totalRead += size;
+ 
+        size = ACE_OS::fwrite(buffer_,1,readUnit,fp);
+        if(size!=readUnit) break;
+        totalWrite += size;
+    }
+    ACE_OS::fclose(fp);
 
-    long fSize;
-    if((size = this->peer().recv_n(&fSize,sizeof(long)))!=sizeof(long)) return ERROR_RECEIVE;
-
-    ACE_DEBUG((LM_DEBUG,"Upload file:%s size:%dbytes\n",buffer,fSize));
+    ACE_DEBUG((LM_DEBUG,"%dbytes read,wrote down %dbytes to %s\n",
+        totalRead,totalWrite,fName_.c_str()));
     return 0;
 }

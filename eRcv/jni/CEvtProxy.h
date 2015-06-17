@@ -28,6 +28,7 @@ public:
     int recv_int(int& msg);
     int recordStart();
     int recordStop();
+    int upPrepare(const char* file);
     int upload(const char* file);
     int play(const char* file);
 
@@ -45,6 +46,7 @@ protected:
     ACE_Auto_Event _upEvt;
     char _buffer[BUFSIZ];
     FILE *_fp;
+    long _fSize;
 };
 
 #endif
