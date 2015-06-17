@@ -5,7 +5,7 @@
 #include "ace/Date_Time.h"
 
 CEvtProxy::CEvtProxy(ACE_SOCK_Stream* p)
-:_pStream(p),_fp(NULL)
+:_pStream(p),_fp(NULL),_fSize(0)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy Constructor\n")));
 }
@@ -138,11 +138,11 @@ long CEvtProxy::fileSize(const char* file)
     return size;
 }
 
-int CEvtProxy::upload(const char* file)
+int CEvtProxy::upPrepare(const char* file)
 {
     size_t length;
     if((length=ACE_OS::strlen(file))<=0) return -10;
-    if(send(EVENT_FILE_UPLOAD)<0) return -20;
+    if(send(EVENT_FILE_UP_PREPARE)<0) return -20;
     if(send(length)<0) return -30;
 
     ssize_t size = _pStream->send_n(file,length);
@@ -150,32 +150,49 @@ int CEvtProxy::upload(const char* file)
 
     long fSize = fileSize(file);
     if(fSize<=0) return -50;
+    _fSize = fSize;
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %s filesize:%dbytes\n"),file,fSize));
 
     size = _pStream->send_n(&fSize,sizeof(long));
     if(size!=sizeof(long)) -60;
 
+    ACE_Time_Value tv(3);
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting for prepare response(%dsec)...\n"),tv.sec()));
+    int wait;
+    if((wait=_upEvt.wait(&tv,0))!=0) return -70;
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting for prepare response done(%d)\n"),wait));
+    return 0;
+}
+
+int CEvtProxy::upload(const char* file)
+{
+    if(send(EVENT_FILE_UPLOAD)<0) return -10;
+
+    ssize_t size = _pStream->send_n(&_fSize,sizeof(long));
+    if(size!=sizeof(long)) return -20;
+
     FILE *fp = ACE_OS::fopen(file,ACE_TEXT("rb"));
-    if(!fp) return -60;
-    size_t readUnit = sizeof(int)+sizeof(struct input_event),totalRead=0;
+    if(!fp) return -30;
+    size_t readUnit = sizeof(int)+sizeof(struct input_event),totalRead=0,totalSent=0;
     while(1){
         size_t readSize = ACE_OS::fread(_buffer,1,readUnit,fp);
         if(readSize!=readUnit) break;
         totalRead += readSize;
+
+        size_t size = _pStream->send_n(_buffer,readSize);
+        if(size!=readSize) return -40;
+        totalSent += size;
     }
     ACE_OS::fclose(fp);
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) readin total:%dbytes\n"),totalRead));
-
-    ACE_Time_Value tv(60*5); //until maximum 5minutes
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting upload response(%dsec)...\n"),tv.sec()));
-    _upEvt.wait(&tv,0);
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) upload waiting(%dsec) done\n"),tv.sec()));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) readin:%dbytes sent:%dbytes\n"),totalRead,totalSent));
     return 0;
 }
 
 int CEvtProxy::play(const char* file)
 {
     int rtn;
+    if((rtn=upPrepare(file))!=0) return rtn;
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) prepared to upload:%s\n"),file));
     if((rtn=upload(file))!=0) return rtn;
     return 0;
 }
@@ -200,14 +217,14 @@ int CEvtProxy::svc()
 {
     ACE_TRACE("CEvtProxy::svc");
 
-    int msg,rcvSize;
+    int msg,rcvSize,err;
     char buf[BUFSIZ];
     while (1){
 	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting to receive...\n")));
         if((rcvSize=recv_int(msg))<0)
             ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) recv error\n")),-1);;
 
-	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %d received\n"),rcvSize));
+	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %d received(0x%x)\n"),rcvSize,msg));
 
         int r;
         switch(msg){
@@ -221,10 +238,13 @@ int CEvtProxy::svc()
         case EVENT_RECORD_STOP:
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Stopped(0x%x)\n"),msg));
             break;
-        case EVENT_FILE_UPLOAD:
-            int err;
+        case EVENT_FILE_UP_PREPARE:
             recv_int(err);
             if(err==OK) _upEvt.signal();
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) ready to upload(x%x)=0x%x\n"),msg,err));
+            break;
+        case EVENT_FILE_UPLOAD:
+            recv_int(err);
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) File uploaded(x%x)=0x%x\n"),msg,err));
             break;
         case TERMINATE_CLIENT:

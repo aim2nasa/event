@@ -24,6 +24,7 @@ public:
     int onEventRecordInit();
     int onEventRecordStart();
     int onEventRecordStop();
+    int onEventFileUpPrepare();
     int onEventFileUpload();
 
 private:
@@ -32,6 +33,9 @@ private:
     ACE_INET_Addr remote_addr_;
     ACE_Reactor_Notification_Strategy noti_;
     CSender *snd_;
+    char buffer_[BUFSIZ];
+    ACE_TString fName_;
+    long fSize_;
 };
 
 #endif
