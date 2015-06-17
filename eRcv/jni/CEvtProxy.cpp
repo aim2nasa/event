@@ -82,7 +82,7 @@ int CEvtProxy::stop()
 
     int msg = TERMINATE_SERVER;
     ssize_t rcvSize = _pStream->send_n(&msg,sizeof(int));
-    if (rcvSize <= 0) {
+    if (rcvSize!=sizeof(int)) {
         ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) error in sending msg(0x%x)\n"),msg));
         return -1;
     }
@@ -92,7 +92,7 @@ int CEvtProxy::stop()
 int CEvtProxy::send(int msg)
 {
     ssize_t rcvSize = _pStream->send_n(&msg,sizeof(int));
-    if (rcvSize <= 0) {
+    if (rcvSize!=sizeof(int)) {
         ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) error in sending msg(0x%x)\n"),msg));
         return -1;
     }
