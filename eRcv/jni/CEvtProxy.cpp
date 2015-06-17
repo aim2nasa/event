@@ -142,10 +142,10 @@ int CEvtProxy::upload(const char* file)
     if(!fp) return -5;
     ACE_OS::fclose(fp);
 
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting upload response...\n")));
-    _upEvt.wait();
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting upload done\n")));
-
+    ACE_Time_Value tv(60*5); //until maximum 5minutes
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting upload response(%dsec)...\n"),tv.sec()));
+    _upEvt.wait(&tv,0);
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) upload waiting(%dsec) done\n"),tv.sec()));
     return 0;
 }
 
@@ -200,6 +200,7 @@ int CEvtProxy::svc()
         case EVENT_FILE_UPLOAD:
             int err;
             recv_int(err);
+            if(err==OK) _upEvt.signal();
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) File uploaded(x%x)=0x%x\n"),msg,err));
             break;
         case TERMINATE_CLIENT:
