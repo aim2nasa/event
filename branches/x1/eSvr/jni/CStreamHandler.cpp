@@ -179,6 +179,9 @@ int CStreamHandler::onEventFileUpload()
     if((size = this->peer().recv_n(buffer,bytes))!=bytes) return ERROR_RECEIVE;
     buffer[bytes]=0;
 
-    ACE_DEBUG((LM_DEBUG,"Upload file:%s\n",buffer));
+    long fSize;
+    if((size = this->peer().recv_n(&fSize,sizeof(long)))!=sizeof(long)) return ERROR_RECEIVE;
+
+    ACE_DEBUG((LM_DEBUG,"Upload file:%s size:%dbytes\n",buffer,fSize));
     return 0;
 }

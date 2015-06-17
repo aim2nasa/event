@@ -35,6 +35,7 @@ public:
 
     virtual int svc(void);
 
+    static long fileSize(const char* file);
     static ACE_THR_FUNC_RETURN initResponse(void *p);
 
 protected:
