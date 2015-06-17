@@ -69,7 +69,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     while (bRun)
     {
         ACE_DEBUG((LM_INFO,
-            "\n<-Menu: Record Start[r],Record Stop:[t],Terminate Server[x]->\n"));
+            "\n<-Menu: Record[r],Stop[t],Play[p],Close[x]->\n"));
 	std::cin >> inpBuff;
 	std::cout << "Choice:" << inpBuff << std::endl;
 
@@ -87,6 +87,12 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
                 ACE_ERROR_RETURN((LM_ERROR,"(%P|%t) %p\n","error recordStop"),-1); ;
 	    ACE_DEBUG((LM_INFO, "(%P|%t) EVENT Record stop\n"));
 	    break;
+        case 'p':
+            std::cout<<"filename:";
+	    std::cin >> inpBuff;
+	    std::cout << "Given filename:" << inpBuff << std::endl;
+	    ACE_DEBUG((LM_INFO, "(%P|%t) EVENT Play\n"));
+            break;
 	case 'x':
             //Terminate
 	    bRun = false;
