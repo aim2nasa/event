@@ -128,19 +128,43 @@ int CEvtProxy::recordStop()
     return send(EVENT_RECORD_STOP);
 }
 
+long CEvtProxy::fileSize(const char* file)
+{
+    FILE *fp = ACE_OS::fopen(file,ACE_TEXT("rb"));
+    if(!fp) return -1;
+    ACE_OS::fseek(fp,0,SEEK_END);
+    long size = ACE_OS::ftell(fp); 
+    ACE_OS::fclose(fp);
+    return size;
+}
+
 int CEvtProxy::upload(const char* file)
 {
     size_t length;
-    if((length=ACE_OS::strlen(file))<=0) return -1;
-    if(send(EVENT_FILE_UPLOAD)<0) return -2;
-    if(send(length)<0) return -3;
+    if((length=ACE_OS::strlen(file))<=0) return -10;
+    if(send(EVENT_FILE_UPLOAD)<0) return -20;
+    if(send(length)<0) return -30;
 
     ssize_t size = _pStream->send_n(file,length);
-    if(size!=length) return -4;
+    if(size!=length) return -40;
+
+    long fSize = fileSize(file);
+    if(fSize<=0) return -50;
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %s filesize:%dbytes\n"),file,fSize));
+
+    size = _pStream->send_n(&fSize,sizeof(long));
+    if(size!=sizeof(long)) -60;
 
     FILE *fp = ACE_OS::fopen(file,ACE_TEXT("rb"));
-    if(!fp) return -5;
+    if(!fp) return -60;
+    size_t readUnit = sizeof(int)+sizeof(struct input_event),totalRead=0;
+    while(1){
+        size_t readSize = ACE_OS::fread(_buffer,1,readUnit,fp);
+        if(readSize!=readUnit) break;
+        totalRead += readSize;
+    }
     ACE_OS::fclose(fp);
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) readin total:%dbytes\n"),totalRead));
 
     ACE_Time_Value tv(60*5); //until maximum 5minutes
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting upload response(%dsec)...\n"),tv.sec()));
