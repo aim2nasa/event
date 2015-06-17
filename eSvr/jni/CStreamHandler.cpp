@@ -4,6 +4,19 @@
 #include "CEvtRec.h"
 #include "CSender.h"
 #include <linux/input.h>
+#include "CEvtPlay.h"
+
+class CMon : public IEvtPlay{
+public:
+    virtual ~CMon(){}
+
+    int play(int order,int dev,long sec,long uSec,int type,int code,int value)
+    {
+        ACE_DEBUG((LM_DEBUG,"%d dev:%02d,time:%ld.%06ld,type:%04x,code:%04x,val:%08x\n",
+            order,dev,sec,uSec,type,code,value));
+        return 0;
+    }
+};
 
 CStreamHandler::CStreamHandler()
 : noti_(0, this, ACE_Event_Handler::WRITE_MASK),snd_(NULL),fSize_(0)
@@ -74,6 +87,12 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
         send(EVENT_FILE_UPLOAD); //ack
         send(onEventFileUpload());
         ACE_DEBUG((LM_DEBUG, "Event file upload command(0x%x) processed\n",msg));
+        break; 
+    case EVENT_PLAY_FULL:
+        ACE_DEBUG((LM_DEBUG, "Event Play full command(0x%x)...\n",msg));
+        send(EVENT_PLAY_FULL); //ack
+        send(onEventPlayFull());
+        ACE_DEBUG((LM_DEBUG, "Event Play full command(0x%x) processed\n",msg));
         break; 
     case TERMINATE_SERVER:
         ACE_DEBUG((LM_DEBUG, "Terminate server command(0x%x)...\n",msg));
@@ -222,5 +241,33 @@ int CStreamHandler::onEventFileUpload()
 
     ACE_DEBUG((LM_DEBUG,"%dbytes read,wrote down %dbytes to %s\n",
         totalRead,totalWrite,fName_.c_str()));
+    return 0;
+}
+
+int CStreamHandler::onEventPlayFull()
+{
+    ACE_TRACE("onEventPlayFull");
+
+    int bytes;
+    if(recv_int(bytes)<0) return ERROR_RECV_INT_SIZE;
+
+    ssize_t size;
+    if((size = this->peer().recv_n(buffer_,bytes))!=bytes) return ERROR_RECEIVE;
+    buffer_[bytes]=0;
+
+    ACE_TString fname("_");
+    fname += buffer_;
+    ACE_DEBUG((LM_DEBUG,"play request %s\n",fname.c_str()));
+
+    CMon m;
+    CEvtPlay ep;
+
+    int rtn = -1;
+    ACE_DEBUG((LM_DEBUG,"initializing event player with (%s)\n",fname.c_str()));
+    if((rtn=ep.init(fname.c_str(),&m))!=0) return -1;
+    ACE_DEBUG((LM_DEBUG,"play(%s) total events(%d)\n",fname.c_str(),ep.events()));
+
+    ep.play(0,ep.events()-1);
+    ACE_DEBUG((LM_DEBUG,"Playing full file(%s) done\n",fname.c_str()));
     return 0;
 }
