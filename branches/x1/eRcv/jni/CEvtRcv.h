@@ -40,6 +40,7 @@ protected:
     std::list<int> _devList;
     ACE_Auto_Event _iEvt;
     char _buffer[BUFSIZ];
+    FILE *_fp;
 };
 
 #endif
