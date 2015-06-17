@@ -194,6 +194,16 @@ int CEvtProxy::play(const char* file)
     if((rtn=upPrepare(file))!=0) return rtn;
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) prepared to upload:%s\n"),file));
     if((rtn=upload(file))!=0) return rtn;
+
+    size_t length;
+    if((length=ACE_OS::strlen(file))<=0) return -100;
+
+    if(send(EVENT_PLAY_FULL)<0) return -110;
+    if(send(length)<0) return -120;
+
+    ssize_t size = _pStream->send_n(file,length);
+    if(size!=length) return -130;
+
     return 0;
 }
 
@@ -246,6 +256,10 @@ int CEvtProxy::svc()
         case EVENT_FILE_UPLOAD:
             recv_int(err);
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) File uploaded(x%x)=0x%x\n"),msg,err));
+            break;
+        case EVENT_PLAY_FULL:
+            recv_int(err);
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Play full file done(x%x)=0x%x\n"),msg,err));
             break;
         case TERMINATE_CLIENT:
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Connection Terminated(0x%x)\n"),msg));
