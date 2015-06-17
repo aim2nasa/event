@@ -36,11 +36,13 @@ public:
     virtual int svc(void);
 
     static ACE_THR_FUNC_RETURN initResponse(void *p);
+    static ACE_THR_FUNC_RETURN uploadResponse(void *p);
 
 protected:
     ACE_SOCK_Stream* _pStream;
     std::list<int> _devList;
     ACE_Auto_Event _iEvt;
+    ACE_Auto_Event _upEvt;
     char _buffer[BUFSIZ];
     FILE *_fp;
 };

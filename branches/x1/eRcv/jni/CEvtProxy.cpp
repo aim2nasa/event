@@ -128,6 +128,22 @@ int CEvtProxy::recordStop()
     return send(EVENT_RECORD_STOP);
 }
 
+ACE_THR_FUNC_RETURN CEvtProxy::uploadResponse(void *p)
+{
+    CEvtProxy *pThis = reinterpret_cast<CEvtProxy*>(p);
+
+    int resp[2];
+    memset(resp,-1,sizeof(resp));
+    for(int i=0;i<2;i++){
+        int msg;
+        if(pThis->recv_int(msg)>0) resp[i]=msg;
+    }
+
+    if(resp[0]==EVENT_FILE_UPLOAD && resp[1]==OK) pThis->_upEvt.signal();
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) uploadResponse end,[0]:%x[1]:%x\n"),resp[0],resp[1]));
+    return 0;
+}
+
 int CEvtProxy::upload(const char* file)
 {
     size_t length;
@@ -137,6 +153,14 @@ int CEvtProxy::upload(const char* file)
 
     ssize_t size = _pStream->send_n(file,length);
     if(size!=length) return -4;
+
+    ACE_thread_t tid;
+    if(ACE_Thread_Manager::instance()->spawn(CEvtProxy::uploadResponse,
+        (void*)this,THR_NEW_LWP|THR_JOINABLE,&tid)==-1) return -5;
+
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting upload response...\n")));
+    _upEvt.wait();
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting upload done\n")));
 
     return 0;
 }
