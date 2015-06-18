@@ -1,7 +1,6 @@
 #include "CEvtProxy.h"
 #include "ace/SOCK_Stream.h"
 #include "def.h"
-#include <linux/input.h>
 #include "ace/Date_Time.h"
 
 CEvtProxy::CEvtProxy(ACE_SOCK_Stream* p)
@@ -173,7 +172,7 @@ int CEvtProxy::upload(const char* file)
 
     FILE *fp = ACE_OS::fopen(file,ACE_TEXT("rb"));
     if(!fp) return -30;
-    size_t readUnit = sizeof(int)+sizeof(struct input_event),totalRead=0,totalSent=0;
+    size_t readUnit = sizeof(int)+EVENT_SIZE,totalRead=0,totalSent=0;
     while(1){
         size_t readSize = ACE_OS::fread(_buffer,1,readUnit,fp);
         if(readSize!=readUnit) break;
@@ -213,7 +212,7 @@ int CEvtProxy::onEventRecordData()
     if((rcvSize=recv_int(size))<0)
         ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) size read error\n")),-1);;
 
-    rcvSize = _pStream->recv_n(_buffer,sizeof(int)+sizeof(struct input_event));
+    rcvSize = _pStream->recv_n(_buffer,sizeof(int)+EVENT_SIZE);
     if(rcvSize <= 0) return -2;
 
     size_t written = ACE_OS::fwrite(_buffer,1,rcvSize,_fp);

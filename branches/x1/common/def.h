@@ -21,4 +21,6 @@
 #define ERROR_EVTREC_IN_TIMEOUT (0xe0000005)
 #define ERROR_RECEIVE           (0xe0000006)
 
+#define EVENT_SIZE		16
+
 #endif
