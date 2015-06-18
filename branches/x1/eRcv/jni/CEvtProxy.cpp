@@ -219,7 +219,7 @@ int CEvtProxy::onEventRecordData()
     size_t written = ACE_OS::fwrite(_buffer,1,rcvSize,_fp);
     if(written!=rcvSize) return -3;
 
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) EventRecordData(%d)\n"),rcvSize));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T EventRecordData(%d)\n"),rcvSize));
     return 0;
 }
 
@@ -230,42 +230,42 @@ int CEvtProxy::svc()
     int msg,rcvSize,err;
     char buf[BUFSIZ];
     while (1){
-	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting to receive...\n")));
+	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T waiting to receive...\n")));
         if((rcvSize=recv_int(msg))<0)
             ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) recv error\n")),-1);;
 
-	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %d received(0x%x)\n"),rcvSize,msg));
+	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T %d received(0x%x)\n"),rcvSize,msg));
 
         int r;
         switch(msg){
         case EVENT_RECORD_START:
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Started(0x%x)\n"),msg));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Event Record Started(0x%x)\n"),msg));
             break;
         case EVENT_RECORD_DATA:
             onEventRecordData();
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Data received(0x%x)\n"),msg));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Event Record Data received(0x%x)\n"),msg));
             break;
         case EVENT_RECORD_STOP:
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Event Record Stopped(0x%x)\n"),msg));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Event Record Stopped(0x%x)\n"),msg));
             break;
         case EVENT_FILE_UP_PREPARE:
             recv_int(err);
             if(err==OK) _upEvt.signal();
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) ready to upload(x%x)=0x%x\n"),msg,err));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T ready to upload(x%x)=0x%x\n"),msg,err));
             break;
         case EVENT_FILE_UPLOAD:
             recv_int(err);
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) File uploaded(x%x)=0x%x\n"),msg,err));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T File uploaded(x%x)=0x%x\n"),msg,err));
             break;
         case EVENT_PLAY_FULL:
             recv_int(err);
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Play full file done(x%x)=0x%x\n"),msg,err));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Play full file done(x%x)=0x%x\n"),msg,err));
             break;
         case TERMINATE_CLIENT:
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Connection Terminated(0x%x)\n"),msg));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Connection Terminated(0x%x)\n"),msg));
             return 0;
         default:
-	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Undefined command(0x%x)\n"),msg));
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Undefined command(0x%x)\n"),msg));
             break;
         }
     }
