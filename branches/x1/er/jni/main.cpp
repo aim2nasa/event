@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
     printf("get event x1 version\n");
     if(argc<3) {
-        printf("usage:ge <dump file name> <event#> <event#>... <event#>\n");
+        printf("usage:er <dump file name> <event#> <event#>... <event#>\n");
         return -1;
     }
    
