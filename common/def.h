@@ -1,5 +1,5 @@
-#ifndef __COMMON_H__
-#define __COMMON_H__
+#ifndef __DEF_H__
+#define __DEF_H__
 
 #define EVENT_RECORD_INIT       (0xffabc000)
 #define EVENT_RECORD_START      (0xffabc001)
