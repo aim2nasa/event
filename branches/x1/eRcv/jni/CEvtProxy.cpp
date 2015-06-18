@@ -227,7 +227,6 @@ int CEvtProxy::svc()
     ACE_TRACE("CEvtProxy::svc");
 
     int msg,rcvSize,err;
-    char buf[BUFSIZ];
     while (1){
 	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T waiting to receive...\n")));
         if((rcvSize=recv_int(msg))<0)
@@ -235,7 +234,6 @@ int CEvtProxy::svc()
 
 	ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T %d received(0x%x)\n"),rcvSize,msg));
 
-        int r;
         switch(msg){
         case EVENT_RECORD_START:
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Event Record Started(0x%x)\n"),msg));
