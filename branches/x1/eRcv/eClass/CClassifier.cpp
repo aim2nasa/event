@@ -42,7 +42,7 @@ int CClassifier::addEvt(long index, int device, long sec, long usec, int type, i
 
 void CClassifier::onNewKeyDevice(long index, int device, long sec, long usec, int type, int code, int value)
 {
-	ACE_DEBUG((LM_DEBUG, "[%T] index:%d,dev:%02d type:%04x KEY TYPE registered(map size:%d)\n", index, device, type, _devMap.size()));
+	ACE_DEBUG((LM_DEBUG, ">> index:%d,dev:%02d type:%04x KEY TYPE registered(map size:%d)\n", index, device, type, _devMap.size()));
 }
 
 void CClassifier::onExistingKeyDevice(long index, int device, long sec, long usec, int type, int code, int value)
@@ -52,7 +52,7 @@ void CClassifier::onExistingKeyDevice(long index, int device, long sec, long use
 
 void CClassifier::onNewTouchDevice(long index, int device, long sec, long usec, int type, int code, int value)
 {
-	ACE_DEBUG((LM_DEBUG, "[%T] index:%d,dev:%02d type:%04x TOUCH TYPE registered(map size:%d)\n", index, device, type, _devMap.size()));
+	ACE_DEBUG((LM_DEBUG, ">> index:%d,dev:%02d type:%04x TOUCH TYPE registered(map size:%d)\n", index, device, type, _devMap.size()));
 }
 
 void CClassifier::onExistingTouchDevice(long index, int device, long sec, long usec, int type, int code, int value)
