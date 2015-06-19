@@ -22,16 +22,16 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	CRecord rec;
 	size_t size,totalRead=0;
 	FILE* fp = ACE_OS::fopen(filename.c_str(), ACE_TEXT("rb"));
-	long evtOrder = 0;
+	long index = 0;
 	while (1){
 		size = ACE_OS::fread(&rec, 1, sizeof(rec), fp);
 		if (size != sizeof(rec)) break;
 		totalRead += size;
-		if (cf.addEvt(evtOrder,rec._device, rec._event.time.tv_sec, rec._event.time.tv_usec, rec._event.type, rec._event.code, rec._event.value) < 0) {
+		if (cf.addEvt(index, rec._device, rec._event.time.tv_sec, rec._event.time.tv_usec, rec._event.type, rec._event.code, rec._event.value) < 0) {
 			ACE_DEBUG((LM_ERROR, "[%T] error in add event\n"));
 			break;
 		}
-		evtOrder++;
+		index++;
 	}
 	ACE_OS::fclose(fp);
 	ACE_DEBUG((LM_INFO, "[%T] %dbytes, %d events read from %s\n",totalRead,totalRead/sizeof(CRecord),filename.c_str()));
