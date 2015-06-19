@@ -34,7 +34,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		evtOrder++;
 	}
 	ACE_OS::fclose(fp);
-	ACE_DEBUG((LM_INFO, "[%T] %dbytes read from %s\n",totalRead,filename.c_str()));
+	ACE_DEBUG((LM_INFO, "[%T] %dbytes, %d events read from %s\n",totalRead,totalRead/sizeof(CRecord),filename.c_str()));
 
 	ACE_DEBUG((LM_INFO, "[%T] end\n"));
 	ACE_RETURN(0);
