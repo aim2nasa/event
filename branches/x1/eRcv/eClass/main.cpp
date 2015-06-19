@@ -22,6 +22,11 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	CRecord rec;
 	size_t size,totalRead=0;
 	FILE* fp = ACE_OS::fopen(filename.c_str(), ACE_TEXT("rb"));
+	if (!fp) {
+		ACE_DEBUG((LM_ERROR, "%s open error\n", filename.c_str()));
+		ACE_RETURN(-1);
+	}
+
 	long index = 0;
 	while (1){
 		size = ACE_OS::fread(&rec, 1, sizeof(rec), fp);
