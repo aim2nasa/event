@@ -13,7 +13,8 @@ public:
 
 	virtual ~IClassifyNoti(){}
 
-	virtual void onUserEvent() = 0;
+	virtual void onKeyEvent(int startIndex,int endIndex)=0;
+	virtual void onTouchEvent(TOUCH_TYPE type, int startIndex, int endIndex) = 0;
 };
 
 class CClassifier {

@@ -9,9 +9,10 @@ public:
 	virtual void reset()
 	{
 		CTracking::reset();
-		_device = _code = _value = -1;
+		_index = _device = _code = _value = -1;
 	}
 
+	int _index;
 	int _device;
 	int _code;
 	int _value;
