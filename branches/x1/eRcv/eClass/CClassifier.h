@@ -6,6 +6,11 @@
 class CMtTracking;
 class CKeyTracking;
 
+class IClassifyNoti{
+public:
+	virtual ~IClassifyNoti(){}
+};
+
 class CClassifier {
 public:
 	enum DEV_TYPE{ TOUCH, KEY };
@@ -16,6 +21,7 @@ public:
 	CClassifier();
 	virtual ~CClassifier();
 
+	void notify(IClassifyNoti *p);
 	void reset();
 	int addEvt(long index,int device, long sec, long usec, int type, int code, int value);
 
@@ -35,6 +41,7 @@ protected:
 	DEVMAP _devMap;
 	CMtTracking *_pMt;
 	CKeyTracking *_pKt;
+	IClassifyNoti *_pNoti;
 };
 
 #endif

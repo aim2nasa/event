@@ -5,7 +5,7 @@
 #include "ace/Log_Msg.h"
 
 CClassifier::CClassifier()
-	:_pMt(new CMtTracking()), _pKt(new CKeyTracking())
+	:_pMt(new CMtTracking()), _pKt(new CKeyTracking()), _pNoti(NULL)
 {
 	
 }
@@ -14,6 +14,11 @@ CClassifier::~CClassifier()
 {
 	delete _pKt;
 	delete _pMt;
+}
+
+void CClassifier::notify(IClassifyNoti *p)
+{
+	_pNoti = p;
 }
 
 void CClassifier::reset()
