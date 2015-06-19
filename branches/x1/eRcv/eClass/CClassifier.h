@@ -11,6 +11,8 @@ public:
 	enum DEV_TYPE{ TOUCH, KEY };
 	enum TOUCH_TYPE{ TAP, SWIPE, MULTITOUCH };
 
+	typedef std::map<int, DEV_TYPE> DEVMAP;
+
 	CClassifier();
 	virtual ~CClassifier();
 
@@ -30,7 +32,7 @@ protected:
 	void onAbsMtpositionY(long index, int device, long sec, long usec, int type, int code, int value);
 
 protected:
-	std::map<int, DEV_TYPE> _devMap;
+	DEVMAP _devMap;
 	CMtTracking *_pMt;
 	CKeyTracking *_pKt;
 };
