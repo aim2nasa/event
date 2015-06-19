@@ -35,14 +35,25 @@ public:
 	struct input_event _event;
 };
 
-class CMtTracking{
+class CTracking{
+public:
+	CTracking() { reset(); }
+	virtual void reset() { _tracking = 0; }
+
+	bool _tracking;
+};
+
+class CMtTracking : public CTracking{
 public:
 	CMtTracking(){ reset(); }
-	void reset() { _count = _max = _tracking = 0; }
+	virtual void reset()
+	{
+		CTracking::reset();
+		_count = _max = 0;
+	}
 
 	int _count;
 	int _max;
-	bool _tracking;
 };
 
 class CClassifier {
