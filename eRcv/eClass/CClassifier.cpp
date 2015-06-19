@@ -1,21 +1,26 @@
 #include "CClassifier.h"
+#include "macro.h"
+#include "CMtTracking.h"
+#include "CKeyTracking.h"
 #include "ace/Log_Msg.h"
 
 CClassifier::CClassifier()
+	:_pMt(new CMtTracking()), _pKt(new CKeyTracking())
 {
-
+	
 }
 
 CClassifier::~CClassifier()
 {
-
+	delete _pKt;
+	delete _pMt;
 }
 
 void CClassifier::reset()
 {
 	_devMap.clear();
-	_mt.reset();
-	_kt.reset();
+	_pMt->reset();
+	_pKt->reset();
 }
 
 bool CClassifier::isTouchDevice(int device)
@@ -69,10 +74,10 @@ void CClassifier::onKey(long index, int device, long sec, long usec, int type, i
 		ACE_DEBUG((LM_DEBUG, "[%T] Key event(code:%04x,val:%08x) from Touch device(%d), neglect\n", code,value,device));
 		return;	//터치장치에서 키이벤트가 발생을 하면 무시하도록 한다 (삼성폰등에서 발생됨)
 	}
-	_kt._tracking = true;
-	_kt._device = device;
-	_kt._code = code;
-	_kt._value = value;
+	_pKt->_tracking = true;
+	_pKt->_device = device;
+	_pKt->_code = code;
+	_pKt->_value = value;
 }
 
 void CClassifier::onNewTouchDevice(long index, int device, long sec, long usec, int type, int code, int value)
@@ -88,46 +93,46 @@ void CClassifier::onExistingTouchDevice(long index, int device, long sec, long u
 void CClassifier::onAbsMtTrackingId(long index, int device, long sec, long usec, int type, int code, int value)
 {
 	if (value != 0xffffffff) {
-		if (_mt._count == 0) _mt._tracking = true;
-		_mt._max = ++_mt._count;
-		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) started, val(%08x)\n", _mt._count, value));
+		if (_pMt->_count == 0) _pMt->_tracking = true;
+		_pMt->_max = ++_pMt->_count;
+		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) started, val(%08x)\n", _pMt->_count, value));
 	}else{
-		_mt._count--;
-		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d), val(%08x)\n", _mt._count, value));
+		_pMt->_count--;
+		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d), val(%08x)\n", _pMt->_count, value));
 	}
 }
 
 void CClassifier::onSynReport(long index, int device, long sec, long usec, int type, int code, int value)
 {
-	if (_mt._tracking) {
-		if (_mt._count == 0) {
-			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) done, MaxTouch(%d) %s,%s\n", _mt._count, _mt._max, (_mt._max>1) ? "Multi-touch" : "Single-touch",(_mt._swipe)?"SWIPE":"TAP"));
-			_mt.reset();
+	if (_pMt->_tracking) {
+		if (_pMt->_count == 0) {
+			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) done, MaxTouch(%d) %s,%s\n", _pMt->_count, _pMt->_max, (_pMt->_max>1) ? "Multi-touch" : "Single-touch",(_pMt->_swipe)?"SWIPE":"TAP"));
+			_pMt->reset();
 		}
 	}
 
-	if (_kt._tracking) {
-		ACE_DEBUG((LM_DEBUG, "[%T] Key(dev:%02d,code:%04x,val:%08x) Tracking done\n",_kt._device,_kt._code,_kt._value));
-		_kt.reset();
+	if (_pKt->_tracking) {
+		ACE_DEBUG((LM_DEBUG, "[%T] Key(dev:%02d,code:%04x,val:%08x) Tracking done\n",_pKt->_device,_pKt->_code,_pKt->_value));
+		_pKt->reset();
 	}
 }
 
 void CClassifier::onAbsMtpositionX(long index, int device, long sec, long usec, int type, int code, int value)
 {
-	ACE_ASSERT(_mt._count > 0);
-	ACE_ASSERT(_mt._tracking == true);
+	ACE_ASSERT(_pMt->_count > 0);
+	ACE_ASSERT(_pMt->_tracking == true);
 
-	if (_mt._initialX == -1) _mt._initialX = value;
-	_mt._latestX = value;
-	if (abs(_mt._initialX - _mt._latestX) > MAX_TAP_DISTANCE) _mt._swipe = true;
+	if (_pMt->_initialX == -1) _pMt->_initialX = value;
+	_pMt->_latestX = value;
+	if (abs(_pMt->_initialX - _pMt->_latestX) > MAX_TAP_DISTANCE) _pMt->_swipe = true;
 }
 
 void CClassifier::onAbsMtpositionY(long index, int device, long sec, long usec, int type, int code, int value)
 {
-	ACE_ASSERT(_mt._count > 0);
-	ACE_ASSERT(_mt._tracking == true);
+	ACE_ASSERT(_pMt->_count > 0);
+	ACE_ASSERT(_pMt->_tracking == true);
 
-	if (_mt._initialY == -1) _mt._initialY = value;
-	_mt._latestY = value;
-	if (abs(_mt._initialY - _mt._latestY) > MAX_TAP_DISTANCE) _mt._swipe = true;
+	if (_pMt->_initialY == -1) _pMt->_initialY = value;
+	_pMt->_latestY = value;
+	if (abs(_pMt->_initialY - _pMt->_latestY) > MAX_TAP_DISTANCE) _pMt->_swipe = true;
 }
