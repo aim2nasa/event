@@ -78,6 +78,13 @@ void CClassifier::onKey(long index, int device, long sec, long usec, int type, i
 	if (isTouchDevice(device)) {
 		ACE_DEBUG((LM_DEBUG, "[%T] Key event(code:%04x,val:%08x) from Touch device(%d), neglect\n", code,value,device));
 		return;	//터치장치에서 키이벤트가 발생을 하면 무시하도록 한다 (삼성폰등에서 발생됨)
+	}else{
+		if (_pMt->_tracking) {
+			//키이벤트가 들어올때 터치장치에서의 추적은 반드시 꺼져 있어야 한다. 현버전은 스와이프나 탭이 끝나지 않은 경우에 다른 장치 이벤트가 들어오는것을 가정하지 않는다
+			//이러한 제약을 없애려면 각장치에서 오는 이벤트 녹화및 재생을 각 장치별로 스레드를 만들어 처리해야 하는데, 이는 UI상에서도 이벤트 단위 구분이 바뀌어야 하므로 에러로만 처리한다.
+			if (_pNoti) _pNoti->onError(IClassifyNoti::DEV_MIXED);
+			return;
+		}
 	}
 	_pKt->_index = index;
 	_pKt->_tracking = true;
@@ -122,7 +129,10 @@ void CClassifier::onSynReport(long index, int device, long sec, long usec, int t
 	}
 
 	if (_pKt->_tracking) {
-		if (_pNoti) _pNoti->onKeyEvent(_pKt->_index, index);
+		if (_pNoti) {
+			if((_pKt->_index+1)!=index) _pNoti->onError(IClassifyNoti::KEY_SEQ);	//키이벤트의 인덱스는 순차적으로 2개만 들어오는 것을 가정한다.(즉, 키를 누르고 SYN까지를 하나의 단위로 처리,관찰한바 항상 2개를 단위로 처리됨)
+			_pNoti->onKeyEvent(_pKt->_index, index);
+		}
 		ACE_DEBUG((LM_DEBUG, "[%T] Key(dev:%02d,code:%04x,val:%08x) Tracking done\n",_pKt->_device,_pKt->_code,_pKt->_value));
 		_pKt->reset();
 	}

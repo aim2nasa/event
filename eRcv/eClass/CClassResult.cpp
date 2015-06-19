@@ -20,3 +20,8 @@ void CClassResult::onTouchEvent(TOUCH_TYPE type, int startIndex, int endIndex)
 {
 	ACE_DEBUG((LM_DEBUG, "%I-Touch: %s,index(%d~%d)\n", (type==SWIPE)?"Swipe":"Tap",startIndex, endIndex));
 }
+
+void CClassResult::onError(ERR_CODE code)
+{
+	ACE_DEBUG((LM_DEBUG, "%I-***Error:%d***\n",code));
+}
