@@ -27,6 +27,7 @@ public:
 
 protected:
 	std::map<int, DEV_TYPE> _devMap;
+	int _prevDev;
 };
 
 #endif

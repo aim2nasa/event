@@ -2,6 +2,7 @@
 #include "ace/Log_Msg.h"
 
 CClassifier::CClassifier()
+:_prevDev(-1)
 {
 
 }
@@ -28,5 +29,7 @@ int CClassifier::addEvt(int device, long sec, long usec, int type, int code, int
 		ret = _devMap.insert(std::make_pair(device, TOUCH));
 		if (ret.second) ACE_DEBUG((LM_DEBUG, "[%T] dev:%02d type:%04x TOUCH TYPE registered(map size:%d)\n",device, type, _devMap.size()));
 	}
+
+	_prevDev = device;
 	return 0;
 }
