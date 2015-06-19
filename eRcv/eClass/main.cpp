@@ -3,23 +3,6 @@
 #include "ace/SString.h"
 #include "CClassifier.h"
 
-typedef unsigned short _u16;
-typedef unsigned int _u32;
-typedef short _s16;
-typedef int _s32;
-
-struct input_event {
-	struct timeval time;
-	_u16 type;
-	_u16 code;
-	_s32 value;
-};
-
-struct record {
-	_u32 device;
-	struct input_event event;
-};
-
 int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
 	ACE_TRACE(ACE_TEXT("main"));
