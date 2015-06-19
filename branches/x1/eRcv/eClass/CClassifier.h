@@ -47,13 +47,19 @@ public:
 	int addEvt(long index,int device, long sec, long usec, int type, int code, int value);
 
 protected:
+	void resetMtTracking();
 	void onNewKeyDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onExistingKeyDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onNewTouchDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onExistingTouchDevice(long index, int device, long sec, long usec, int type, int code, int value);
+	void onAbsMtTrackingId(long index, int device, long sec, long usec, int type, int code, int value);
+	void onSynReport(long index, int device, long sec, long usec, int type, int code, int value);
 
 protected:
 	std::map<int, DEV_TYPE> _devMap;
+	int _mtTrack;
+	int _mtMax;
+	bool _onMtTracking;
 };
 
 #endif
