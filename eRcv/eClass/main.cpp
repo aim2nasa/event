@@ -16,17 +16,17 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	ACE_DEBUG((LM_INFO, "[%T] event dump file:%s\n", filename.c_str()));
 	ACE_DEBUG((LM_DEBUG, "[%T] sizeof(timeval)=%dbytes", sizeof(timeval)));
 	ACE_DEBUG((LM_DEBUG, " sizeof(event)=%dbytes", sizeof(struct input_event)));
-	ACE_DEBUG((LM_DEBUG, " sizeof(record)=%dbytes\n", sizeof(struct record)));
+	ACE_DEBUG((LM_DEBUG, " sizeof(CRecord)=%dbytes\n", sizeof(CRecord)));
 
 	CClassifier cf;
-	struct record rec;
+	CRecord rec;
 	size_t size,totalRead=0;
 	FILE* fp = ACE_OS::fopen(filename.c_str(), ACE_TEXT("rb"));
 	while (1){
-		size = ACE_OS::fread(&rec, 1, sizeof(struct record), fp);
-		if (size != sizeof(struct record)) break;
+		size = ACE_OS::fread(&rec, 1, sizeof(rec), fp);
+		if (size != sizeof(rec)) break;
 		totalRead += size;
-		if (cf.addEvt(rec.device, rec.event.time.tv_sec, rec.event.time.tv_usec, rec.event.type, rec.event.code, rec.event.value) < 0) {
+		if (cf.addEvt(rec._device, rec._event.time.tv_sec, rec._event.time.tv_usec, rec._event.type, rec._event.code, rec._event.value) < 0) {
 			ACE_DEBUG((LM_ERROR, "[%T] error in add event\n"));
 			break;
 		}
