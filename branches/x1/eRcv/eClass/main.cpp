@@ -3,6 +3,7 @@
 #include "ace/SString.h"
 #include "CClassifier.h"
 #include "CRecord.h"
+#include "CClassResult.h"
 
 int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
@@ -19,7 +20,9 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	ACE_DEBUG((LM_DEBUG, " sizeof(event)=%dbytes", sizeof(struct input_event)));
 	ACE_DEBUG((LM_DEBUG, " sizeof(CRecord)=%dbytes\n", sizeof(CRecord)));
 
+	CClassResult result;
 	CClassifier cf;
+	cf.notify(&result);
 	CRecord rec;
 	size_t size,totalRead=0;
 	FILE* fp = ACE_OS::fopen(filename.c_str(), ACE_TEXT("rb"));
