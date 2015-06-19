@@ -27,9 +27,12 @@ struct input_event {
 	_s32 value;
 };
 
-struct record {
-	_u32 device;
-	struct input_event event;
+class CRecord {
+public:
+	CRecord() :_device(-1){ memset(&_event, -1, sizeof(_event)); }
+
+	_u32 _device;
+	struct input_event _event;
 };
 
 class CClassifier {
