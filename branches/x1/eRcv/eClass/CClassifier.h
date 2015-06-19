@@ -2,6 +2,7 @@
 #define __CCLASSIFIER_H__
 
 #include <map>
+#include "ace/Time_Value.h"
 
 //EVENT TYPES
 #define EV_SYN		0x00
@@ -13,6 +14,23 @@
 
 //Absolute
 #define ABS_MT_TRACKING_ID      0x39    /* Unique ID of initiated contact */
+
+typedef unsigned short _u16;
+typedef unsigned int _u32;
+typedef short _s16;
+typedef int _s32;
+
+struct input_event {
+	struct timeval time;
+	_u16 type;
+	_u16 code;
+	_s32 value;
+};
+
+struct record {
+	_u32 device;
+	struct input_event event;
+};
 
 class CClassifier {
 public:
