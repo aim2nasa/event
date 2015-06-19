@@ -18,6 +18,14 @@ void CClassifier::reset()
 	_kt.reset();
 }
 
+bool CClassifier::isTouchDevice(int device)
+{
+	std::map<int, DEV_TYPE>::iterator it = _devMap.find(device);
+	if (it == _devMap.end()) return false;
+	if (it->second == TOUCH) return true;
+	return false;
+}
+
 int CClassifier::addEvt(long index, int device, long sec, long usec, int type, int code, int value)
 {
 	ACE_DEBUG((LM_DEBUG, "[%T] index:%d,dev:%02d,time:%d.%06d,type:%04x,code:%04x,val:%08x\n",index,device,sec,usec,type,code,value));
@@ -55,6 +63,10 @@ void CClassifier::onExistingKeyDevice(long index, int device, long sec, long use
 
 void CClassifier::onKey(long index, int device, long sec, long usec, int type, int code, int value)
 {
+	if (isTouchDevice(device)) {
+		ACE_DEBUG((LM_DEBUG, "[%T] Key event(code:%04x,val:%08x) from Touch device(%d), neglect\n", code,value,device));
+		return;	//터치장치에서 키이벤트가 발생을 하면 무시하도록 한다 (삼성폰등에서 발생됨)
+	}
 	_kt._tracking = true;
 	_kt._device = device;
 	_kt._code = code;
