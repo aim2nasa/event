@@ -79,6 +79,7 @@ void CClassifier::onKey(long index, int device, long sec, long usec, int type, i
 		ACE_DEBUG((LM_DEBUG, "[%T] Key event(code:%04x,val:%08x) from Touch device(%d), neglect\n", code,value,device));
 		return;	//터치장치에서 키이벤트가 발생을 하면 무시하도록 한다 (삼성폰등에서 발생됨)
 	}
+	_pKt->_index = index;
 	_pKt->_tracking = true;
 	_pKt->_device = device;
 	_pKt->_code = code;
@@ -98,7 +99,10 @@ void CClassifier::onExistingTouchDevice(long index, int device, long sec, long u
 void CClassifier::onAbsMtTrackingId(long index, int device, long sec, long usec, int type, int code, int value)
 {
 	if (value != 0xffffffff) {
-		if (_pMt->_count == 0) _pMt->_tracking = true;
+		if (_pMt->_count == 0) {
+			_pMt->_index = index;
+			_pMt->_tracking = true;
+		}
 		_pMt->_max = ++_pMt->_count;
 		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) started, val(%08x)\n", _pMt->_count, value));
 	}else{
@@ -111,12 +115,14 @@ void CClassifier::onSynReport(long index, int device, long sec, long usec, int t
 {
 	if (_pMt->_tracking) {
 		if (_pMt->_count == 0) {
+			if (_pNoti) _pNoti->onTouchEvent((_pMt->_swipe) ? IClassifyNoti::SWIPE : IClassifyNoti::TAP, _pMt->_index, index);
 			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) done, MaxTouch(%d) %s,%s\n", _pMt->_count, _pMt->_max, (_pMt->_max>1) ? "Multi-touch" : "Single-touch",(_pMt->_swipe)?"SWIPE":"TAP"));
 			_pMt->reset();
 		}
 	}
 
 	if (_pKt->_tracking) {
+		if (_pNoti) _pNoti->onKeyEvent(_pKt->_index, index);
 		ACE_DEBUG((LM_DEBUG, "[%T] Key(dev:%02d,code:%04x,val:%08x) Tracking done\n",_pKt->_device,_pKt->_code,_pKt->_value));
 		_pKt->reset();
 	}
