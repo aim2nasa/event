@@ -22,6 +22,7 @@ public:
 	CClassifier();
 	virtual ~CClassifier();
 
+	void reset();
 	int addEvt(int device, long sec, long usec, int type, int code, int value);
 
 protected:
