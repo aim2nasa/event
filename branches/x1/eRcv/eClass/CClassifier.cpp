@@ -15,6 +15,7 @@ CClassifier::~CClassifier()
 void CClassifier::reset()
 {
 	_devMap.clear();
+	_prevDev = -1;
 }
 
 int CClassifier::addEvt(int device, long sec, long usec, int type, int code, int value)
