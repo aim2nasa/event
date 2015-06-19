@@ -32,7 +32,7 @@ bool CClassifier::isTouchDevice(int device)
 {
 	DEVMAP::iterator it = _devMap.find(device);
 	if (it == _devMap.end()) return false;
-	if (it->second == TOUCH) return true;
+	if (it->second == IClassifyNoti::TOUCH) return true;
 	return false;
 }
 
@@ -42,14 +42,14 @@ int CClassifier::addEvt(long index, int device, long sec, long usec, int type, i
 
 	std::pair<DEVMAP::iterator, bool> ret;
 	if (EV_KEY == type) {
-		if (_devMap.insert(std::make_pair(device, KEY)).second)
+		if (_devMap.insert(std::make_pair(device, IClassifyNoti::KEY)).second)
 			onNewKeyDevice(index,device,sec,usec,type,code,value);
 		else
 			onExistingKeyDevice(index, device, sec, usec, type, code, value);
 
 		onKey(index, device, sec, usec, type, code, value);
 	}else if (EV_ABS == type){
-		if (_devMap.insert(std::make_pair(device, TOUCH)).second)
+		if (_devMap.insert(std::make_pair(device, IClassifyNoti::TOUCH)).second)
 			onNewTouchDevice(index, device, sec, usec, type, code, value);
 		else
 			onExistingTouchDevice(index, device, sec, usec, type, code, value);

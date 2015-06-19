@@ -8,15 +8,17 @@ class CKeyTracking;
 
 class IClassifyNoti{
 public:
+	enum DEV_TYPE{ TOUCH, KEY };
+	enum TOUCH_TYPE{ TAP, SWIPE, MULTITOUCH };
+
 	virtual ~IClassifyNoti(){}
+
+	virtual void onUserEvent() = 0;
 };
 
 class CClassifier {
 public:
-	enum DEV_TYPE{ TOUCH, KEY };
-	enum TOUCH_TYPE{ TAP, SWIPE, MULTITOUCH };
-
-	typedef std::map<int, DEV_TYPE> DEVMAP;
+	typedef std::map<int, IClassifyNoti::DEV_TYPE> DEVMAP;
 
 	CClassifier();
 	virtual ~CClassifier();
