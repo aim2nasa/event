@@ -25,7 +25,7 @@ void CClassifier::reset()
 
 bool CClassifier::isTouchDevice(int device)
 {
-	std::map<int, DEV_TYPE>::iterator it = _devMap.find(device);
+	DEVMAP::iterator it = _devMap.find(device);
 	if (it == _devMap.end()) return false;
 	if (it->second == TOUCH) return true;
 	return false;
@@ -35,7 +35,7 @@ int CClassifier::addEvt(long index, int device, long sec, long usec, int type, i
 {
 	ACE_DEBUG((LM_DEBUG, "[%T] index:%d,dev:%02d,time:%d.%06d,type:%04x,code:%04x,val:%08x\n",index,device,sec,usec,type,code,value));
 
-	std::pair<std::map<int,DEV_TYPE>::iterator, bool> ret;
+	std::pair<DEVMAP::iterator, bool> ret;
 	if (EV_KEY == type) {
 		if (_devMap.insert(std::make_pair(device, KEY)).second)
 			onNewKeyDevice(index,device,sec,usec,type,code,value);
