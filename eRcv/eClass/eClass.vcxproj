@@ -87,11 +87,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CClassResult.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CClassifier.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CClassifier.h" />
+    <ClInclude Include="CClassResult.h" />
     <ClInclude Include="CKeyTracking.h" />
     <ClInclude Include="CMtTracking.h" />
     <ClInclude Include="CRecord.h" />
