@@ -82,6 +82,7 @@ public:
 	int addEvt(long index,int device, long sec, long usec, int type, int code, int value);
 
 protected:
+	bool isTouchDevice(int device);
 	void onNewKeyDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onExistingKeyDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onKey(long index, int device, long sec, long usec, int type, int code, int value);
