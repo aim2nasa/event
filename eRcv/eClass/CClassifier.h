@@ -44,7 +44,13 @@ public:
 	virtual ~CClassifier();
 
 	void reset();
-	int addEvt(int device, long sec, long usec, int type, int code, int value);
+	int addEvt(long evtOrder,int device, long sec, long usec, int type, int code, int value);
+
+protected:
+	void onNewKeyDevice(long evtOrder, int device, long sec, long usec, int type, int code, int value);
+	void onExistingKeyDevice(long evtOrder, int device, long sec, long usec, int type, int code, int value);
+	void onNewTouchDevice(long evtOrder, int device, long sec, long usec, int type, int code, int value);
+	void onExistingTouchDevice(long evtOrder, int device, long sec, long usec, int type, int code, int value);
 
 protected:
 	std::map<int, DEV_TYPE> _devMap;
