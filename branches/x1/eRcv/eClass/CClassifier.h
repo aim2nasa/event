@@ -2,83 +2,9 @@
 #define __CCLASSIFIER_H__
 
 #include <map>
-#include "ace/Time_Value.h"
 
-//EVENT TYPES
-#define EV_SYN		0x00
-#define EV_KEY		0x01
-#define EV_ABS		0x03
-
-//Synchronization events
-#define SYN_REPORT	0
-
-//Absolute
-#define ABS_MT_TRACKING_ID      0x39    /* Unique ID of initiated contact */
-#define ABS_MT_POSITION_X       0x35    /* Center X touch position */
-#define ABS_MT_POSITION_Y       0x36    /* Center Y touch position */
-
-#define MAX_TAP_DISTANCE		50
-
-typedef unsigned short _u16;
-typedef unsigned int _u32;
-typedef short _s16;
-typedef int _s32;
-
-struct input_event {
-	struct timeval time;
-	_u16 type;
-	_u16 code;
-	_s32 value;
-};
-
-class CRecord {
-public:
-	CRecord() :_device(-1){ memset(&_event, -1, sizeof(_event)); }
-
-	_u32 _device;
-	struct input_event _event;
-};
-
-class CTracking{
-public:
-	CTracking() { reset(); }
-	virtual void reset() { _tracking = 0; }
-
-	bool _tracking;
-};
-
-class CMtTracking : public CTracking{
-public:
-	CMtTracking(){ reset(); }
-	virtual void reset()
-	{
-		CTracking::reset();
-		_count = _max = _swipe = 0;
-		_initialX = _initialY = _latestX = _latestY = -1;
-	}
-
-	int _count;
-	int _max;
-	int _initialX;
-	int _initialY;
-	int _latestX;
-	int _latestY;
-	bool _swipe;
-};
-
-class CKeyTracking : public CTracking{
-public:
-	CKeyTracking() { reset(); }
-	virtual void reset()
-	{
-		CTracking::reset();
-		_device = _code = _value = -1;
-	}
-
-	int _device;
-	int _code;
-	int _value;
-};
+class CMtTracking;
+class CKeyTracking;
 
 class CClassifier {
 public:
@@ -105,8 +31,8 @@ protected:
 
 protected:
 	std::map<int, DEV_TYPE> _devMap;
-	CMtTracking _mt;
-	CKeyTracking _kt;
+	CMtTracking *_pMt;
+	CKeyTracking *_pKt;
 };
 
 #endif

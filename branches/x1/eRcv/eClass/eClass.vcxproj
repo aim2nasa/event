@@ -92,6 +92,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CClassifier.h" />
+    <ClInclude Include="CKeyTracking.h" />
+    <ClInclude Include="CMtTracking.h" />
+    <ClInclude Include="CRecord.h" />
+    <ClInclude Include="CTracking.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="macro.h" />
+    <ClInclude Include="typedef.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,6 +2,7 @@
 #include "ace/OS.h"
 #include "ace/SString.h"
 #include "CClassifier.h"
+#include "CRecord.h"
 
 int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
