@@ -35,6 +35,16 @@ public:
 	struct input_event _event;
 };
 
+class CMtTracking{
+public:
+	CMtTracking(){ reset(); }
+	void reset() { _count = _max = _tracking = 0; }
+
+	int _count;
+	int _max;
+	bool _tracking;
+};
+
 class CClassifier {
 public:
 	enum DEV_TYPE{ TOUCH, KEY };
@@ -47,7 +57,6 @@ public:
 	int addEvt(long index,int device, long sec, long usec, int type, int code, int value);
 
 protected:
-	void resetMtTracking();
 	void onNewKeyDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onExistingKeyDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onNewTouchDevice(long index, int device, long sec, long usec, int type, int code, int value);
@@ -57,9 +66,7 @@ protected:
 
 protected:
 	std::map<int, DEV_TYPE> _devMap;
-	int _mtTrack;
-	int _mtMax;
-	bool _onMtTracking;
+	CMtTracking _mt;
 };
 
 #endif

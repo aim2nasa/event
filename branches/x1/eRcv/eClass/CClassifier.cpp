@@ -2,7 +2,6 @@
 #include "ace/Log_Msg.h"
 
 CClassifier::CClassifier()
-:_mtTrack(0), _mtMax(0), _onMtTracking(false)
 {
 
 }
@@ -15,6 +14,7 @@ CClassifier::~CClassifier()
 void CClassifier::reset()
 {
 	_devMap.clear();
+	_mt.reset();
 }
 
 int CClassifier::addEvt(long index, int device, long sec, long usec, int type, int code, int value)
@@ -64,27 +64,21 @@ void CClassifier::onExistingTouchDevice(long index, int device, long sec, long u
 void CClassifier::onAbsMtTrackingId(long index, int device, long sec, long usec, int type, int code, int value)
 {
 	if (value != 0xffffffff) {
-		if (_mtTrack == 0) _onMtTracking = true;
-		_mtMax = ++_mtTrack;
-		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) started, val(%08x)\n", _mtTrack, value));
+		if (_mt._count == 0) _mt._tracking = true;
+		_mt._max = ++_mt._count;
+		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) started, val(%08x)\n", _mt._count, value));
 	}else{
-		_mtTrack--;
-		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d), val(%08x)\n", _mtTrack, value));
+		_mt._count--;
+		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d), val(%08x)\n", _mt._count, value));
 	}
 }
 
 void CClassifier::onSynReport(long index, int device, long sec, long usec, int type, int code, int value)
 {
-	if (_onMtTracking) {
-		if (_mtTrack == 0) {
-			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) done, MaxTouch(%d) %s\n", _mtTrack,_mtMax,(_mtMax>1)?"Multi-touch":"Single-touch"));
-			resetMtTracking();
+	if (_mt._tracking) {
+		if (_mt._count == 0) {
+			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) done, MaxTouch(%d) %s\n", _mt._count, _mt._max, (_mt._max>1) ? "Multi-touch" : "Single-touch"));
+			_mt.reset();
 		}
 	}
-}
-
-void CClassifier::resetMtTracking()
-{
-	_onMtTracking = false;
-	_mtTrack = _mtMax = 0;
 }
