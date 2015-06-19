@@ -2,7 +2,6 @@
 #include "ace/Log_Msg.h"
 
 CClassifier::CClassifier()
-:_prevDev(-1)
 {
 
 }
@@ -15,7 +14,6 @@ CClassifier::~CClassifier()
 void CClassifier::reset()
 {
 	_devMap.clear();
-	_prevDev = -1;
 }
 
 int CClassifier::addEvt(long index, int device, long sec, long usec, int type, int code, int value)
@@ -35,8 +33,6 @@ int CClassifier::addEvt(long index, int device, long sec, long usec, int type, i
 		else
 			onExistingTouchDevice(index, device, sec, usec, type, code, value);
 	}
-
-	_prevDev = device;
 	return 0;
 }
 
