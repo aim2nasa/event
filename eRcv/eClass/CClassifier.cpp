@@ -45,6 +45,8 @@ int CClassifier::addEvt(long index, int device, long sec, long usec, int type, i
 			onExistingTouchDevice(index, device, sec, usec, type, code, value);
 
 		if (code == ABS_MT_TRACKING_ID) onAbsMtTrackingId(index,device,sec,usec,type,code,value);
+		if (code == ABS_MT_POSITION_X) onAbsMtpositionX(index, device, sec, usec, type, code, value);
+		if (code == ABS_MT_POSITION_Y) onAbsMtpositionY(index, device, sec, usec, type, code, value);
 	}else if (EV_SYN == type){
 		if (code == SYN_REPORT) onSynReport(index, device, sec, usec, type, code, value);
 	}
@@ -99,7 +101,7 @@ void CClassifier::onSynReport(long index, int device, long sec, long usec, int t
 {
 	if (_mt._tracking) {
 		if (_mt._count == 0) {
-			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) done, MaxTouch(%d) %s\n", _mt._count, _mt._max, (_mt._max>1) ? "Multi-touch" : "Single-touch"));
+			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) done, MaxTouch(%d) %s,%s\n", _mt._count, _mt._max, (_mt._max>1) ? "Multi-touch" : "Single-touch",(_mt._swipe)?"SWIPE":"TAP"));
 			_mt.reset();
 		}
 	}
@@ -108,4 +110,24 @@ void CClassifier::onSynReport(long index, int device, long sec, long usec, int t
 		ACE_DEBUG((LM_DEBUG, "[%T] Key(dev:%02d,code:%04x,val:%08x) Tracking done\n",_kt._device,_kt._code,_kt._value));
 		_kt.reset();
 	}
+}
+
+void CClassifier::onAbsMtpositionX(long index, int device, long sec, long usec, int type, int code, int value)
+{
+	ACE_ASSERT(_mt._count > 0);
+	ACE_ASSERT(_mt._tracking == true);
+
+	if (_mt._initialX == -1) _mt._initialX = value;
+	_mt._latestX = value;
+	if (abs(_mt._initialX - _mt._latestX) > MAX_TAP_DISTANCE) _mt._swipe = true;
+}
+
+void CClassifier::onAbsMtpositionY(long index, int device, long sec, long usec, int type, int code, int value)
+{
+	ACE_ASSERT(_mt._count > 0);
+	ACE_ASSERT(_mt._tracking == true);
+
+	if (_mt._initialY == -1) _mt._initialY = value;
+	_mt._latestY = value;
+	if (abs(_mt._initialY - _mt._latestY) > MAX_TAP_DISTANCE) _mt._swipe = true;
 }

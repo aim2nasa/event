@@ -14,6 +14,10 @@
 
 //Absolute
 #define ABS_MT_TRACKING_ID      0x39    /* Unique ID of initiated contact */
+#define ABS_MT_POSITION_X       0x35    /* Center X touch position */
+#define ABS_MT_POSITION_Y       0x36    /* Center Y touch position */
+
+#define MAX_TAP_DISTANCE		50
 
 typedef unsigned short _u16;
 typedef unsigned int _u32;
@@ -49,11 +53,17 @@ public:
 	virtual void reset()
 	{
 		CTracking::reset();
-		_count = _max = 0;
+		_count = _max = _swipe = 0;
+		_initialX = _initialY = _latestX = _latestY = -1;
 	}
 
 	int _count;
 	int _max;
+	int _initialX;
+	int _initialY;
+	int _latestX;
+	int _latestY;
+	bool _swipe;
 };
 
 class CKeyTracking : public CTracking{
@@ -90,6 +100,8 @@ protected:
 	void onExistingTouchDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onAbsMtTrackingId(long index, int device, long sec, long usec, int type, int code, int value);
 	void onSynReport(long index, int device, long sec, long usec, int type, int code, int value);
+	void onAbsMtpositionX(long index, int device, long sec, long usec, int type, int code, int value);
+	void onAbsMtpositionY(long index, int device, long sec, long usec, int type, int code, int value);
 
 protected:
 	std::map<int, DEV_TYPE> _devMap;
