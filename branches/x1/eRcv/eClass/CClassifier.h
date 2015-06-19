@@ -10,11 +10,13 @@ class IClassifyNoti{
 public:
 	enum DEV_TYPE{ TOUCH, KEY };
 	enum TOUCH_TYPE{ TAP, SWIPE, MULTITOUCH };
+	enum ERR_CODE{ DEV_MIXED,KEY_SEQ };
 
 	virtual ~IClassifyNoti(){}
 
 	virtual void onKeyEvent(int startIndex,int endIndex)=0;
 	virtual void onTouchEvent(TOUCH_TYPE type, int startIndex, int endIndex) = 0;
+	virtual void onError(ERR_CODE code) = 0;
 };
 
 class CClassifier {

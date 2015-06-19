@@ -10,6 +10,7 @@ public:
 
 	void onKeyEvent(int startIndex, int endIndex);
 	void onTouchEvent(TOUCH_TYPE type, int startIndex, int endIndex);
+	void onError(ERR_CODE code);
 };
 
 #endif
