@@ -15,6 +15,7 @@ void CClassifier::reset()
 {
 	_devMap.clear();
 	_mt.reset();
+	_kt.reset();
 }
 
 int CClassifier::addEvt(long index, int device, long sec, long usec, int type, int code, int value)
@@ -27,7 +28,8 @@ int CClassifier::addEvt(long index, int device, long sec, long usec, int type, i
 			onNewKeyDevice(index,device,sec,usec,type,code,value);
 		else
 			onExistingKeyDevice(index, device, sec, usec, type, code, value);
-			
+
+		onKey(index, device, sec, usec, type, code, value);
 	}else if (EV_ABS == type){
 		if (_devMap.insert(std::make_pair(device, TOUCH)).second)
 			onNewTouchDevice(index, device, sec, usec, type, code, value);
@@ -49,6 +51,14 @@ void CClassifier::onNewKeyDevice(long index, int device, long sec, long usec, in
 void CClassifier::onExistingKeyDevice(long index, int device, long sec, long usec, int type, int code, int value)
 {
 
+}
+
+void CClassifier::onKey(long index, int device, long sec, long usec, int type, int code, int value)
+{
+	_kt._tracking = true;
+	_kt._device = device;
+	_kt._code = code;
+	_kt._value = value;
 }
 
 void CClassifier::onNewTouchDevice(long index, int device, long sec, long usec, int type, int code, int value)
@@ -80,5 +90,10 @@ void CClassifier::onSynReport(long index, int device, long sec, long usec, int t
 			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) done, MaxTouch(%d) %s\n", _mt._count, _mt._max, (_mt._max>1) ? "Multi-touch" : "Single-touch"));
 			_mt.reset();
 		}
+	}
+
+	if (_kt._tracking) {
+		ACE_DEBUG((LM_DEBUG, "[%T] Key(dev:%02d,code:%04x,val:%08x) Tracking done\n",_kt._device,_kt._code,_kt._value));
+		_kt.reset();
 	}
 }

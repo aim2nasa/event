@@ -56,6 +56,20 @@ public:
 	int _max;
 };
 
+class CKeyTracking : public CTracking{
+public:
+	CKeyTracking() { reset(); }
+	virtual void reset()
+	{
+		CTracking::reset();
+		_device = _code = _value = -1;
+	}
+
+	int _device;
+	int _code;
+	int _value;
+};
+
 class CClassifier {
 public:
 	enum DEV_TYPE{ TOUCH, KEY };
@@ -70,6 +84,7 @@ public:
 protected:
 	void onNewKeyDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onExistingKeyDevice(long index, int device, long sec, long usec, int type, int code, int value);
+	void onKey(long index, int device, long sec, long usec, int type, int code, int value);
 	void onNewTouchDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onExistingTouchDevice(long index, int device, long sec, long usec, int type, int code, int value);
 	void onAbsMtTrackingId(long index, int device, long sec, long usec, int type, int code, int value);
@@ -78,6 +93,7 @@ protected:
 protected:
 	std::map<int, DEV_TYPE> _devMap;
 	CMtTracking _mt;
+	CKeyTracking _kt;
 };
 
 #endif
