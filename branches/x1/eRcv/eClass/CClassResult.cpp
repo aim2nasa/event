@@ -23,6 +23,6 @@ void CClassResult::onTouchEvent(TOUCH_TYPE type, int startIndex, int endIndex)
 
 void CClassResult::onError(ERR_CODE code)
 {
+	ACE_DEBUG((LM_DEBUG, "%I-***Error:%d***\n", code));
 	ACE_ASSERT(false);
-	ACE_DEBUG((LM_DEBUG, "%I-***Error:%d***\n",code));
 }
