@@ -31,6 +31,13 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		ACE_RETURN(-1);
 	}
 
+	ACE_TString fileAnal(filename);
+	fileAnal += ".inf";
+	if (!result.open(fileAnal.c_str())) {
+		ACE_DEBUG((LM_ERROR, "%s open error\n", fileAnal.c_str()));
+		ACE_RETURN(-1);
+	}
+
 	long index = 0;
 	while (1){
 		size = ACE_OS::fread(&rec, 1, sizeof(rec), fp);
@@ -43,6 +50,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		index++;
 	}
 	ACE_OS::fclose(fp);
+	result.close();
 	ACE_DEBUG((LM_INFO, "[%T] %dbytes, %d events read from %s\n",totalRead,totalRead/sizeof(CRecord),filename.c_str()));
 
 	ACE_DEBUG((LM_INFO, "[%T] end\n"));
