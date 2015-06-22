@@ -13,9 +13,9 @@ CClassResult::~CClassResult()
 
 }
 
-void CClassResult::writeIndex(DEV_TYPE devType,int startIndex, int endIndex)
+void CClassResult::writeIndex(DEV_TYPE devType,int device,int startIndex,int endIndex)
 {
-	int rtn = ACE_OS::fprintf(_fp, "%s %d %d", (devType==KEY)?"Key":"Touch",startIndex, endIndex);
+	int rtn = ACE_OS::fprintf(_fp, "%s(%d) %d %d", (devType==KEY)?"Key":"Touch",device,startIndex,endIndex);
 	ACE_ASSERT(rtn > 0);
 }
 
@@ -26,19 +26,19 @@ void CClassResult::onNewDevice(int device, DEV_TYPE devType, int index)
 	ACE_DEBUG((LM_DEBUG, "%INew device(%d) type:%d\n", device, devType));
 }
 
-void CClassResult::onKeyEvent(int startIndex, int endIndex)
+void CClassResult::onKeyEvent(int device, int startIndex, int endIndex)
 {
-	writeIndex(KEY,startIndex, endIndex);
+	writeIndex(KEY,device,startIndex,endIndex);
 	ACE_OS::fprintf(_fp, "\n");
-	ACE_DEBUG((LM_DEBUG, "%I+Key: index(%d~%d)\n",startIndex,endIndex));
+	ACE_DEBUG((LM_DEBUG, "%I+Key(%d): index(%d~%d)\n",device,startIndex,endIndex));
 }
 
-void CClassResult::onTouchEvent(TOUCH_TYPE type, int startIndex, int endIndex)
+void CClassResult::onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex)
 {
-	writeIndex(TOUCH,startIndex, endIndex);
+	writeIndex(TOUCH,device,startIndex,endIndex);
 	ACE_OS::fprintf(_fp, " %s", (type == SWIPE) ? "Swipe" : "Tap");
 	ACE_OS::fprintf(_fp, "\n");
-	ACE_DEBUG((LM_DEBUG, "%I-Touch: %s,index(%d~%d)\n", (type==SWIPE)?"Swipe":"Tap",startIndex, endIndex));
+	ACE_DEBUG((LM_DEBUG, "%I-Touch(%d): %s,index(%d~%d)\n", device,(type==SWIPE)?"Swipe":"Tap",startIndex, endIndex));
 }
 
 void CClassResult::onError(ERR_CODE code)
