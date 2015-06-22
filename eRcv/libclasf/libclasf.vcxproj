@@ -10,6 +10,19 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="jni\CClassifier.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="jni\CClassifier.h" />
+    <ClInclude Include="jni\CKeyTracking.h" />
+    <ClInclude Include="jni\CMtTracking.h" />
+    <ClInclude Include="jni\CRecord.h" />
+    <ClInclude Include="jni\CTracking.h" />
+    <ClInclude Include="jni\input.h" />
+    <ClInclude Include="jni\macro.h" />
+    <ClInclude Include="jni\typedef.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A7E9C5FE-8FF5-4CAD-A496-CC5C210E6ED4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -59,7 +72,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBCLASF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBCLASF_EXPORTS;DLLEXPORT=__declspec(dllexport);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -75,7 +88,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBCLASF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBCLASF_EXPORTS;DLLEXPORT=__declspec(dllexport);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -86,19 +99,6 @@
       <AdditionalDependencies>ACE.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="CClassifier.h" />
-    <ClInclude Include="CKeyTracking.h" />
-    <ClInclude Include="CMtTracking.h" />
-    <ClInclude Include="CRecord.h" />
-    <ClInclude Include="CTracking.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="macro.h" />
-    <ClInclude Include="typedef.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CClassifier.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
