@@ -2,15 +2,19 @@
 #include "ace/SOCK_Stream.h"
 #include "def.h"
 #include "ace/Date_Time.h"
+#include "CClassifier.h"
+#include "input.h"
+#include "CRecord.h"
 
 CEvtProxy::CEvtProxy(ACE_SOCK_Stream* p)
-:_pStream(p),_fp(NULL),_fSize(0)
+:_pStream(p),_fp(NULL),_fSize(0),_pClass(new CClassifier()),_pNoti(NULL),_index(0)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy Constructor\n")));
 }
 
 CEvtProxy::~CEvtProxy()
 {
+    delete _pClass;
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy() Destructor\n")));
 }
 
@@ -28,6 +32,11 @@ std::size_t CEvtProxy::devices()
 std::list<int>& CEvtProxy::devList()
 {
     return _devList;
+}
+
+void CEvtProxy::notify(IClassifyNoti *p)
+{
+    _pNoti = p;
 }
 
 ACE_THR_FUNC_RETURN CEvtProxy::initResponse(void *p)
@@ -117,6 +126,8 @@ int CEvtProxy::recordStart()
         dt.year(), dt.month(), dt.day(), dt.hour(), dt.minute(), dt.second(), dt.microsec());
 
     _fp = ACE_OS::fopen(filename, ACE_TEXT("wb"));
+    _pClass->notify(_pNoti);
+    _index = 0;
     return send(EVENT_RECORD_START);
 }
 
@@ -212,11 +223,16 @@ int CEvtProxy::onEventRecordData()
     if((rcvSize=recv_int(size))<0)
         ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) size read error\n")),-1);;
 
-    rcvSize = _pStream->recv_n(_buffer,sizeof(int)+EVENT_SIZE);
-    if(rcvSize <= 0) return -2;
+    CRecord rec;
+    rcvSize = _pStream->recv_n(&rec,sizeof(rec));
+    if(rcvSize!=sizeof(rec)) return -2;
 
-    size_t written = ACE_OS::fwrite(_buffer,1,rcvSize,_fp);
+    size_t written = ACE_OS::fwrite(&rec,1,sizeof(rec),_fp);
     if(written!=rcvSize) return -3;
+
+    if(_pClass->addEvt(_index,rec._device,rec._event.time.tv_sec,rec._event.time.tv_usec,
+          rec._event.type, rec._event.code, rec._event.value) < 0) return -4;
+    _index++;
 
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T EventRecordData(%d)\n"),rcvSize));
     return 0;

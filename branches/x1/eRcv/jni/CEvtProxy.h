@@ -7,6 +7,8 @@
 
 class ACE_SOCK_Stream;
 class ACE_Auto_Event;
+class CClassifier;
+class IClassifyNoti;
 
 class CEvtProxy : public ACE_Task < ACE_MT_SYNCH >
 {
@@ -18,6 +20,7 @@ public:
     std::size_t addDevice(int n);
     std::size_t devices();
     std::list<int>& devList();
+    void notify(IClassifyNoti *p);
 
     int init();
     int start();
@@ -47,6 +50,9 @@ protected:
     char _buffer[BUFSIZ];
     FILE *_fp;
     long _fSize;
+    CClassifier* _pClass;
+    IClassifyNoti* _pNoti;
+    long _index;
 };
 
 #endif
