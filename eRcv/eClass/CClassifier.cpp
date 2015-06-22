@@ -129,7 +129,7 @@ void CClassifier::onSynReport(long index, int device, long sec, long usec, int t
 {
 	if (_pMt->_tracking) {
 		if (_pMt->_count == 0) {
-			if (_pNoti) _pNoti->onTouchEvent((_pMt->_swipe) ? IClassifyNoti::SWIPE : IClassifyNoti::TAP, _pMt->_index, index);
+			if (_pNoti) _pNoti->onTouchEvent(device,(_pMt->_swipe) ? IClassifyNoti::SWIPE : IClassifyNoti::TAP, _pMt->_index, index);
 			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) done, MaxTouch(%d) %s,%s\n", _pMt->_count, _pMt->_max, (_pMt->_max>1) ? "Multi-touch" : "Single-touch",(_pMt->_swipe)?"SWIPE":"TAP"));
 			_pMt->reset();
 		}
@@ -138,7 +138,7 @@ void CClassifier::onSynReport(long index, int device, long sec, long usec, int t
 	if (_pKt->_tracking) {
 		if (_pNoti) {
 			if((_pKt->_index+1)!=index) _pNoti->onError(IClassifyNoti::KEY_SEQ);	//키이벤트의 인덱스는 순차적으로 2개만 들어오는 것을 가정한다.(즉, 키를 누르고 SYN까지를 하나의 단위로 처리,관찰한바 항상 2개를 단위로 처리됨)
-			_pNoti->onKeyEvent(_pKt->_index, index);
+			_pNoti->onKeyEvent(device,_pKt->_index, index);
 		}
 		ACE_DEBUG((LM_DEBUG, "[%T] Key(dev:%02d,code:%04x,val:%08x) Tracking done\n",_pKt->_device,_pKt->_code,_pKt->_value));
 		_pKt->reset();

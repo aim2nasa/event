@@ -12,11 +12,11 @@ public:
 	void close();
 
 	void onNewDevice(int device, DEV_TYPE devType, int index);
-	void onKeyEvent(int startIndex, int endIndex);
-	void onTouchEvent(TOUCH_TYPE type, int startIndex, int endIndex);
+	void onKeyEvent(int device, int startIndex, int endIndex);
+	void onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex);
 	void onError(ERR_CODE code);
 protected:
-	void writeIndex(DEV_TYPE devType,int startIndex, int endIndex);
+	void writeIndex(DEV_TYPE devType,int device,int startIndex, int endIndex);
 
 protected:
 	FILE* _fp;
