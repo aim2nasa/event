@@ -6,6 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eRcv", "eRcv\eRcv.vcxproj", "{7FF20F67-57C1-4FB4-9E7E-A702399EFEE9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eClass", "eClass\eClass.vcxproj", "{33409689-9342-45DB-B8CC-26A37940CF00}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A7E9C5FE-8FF5-4CAD-A496-CC5C210E6ED4} = {A7E9C5FE-8FF5-4CAD-A496-CC5C210E6ED4}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libclasf", "libclasf\libclasf.vcxproj", "{A7E9C5FE-8FF5-4CAD-A496-CC5C210E6ED4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,10 @@ Global
 		{33409689-9342-45DB-B8CC-26A37940CF00}.Debug|Win32.Build.0 = Debug|Win32
 		{33409689-9342-45DB-B8CC-26A37940CF00}.Release|Win32.ActiveCfg = Release|Win32
 		{33409689-9342-45DB-B8CC-26A37940CF00}.Release|Win32.Build.0 = Release|Win32
+		{A7E9C5FE-8FF5-4CAD-A496-CC5C210E6ED4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A7E9C5FE-8FF5-4CAD-A496-CC5C210E6ED4}.Debug|Win32.Build.0 = Debug|Win32
+		{A7E9C5FE-8FF5-4CAD-A496-CC5C210E6ED4}.Release|Win32.ActiveCfg = Release|Win32
+		{A7E9C5FE-8FF5-4CAD-A496-CC5C210E6ED4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

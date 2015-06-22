@@ -5,7 +5,7 @@
 #include "ace/Log_Msg.h"
 
 CClassifier::CClassifier()
-	:_pMt(new CMtTracking()), _pKt(new CKeyTracking()), _pNoti(NULL)
+	:_pDevMap(new DEVMAP()),_pMt(new CMtTracking()), _pKt(new CKeyTracking()), _pNoti(NULL)
 {
 	
 }
@@ -14,11 +14,12 @@ CClassifier::~CClassifier()
 {
 	delete _pKt;
 	delete _pMt;
+	delete _pDevMap;
 }
 
 CClassifier::DEVMAP& CClassifier::devMap()
 {
-	return _devMap;
+	return *_pDevMap;
 }
 
 void CClassifier::notify(IClassifyNoti *p)
@@ -28,15 +29,15 @@ void CClassifier::notify(IClassifyNoti *p)
 
 void CClassifier::reset()
 {
-	_devMap.clear();
+	_pDevMap->clear();
 	_pMt->reset();
 	_pKt->reset();
 }
 
 bool CClassifier::isTouchDevice(int device)
 {
-	DEVMAP::iterator it = _devMap.find(device);
-	if (it == _devMap.end()) return false;
+	DEVMAP::iterator it = _pDevMap->find(device);
+	if (it == _pDevMap->end()) return false;
 	if (it->second == IClassifyNoti::TOUCH) return true;
 	return false;
 }
@@ -47,14 +48,14 @@ int CClassifier::addEvt(long index, int device, long sec, long usec, int type, i
 
 	std::pair<DEVMAP::iterator, bool> ret;
 	if (EV_KEY == type) {
-		if (_devMap.insert(std::make_pair(device, IClassifyNoti::KEY)).second)
+		if (_pDevMap->insert(std::make_pair(device, IClassifyNoti::KEY)).second)
 			onNewKeyDevice(index,device,sec,usec,type,code,value);
 		else
 			onExistingKeyDevice(index, device, sec, usec, type, code, value);
 
 		onKey(index, device, sec, usec, type, code, value);
 	}else if (EV_ABS == type){
-		if (_devMap.insert(std::make_pair(device, IClassifyNoti::TOUCH)).second)
+		if (_pDevMap->insert(std::make_pair(device, IClassifyNoti::TOUCH)).second)
 			onNewTouchDevice(index, device, sec, usec, type, code, value);
 		else
 			onExistingTouchDevice(index, device, sec, usec, type, code, value);
@@ -71,7 +72,7 @@ int CClassifier::addEvt(long index, int device, long sec, long usec, int type, i
 void CClassifier::onNewKeyDevice(long index, int device, long sec, long usec, int type, int code, int value)
 {
 	if(_pNoti) _pNoti->onNewDevice(device, IClassifyNoti::KEY, index);
-	ACE_DEBUG((LM_DEBUG, ">> index:%d,dev:%02d type:%04x KEY TYPE registered(map size:%d)\n", index, device, type, _devMap.size()));
+	ACE_DEBUG((LM_DEBUG, ">> index:%d,dev:%02d type:%04x KEY TYPE registered(map size:%d)\n", index, device, type, _pDevMap->size()));
 }
 
 void CClassifier::onExistingKeyDevice(long index, int device, long sec, long usec, int type, int code, int value)
@@ -102,7 +103,7 @@ void CClassifier::onKey(long index, int device, long sec, long usec, int type, i
 void CClassifier::onNewTouchDevice(long index, int device, long sec, long usec, int type, int code, int value)
 {
 	if (_pNoti) _pNoti->onNewDevice(device, IClassifyNoti::TOUCH, index);
-	ACE_DEBUG((LM_DEBUG, ">> index:%d,dev:%02d type:%04x TOUCH TYPE registered(map size:%d)\n", index, device, type, _devMap.size()));
+	ACE_DEBUG((LM_DEBUG, ">> index:%d,dev:%02d type:%04x TOUCH TYPE registered(map size:%d)\n", index, device, type, _pDevMap->size()));
 }
 
 void CClassifier::onExistingTouchDevice(long index, int device, long sec, long usec, int type, int code, int value)
