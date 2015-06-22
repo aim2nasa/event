@@ -11,6 +11,7 @@ public:
 	bool open(const char *name);
 	void close();
 
+	void onNewDevice(int device, DEV_TYPE devType, int index);
 	void onKeyEvent(int startIndex, int endIndex);
 	void onTouchEvent(TOUCH_TYPE type, int startIndex, int endIndex);
 	void onError(ERR_CODE code);
