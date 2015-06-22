@@ -19,6 +19,13 @@ void CClassResult::writeIndex(DEV_TYPE devType,int startIndex, int endIndex)
 	ACE_ASSERT(rtn > 0);
 }
 
+void CClassResult::onNewDevice(int device, DEV_TYPE devType, int index)
+{
+	int rtn = ACE_OS::fprintf(_fp, "New device %d type:%s index:%d\n", device, (devType == KEY) ? "Key" : "Touch",index);
+	ACE_ASSERT(rtn > 0);
+	ACE_DEBUG((LM_DEBUG, "%INew device(%d) type:%d\n", device, devType));
+}
+
 void CClassResult::onKeyEvent(int startIndex, int endIndex)
 {
 	writeIndex(KEY,startIndex, endIndex);
