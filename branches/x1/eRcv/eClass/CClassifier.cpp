@@ -16,6 +16,11 @@ CClassifier::~CClassifier()
 	delete _pMt;
 }
 
+CClassifier::DEVMAP& CClassifier::devMap()
+{
+	return _devMap;
+}
+
 void CClassifier::notify(IClassifyNoti *p)
 {
 	_pNoti = p;

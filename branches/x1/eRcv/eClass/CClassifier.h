@@ -26,6 +26,7 @@ public:
 	CClassifier();
 	virtual ~CClassifier();
 
+	DEVMAP& devMap();
 	void notify(IClassifyNoti *p);
 	void reset();
 	int addEvt(long index,int device, long sec, long usec, int type, int code, int value);
