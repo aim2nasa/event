@@ -16,4 +16,6 @@
 
 #define MAX_TAP_DISTANCE		50
 
+#define DLLEXPORT				__declspec(dllexport)
+
 #endif

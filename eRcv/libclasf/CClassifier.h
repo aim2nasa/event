@@ -1,12 +1,13 @@
 #ifndef __CCLASSIFIER_H__
 #define __CCLASSIFIER_H__
 
+#include "macro.h"
 #include <map>
 
 class CMtTracking;
 class CKeyTracking;
 
-class IClassifyNoti{
+class DLLEXPORT IClassifyNoti{
 public:
 	enum DEV_TYPE{ TOUCH, KEY };
 	enum TOUCH_TYPE{ TAP, SWIPE, MULTITOUCH };
@@ -20,7 +21,7 @@ public:
 	virtual void onError(ERR_CODE code) = 0;
 };
 
-class CClassifier {
+class DLLEXPORT CClassifier {
 public:
 	typedef std::map<int, IClassifyNoti::DEV_TYPE> DEVMAP;
 
@@ -45,7 +46,7 @@ protected:
 	void onAbsMtpositionY(long index, int device, long sec, long usec, int type, int code, int value);
 
 protected:
-	DEVMAP _devMap;
+	DEVMAP *_pDevMap;
 	CMtTracking *_pMt;
 	CKeyTracking *_pKt;
 	IClassifyNoti *_pNoti;
