@@ -10,6 +10,13 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="jni\CClassResult.cpp" />
+    <ClCompile Include="jni\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="jni\CClassResult.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{33409689-9342-45DB-B8CC-26A37940CF00}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -90,13 +97,6 @@
       <AdditionalLibraryDirectories>..\bin\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="CClassResult.cpp" />
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CClassResult.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
