@@ -6,17 +6,27 @@ LOCAL_MODULE := libACE
 LOCAL_SRC_FILES := /home/skwak/ACE_wrappers/lib/libACE.so
 include $(PREBUILT_SHARED_LIBRARY)
 
+#Library
+include $(CLEAR_VARS)
+LOCAL_MODULE := libclasf
+LOCAL_SRC_FILES := /home/skwak/x1/eRcv/libclasf/libs/armeabi/libclasf.so
+include $(PREBUILT_SHARED_LIBRARY)
+
 #Executable
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := eRcv 
 LOCAL_SRC_FILES := main.cpp \
-                   CEvtProxy.cpp
+                   CEvtProxy.cpp \
+                   CClassResult.cpp
 LOCAL_LDFLAGS:=-fPIE -pie
-LOCAL_SHARED_LIBRARIES := libACE
+LOCAL_SHARED_LIBRARIES := libACE \
+                          libclasf
 LOCAL_LDLIBS += -lz
 LOCAL_C_INCLUDES += /home/skwak/ACE_wrappers \
-                    /home/skwak/x1/common
-LOCAL_CFLAGS := -DACE_NTRACE=1
+                    /home/skwak/x1/common \
+                    /home/skwak/x1/eRcv/libclasf/jni
+LOCAL_CFLAGS := -DACE_NTRACE=1 \
+                -DDLLEXPORT=  
 
 include $(BUILD_EXECUTABLE)
