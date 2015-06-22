@@ -12,7 +12,7 @@ public:
 
     int play(int order,int dev,long sec,long uSec,int type,int code,int value)
     {
-        ACE_DEBUG((LM_DEBUG,"%d dev:%02d,time:%ld.%06ld,type:%04x,code:%04x,val:%08x\n",
+        ACE_DEBUG((LM_DEBUG,"%d dev:%02d,time:%d.%06d,type:%04x,code:%04x,val:%08x\n",
             order,dev,sec,uSec,type,code,value));
         return 0;
     }
