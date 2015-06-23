@@ -12,9 +12,8 @@ class IClassifyNoti;
 
 class DLLEXPORT CEvtProxy : public ACE_Task < ACE_MT_SYNCH >
 {
-    CEvtProxy();
 public:
-    CEvtProxy(ACE_SOCK_Stream* p);
+    CEvtProxy();
     virtual ~CEvtProxy();
 
     std::size_t addDevice(int n);
@@ -22,7 +21,7 @@ public:
     std::list<int>& devList();
     void notify(IClassifyNoti *p);
 
-    int init();
+    int init(const char *addr,unsigned short port);
     int start();
     int stop();
 
@@ -43,7 +42,7 @@ protected:
     static ACE_THR_FUNC_RETURN initResponse(void *p);
 
 protected:
-    ACE_SOCK_Stream* _pStream;
+    void* _pStream;
     std::list<int> _devList;
     ACE_Auto_Event _iEvt;
     ACE_Auto_Event _upEvt;
