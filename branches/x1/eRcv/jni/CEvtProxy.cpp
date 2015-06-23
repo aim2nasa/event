@@ -17,7 +17,7 @@ CEvtProxy::CEvtProxy()
 CEvtProxy::~CEvtProxy()
 {
     delete _pClass;
-	delete _pStream;
+	delete reinterpret_cast<ACE_SOCK_Stream*>(_pStream);
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy() Destructor\n")));
 }
 
