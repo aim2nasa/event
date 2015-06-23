@@ -15,7 +15,7 @@ class DLLEXPORT CEvtProxy : public ACE_Task < ACE_MT_SYNCH >
     CEvtProxy();
 public:
     CEvtProxy(ACE_SOCK_Stream* p);
-    ~CEvtProxy();
+    virtual ~CEvtProxy();
 
     std::size_t addDevice(int n);
     std::size_t devices();
