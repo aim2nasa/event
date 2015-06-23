@@ -89,6 +89,20 @@ bool CEvtRec::devOpen()
     return true;
 }
 
+void CEvtRec::devClose()
+{
+	int i=0;
+    for(std::list<int>::iterator it=_devList.begin();it!=_devList.end();it++){
+        if(*it!=-1){
+			close(_pFds[i].fd);
+        }else{
+			close(_fdPipe[0]);
+			close(_fdPipe[1]);
+        }
+		i++;
+    }
+}
+
 void* CEvtRec::readEvent(void *arg)
 {
     CEvtRec *p = reinterpret_cast<CEvtRec*>(arg);
