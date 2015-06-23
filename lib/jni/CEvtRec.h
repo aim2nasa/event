@@ -30,6 +30,7 @@ public:
     void evtDump(IEvtDump *p);
 
     bool devOpen();
+    void devClose();
     int errDev();
 
     int start();
