@@ -27,6 +27,7 @@ public:
     int onEventFileUpPrepare();
     int onEventFileUpload();
     int onEventPlayFull();
+    int onEventPlayPart();
 
 private:
     typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> super;

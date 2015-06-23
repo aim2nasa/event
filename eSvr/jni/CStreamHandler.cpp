@@ -94,6 +94,12 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
         send(onEventPlayFull());
         ACE_DEBUG((LM_DEBUG, "Event Play full command(0x%x) processed\n",msg));
         break; 
+    case EVENT_PLAY_PART:
+        ACE_DEBUG((LM_DEBUG, "Event Play part command(0x%x)...\n",msg));
+        send(EVENT_PLAY_PART); //ack
+        send(onEventPlayPart());
+        ACE_DEBUG((LM_DEBUG, "Event Play part command(0x%x) processed\n",msg));
+        break; 
     case TERMINATE_SERVER:
         ACE_DEBUG((LM_DEBUG, "Terminate server command(0x%x)...\n",msg));
         send(TERMINATE_CLIENT);
@@ -271,5 +277,44 @@ int CStreamHandler::onEventPlayFull()
 
     ep.play(0,ep.events()-1);
     ACE_DEBUG((LM_DEBUG,"Playing full file(%s) done\n",fname.c_str()));
+    return 0;
+}
+
+int CStreamHandler::onEventPlayPart()
+{
+    ACE_TRACE("onEventPlayPart");
+
+    int bytes;
+    if(recv_int(bytes)<0) return ERROR_RECV_INT_SIZE;
+
+    ssize_t size;
+    if((size = this->peer().recv_n(buffer_,bytes))!=bytes) return ERROR_RECEIVE;
+    buffer_[bytes]=0;
+
+    ACE_TString fname("_");
+    fname += buffer_;
+    ACE_DEBUG((LM_DEBUG,"play request %s\n",fname.c_str()));
+
+    long long loc[2];
+    for(int i=0;i<2;i++) {
+        if((size = this->peer().recv_n(&loc[i],sizeof(long long)))!=sizeof(long long))
+            return ERROR_RECEIVE;
+    }
+
+    CMon m;
+    CEvtPlay ep;
+
+    int rtn = -1;
+    ACE_DEBUG((LM_DEBUG,"init event player with (%s)\n",fname.c_str()));
+    if((rtn=ep.init(fname.c_str(),&m))!=0) return -1;
+    ACE_DEBUG((LM_DEBUG,"play(%s) (%d~%d) events(%d/%d)\n",
+        fname.c_str(),loc[0],loc[1],loc[1]-loc[0]+1,ep.events()));
+
+    if((rtn=ep.play(loc[0],loc[1]))!=0) { 
+        ACE_DEBUG((LM_ERROR,"Playing file(%s) part(%d~%d) error(%d)\n",
+            fname.c_str(),loc[0],loc[1],rtn));
+        return -1;
+    }
+    ACE_DEBUG((LM_DEBUG,"Playing file(%s) part(%d~%d)done\n",fname.c_str(),loc[0],loc[1]));
     return 0;
 }
