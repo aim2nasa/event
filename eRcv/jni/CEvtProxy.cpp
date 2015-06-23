@@ -118,6 +118,7 @@ int CEvtProxy::stop()
 {
     ACE_TRACE("CEvtProxy::stop");
     if(send(TERMINATE_SERVER)<0) return -1;
+	wait();
     return 0;
 }
 
