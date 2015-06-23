@@ -109,10 +109,6 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	}
     }
 
-    ACE_DEBUG((LM_INFO, "(%P|%t) waiting...\n"));
-    er.wait();
-    ACE_DEBUG((LM_INFO, "(%P|%t) waiting done\n"));
-
     ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) end\n")));
     ACE_RETURN(0);
 }
