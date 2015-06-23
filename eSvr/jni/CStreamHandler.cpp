@@ -307,14 +307,14 @@ int CStreamHandler::onEventPlayPart()
     int rtn = -1;
     ACE_DEBUG((LM_DEBUG,"init event player with (%s)\n",fname.c_str()));
     if((rtn=ep.init(fname.c_str(),&m))!=0) return -1;
-    ACE_DEBUG((LM_DEBUG,"play(%s) (%d~%d) events(%d/%d)\n",
+    ACE_DEBUG((LM_DEBUG,"play(%s) (%Q~%Q) events(%Q/%Q)\n",
         fname.c_str(),loc[0],loc[1],loc[1]-loc[0]+1,ep.events()));
 
     if((rtn=ep.play(loc[0],loc[1]))!=0) { 
-        ACE_DEBUG((LM_ERROR,"Playing file(%s) part(%d~%d) error(%d)\n",
+        ACE_DEBUG((LM_ERROR,"Playing file(%s) part(%Q~%Q) error(%d)\n",
             fname.c_str(),loc[0],loc[1],rtn));
         return -1;
     }
-    ACE_DEBUG((LM_DEBUG,"Playing file(%s) part(%d~%d)done\n",fname.c_str(),loc[0],loc[1]));
+    ACE_DEBUG((LM_DEBUG,"Playing file(%s) part(%Q~%Q)done\n",fname.c_str(),loc[0],loc[1]));
     return 0;
 }
