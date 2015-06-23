@@ -91,9 +91,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\jni\CEvt.cpp" />
     <ClCompile Include="..\jni\CEvtProxy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\jni\CEvt.h" />
     <ClInclude Include="..\jni\CEvtProxy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
