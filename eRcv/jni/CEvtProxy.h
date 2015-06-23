@@ -26,20 +26,19 @@ public:
     int start();
     int stop();
 
-    int send(int msg);
-    int send(std::list<int>& seq);
-    int recv_int(int& msg);
     int recordStart();
     int recordStop();
     int upPrepare(const char* file);
     int upload(const char* file);
     int play(const char* file);
 
-    int onEventRecordData();
-
-    virtual int svc(void);
-
     static long fileSize(const char* file);
+protected:
+    virtual int svc(void);
+    int send(int msg);
+    int send(std::list<int>& seq);
+    int recv_int(int& msg);
+    int onEventRecordData();
     static ACE_THR_FUNC_RETURN initResponse(void *p);
 
 protected:
