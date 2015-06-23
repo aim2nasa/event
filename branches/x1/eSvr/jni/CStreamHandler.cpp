@@ -1,6 +1,6 @@
 #include "CStreamHandler.h"
 #include <ace/Log_Msg.h>
-#include "../../common/def.h"
+#include "def.h"
 #include "CEvtRec.h"
 #include "CSender.h"
 #include <linux/input.h>
