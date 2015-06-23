@@ -19,6 +19,7 @@
     <ClInclude Include="jni\CMtTracking.h" />
     <ClInclude Include="jni\CRecord.h" />
     <ClInclude Include="jni\CTracking.h" />
+    <ClInclude Include="jni\IClassifyNoti.h" />
     <ClInclude Include="jni\input.h" />
     <ClInclude Include="jni\macro.h" />
     <ClInclude Include="jni\typedef.h" />
