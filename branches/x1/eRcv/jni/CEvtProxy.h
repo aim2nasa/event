@@ -10,7 +10,7 @@ class ACE_Auto_Event;
 class CClassifier;
 class IClassifyNoti;
 
-class CEvtProxy : public ACE_Task < ACE_MT_SYNCH >
+class DLLEXPORT CEvtProxy : public ACE_Task < ACE_MT_SYNCH >
 {
     CEvtProxy();
 public:
