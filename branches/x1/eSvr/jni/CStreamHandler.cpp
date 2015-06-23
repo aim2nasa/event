@@ -182,19 +182,21 @@ int CStreamHandler::onEventRecordInit()
     ACE_DEBUG((LM_DEBUG,"CEvtRec devices:%d\n",CEvtRec::instance()->devices()));
 
     if(CEvtRec::instance()->devices()<=0) return ERROR_EVTREC_NO_DEV;
-    if(!CEvtRec::instance()->devOpen()) return ERROR_EVTREC_DEVOPEN;
     return 0;
 }
 
 int CStreamHandler::onEventRecordStart()
 {
+    if(!CEvtRec::instance()->devOpen()) return ERROR_EVTREC_DEVOPEN;
     return CEvtRec::instance()->start();
 }
 
 int CStreamHandler::onEventRecordStop()
 {
     CEvtRec::instance()->stop();
-    return CEvtRec::instance()->wait();
+    CEvtRec::instance()->wait();
+    CEvtRec::instance()->devClose();
+    return 0;
 }
 
 int CStreamHandler::onEventFileUpPrepare()
