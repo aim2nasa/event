@@ -47,7 +47,6 @@ protected:
     std::list<int> _devList;
     ACE_Auto_Event _iEvt;
     ACE_Auto_Event _upEvt;
-    char _buffer[BUFSIZ];
     FILE *_fp;
     long _fSize;
     CClassifier* _pClass;
