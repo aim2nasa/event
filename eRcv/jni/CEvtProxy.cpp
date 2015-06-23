@@ -5,7 +5,6 @@
 #include "CClassifier.h"
 #include "input.h"
 #include "CRecord.h"
-#include <iostream>
 
 CEvtProxy::CEvtProxy(ACE_SOCK_Stream* p)
 :_pStream(p),_fp(NULL),_fSize(0),_pClass(new CClassifier()),_pNoti(NULL),_index(0)
@@ -222,7 +221,7 @@ int CEvtProxy::play(const char* file)
 
 int CEvtProxy::play(const char* file,long long startLoc,long long endLoc)
 {
-    std::cout<<"play("<<file<<",startLoc="<<startLoc<<",endLoc="<<endLoc<<")"<<std::endl;
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) play(%s,%Q,%Q)\n"),file,startLoc,endLoc));
 
     int rtn;
     if((rtn=upPrepare(file))!=0) return rtn;
