@@ -149,9 +149,6 @@ void CClassifier::onSynReport(long index, int device, long sec, long usec, int t
 
 void CClassifier::onAbsMtpositionX(long index, int device, long sec, long usec, int type, int code, int value)
 {
-	ACE_ASSERT(_pMt->_count > 0);
-	ACE_ASSERT(_pMt->_tracking == true);
-
 	if (_pMt->_initialX == -1) _pMt->_initialX = value;
 	_pMt->_latestX = value;
 	if (abs(_pMt->_initialX - _pMt->_latestX) > MAX_TAP_DISTANCE) _pMt->_swipe = true;
@@ -159,9 +156,6 @@ void CClassifier::onAbsMtpositionX(long index, int device, long sec, long usec, 
 
 void CClassifier::onAbsMtpositionY(long index, int device, long sec, long usec, int type, int code, int value)
 {
-	ACE_ASSERT(_pMt->_count > 0);
-	ACE_ASSERT(_pMt->_tracking == true);
-
 	if (_pMt->_initialY == -1) _pMt->_initialY = value;
 	_pMt->_latestY = value;
 	if (abs(_pMt->_initialY - _pMt->_latestY) > MAX_TAP_DISTANCE) _pMt->_swipe = true;
