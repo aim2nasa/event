@@ -1,13 +1,15 @@
 #include "CEvtProxy.h"
 #include "ace/SOCK_Stream.h"
+#include "ace/SOCK_Connector.h"
+#include "ace/OS.h"
 #include "def.h"
 #include "ace/Date_Time.h"
 #include "CClassifier.h"
 #include "input.h"
 #include "CRecord.h"
 
-CEvtProxy::CEvtProxy(ACE_SOCK_Stream* p)
-:_pStream(p),_fp(NULL),_fSize(0),_pClass(new CClassifier()),_pNoti(NULL),_index(0)
+CEvtProxy::CEvtProxy()
+:_pStream(NULL),_fp(NULL),_fSize(0),_pClass(new CClassifier()),_pNoti(NULL),_index(0)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy Constructor\n")));
 }
@@ -15,6 +17,7 @@ CEvtProxy::CEvtProxy(ACE_SOCK_Stream* p)
 CEvtProxy::~CEvtProxy()
 {
     delete _pClass;
+	delete _pStream;
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy() Destructor\n")));
 }
 
@@ -55,8 +58,35 @@ ACE_THR_FUNC_RETURN CEvtProxy::initResponse(void *p)
     return 0;
 }
 
-int CEvtProxy::init()
+int CEvtProxy::init(const char *addr, unsigned short port)
 {
+	_pStream = reinterpret_cast<void*>(new ACE_SOCK_Stream());
+	ACE_INET_Addr remote_addr(port,addr);
+	ACE_SOCK_Connector connector;
+
+	ACE_DEBUG((LM_DEBUG, "(%P|%t) Starting connect to %s: %d \n",
+		remote_addr.get_host_name(), remote_addr.get_port_number()));
+
+	if (connector.connect(*reinterpret_cast<ACE_SOCK_Stream*>(_pStream), remote_addr) == -1) {
+		ACE_DEBUG((LM_DEBUG, "(%P|%t) connection failed to addr=%s,port=%d\n", remote_addr.get_host_name(),remote_addr.get_port_number()));
+		return -10;
+	}else
+		ACE_DEBUG((LM_DEBUG, "(%P|%t) connected to to addr=%s,port=%d\n", remote_addr.get_host_name(), remote_addr.get_port_number()));
+
+	ACE_OS::sleep(1);
+
+	//연결이 제대로 되는지 검사 테스트
+	ACE_DEBUG((LM_DEBUG, "(%P|%t) Connection testing...\n"));
+	char inpBuff[128];
+	ACE_Time_Value timeout(1);
+	ssize_t result = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->recv(inpBuff, sizeof(inpBuff), &timeout);
+	if (result == -1 && ACE_OS::last_error() == ETIME)
+		ACE_DEBUG((LM_DEBUG, "(%P|%t) Connection test ok\n"));
+	else {
+		ACE_DEBUG((LM_DEBUG, "(%P|%t) Connection test failed\n"));
+		return -30;
+	}
+
     std::list<int> seq;
     seq.push_back(EVENT_RECORD_INIT);
     seq.push_back(_devList.size());
@@ -68,12 +98,12 @@ int CEvtProxy::init()
 
     ACE_thread_t tid;
     if(ACE_Thread_Manager::instance()->spawn(CEvtProxy::initResponse,
-        (void*)this,THR_NEW_LWP|THR_JOINABLE,&tid)==-1) return -2;
+        (void*)this,THR_NEW_LWP|THR_JOINABLE,&tid)==-1) return -40;
 
     ACE_Time_Value tv(3); 
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting init response(%dsec)...\n"),tv.sec()));
     int wait=-1;
-    if((wait=_iEvt.wait(&tv,0))!=0) return -3;
+    if((wait=_iEvt.wait(&tv,0))!=0) return -50;
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting(%dsec)=%d done\n"),tv.sec(),wait));
 
     return sent;
@@ -93,7 +123,7 @@ int CEvtProxy::stop()
 
 int CEvtProxy::send(int msg)
 {
-    ssize_t rcvSize = _pStream->send_n(&msg,sizeof(int));
+	ssize_t rcvSize = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(&msg, sizeof(int));
     if (rcvSize!=sizeof(int)) {
         ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) error in sending msg(0x%x)\n"),msg));
         return -1;
@@ -111,7 +141,7 @@ int CEvtProxy::send(std::list<int>& seq)
 
 int CEvtProxy::recv_int(int& msg)
 {
-    ssize_t rcvSize = _pStream->recv_n(&msg,sizeof(int));
+	ssize_t rcvSize = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->recv_n(&msg, sizeof(int));
     if (rcvSize <= 0) return -1;
     return rcvSize;
 }
@@ -157,7 +187,7 @@ int CEvtProxy::upPrepare(const char* file)
     if(send(EVENT_FILE_UP_PREPARE)<0) return -20;
     if(send(length)<0) return -30;
 
-    ssize_t size = _pStream->send_n(file,length);
+	ssize_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(file, length);
     if(size!=length) return -40;
 
     long fSize = fileSize(file);
@@ -165,7 +195,7 @@ int CEvtProxy::upPrepare(const char* file)
     _fSize = fSize;
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %s filesize:%dbytes\n"),file,fSize));
 
-    size = _pStream->send_n(&fSize,sizeof(long));
+	size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(&fSize, sizeof(long));
     if(size!=sizeof(long)) -60;
 
     ACE_Time_Value tv(3);
@@ -180,7 +210,7 @@ int CEvtProxy::upload(const char* file)
 {
     if(send(EVENT_FILE_UPLOAD)<0) return -10;
 
-    ssize_t size = _pStream->send_n(&_fSize,sizeof(long));
+	ssize_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(&_fSize, sizeof(long));
     if(size!=sizeof(long)) return -20;
 
 	char buffer[BUFSIZ];
@@ -192,7 +222,7 @@ int CEvtProxy::upload(const char* file)
         if(readSize!=readUnit) break;
         totalRead += readSize;
 
-        size_t size = _pStream->send_n(buffer,readSize);
+		size_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(buffer, readSize);
         if(size!=readSize) return -40;
         totalSent += size;
     }
@@ -214,7 +244,7 @@ int CEvtProxy::play(const char* file)
     if(send(EVENT_PLAY_FULL)<0) return -110;
     if(send(length)<0) return -120;
 
-    ssize_t size = _pStream->send_n(file,length);
+	ssize_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(file, length);
     if(size!=length) return -130;
 
     return 0;
@@ -235,13 +265,13 @@ int CEvtProxy::play(const char* file,long long startLoc,long long endLoc)
     if(send(EVENT_PLAY_PART)<0) return -110;
     if(send(length)<0) return -120;
 
-    ssize_t size = _pStream->send_n(file,length);
+	ssize_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(file, length);
     if(size!=length) return -130;
 
-    size = _pStream->send_n(&startLoc,sizeof(long long));
+	size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(&startLoc, sizeof(long long));
     if(size!=sizeof(long long)) return -140;
 
-    size = _pStream->send_n(&endLoc,sizeof(long long));
+	size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(&endLoc, sizeof(long long));
     if(size!=sizeof(long long)) return -150;
 
     return 0;
@@ -254,7 +284,7 @@ int CEvtProxy::onEventRecordData()
         ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) size read error\n")),-1);;
 
     CRecord rec;
-    rcvSize = _pStream->recv_n(&rec,sizeof(rec));
+	rcvSize = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->recv_n(&rec, sizeof(rec));
     if(rcvSize!=sizeof(rec)) return -2;
 
     size_t written = ACE_OS::fwrite(&rec,1,sizeof(rec),_fp);
@@ -309,6 +339,7 @@ int CEvtProxy::svc()
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Play part file done(x%x)=0x%x\n"),msg,err));
             break;
         case TERMINATE_CLIENT:
+			reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->close();
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Connection Terminated(0x%x)\n"),msg));
             return 0;
         default:

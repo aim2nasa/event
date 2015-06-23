@@ -22,31 +22,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     u_short server_port = ACE_OS::atoi(argv[2]);
     ACE_DEBUG((LM_INFO, "(%P|%t) server info(addr:%s,port:%d)\n",server_host, server_port));
 
-    ACE_SOCK_Stream client_stream;
-    ACE_INET_Addr remote_addr(server_port, server_host);
-    ACE_SOCK_Connector connector;
-
-    ACE_DEBUG((LM_INFO, "(%P|%t) Starting connect to %s: %d \n",
-        remote_addr.get_host_name(), remote_addr.get_port_number()));
-
-    if (connector.connect(client_stream, remote_addr) == -1)
-        ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "connection failed"), -1);
-    else
-	ACE_DEBUG((LM_INFO, "(%P|%t) connected to %s \n", remote_addr.get_host_name()));
-
-    ACE_OS::sleep(2);
-
-    //연결이 제대로 되는지 검사 테스트
-    ACE_DEBUG((LM_INFO, "(%P|%t) Connection testing...\n"));
-    char inpBuff[128];
-    ACE_Time_Value timeout(1);
-    ssize_t result = client_stream.recv(inpBuff, sizeof(inpBuff),&timeout);
-    if (result == -1 && ACE_OS::last_error()==ETIME)
-        ACE_DEBUG((LM_INFO, "(%P|%t) Connection test ok\n"));
-    else
-        ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Connection test failed"), -1);
-
-    CEvtProxy er(&client_stream);
+    CEvtProxy er;
     CClassResult classResult;
     er.notify(&classResult);
 
@@ -59,7 +35,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     ACE_DEBUG((LM_INFO, "\n%d event# read\n",evtNos.size()));
 
     int rtn;
-    if((rtn=er.init())<0) {
+    if((rtn=er.init(server_host,server_port))<0) {
         ACE_DEBUG((LM_ERROR, "init error(%d)",rtn));
         return -1;
     }
@@ -68,6 +44,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     ACE_ASSERT(rtn==(evtNos.size()+2)); //include message,size
     er.start();
 
+	char inpBuff[128];
     ACE_TString filename;
     bool bRun = true;
     while (bRun)
@@ -135,9 +112,6 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     ACE_DEBUG((LM_INFO, "(%P|%t) waiting...\n"));
     er.wait();
     ACE_DEBUG((LM_INFO, "(%P|%t) waiting done\n"));
-
-    if (client_stream.close() == -1)
-        ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "close"), -1);
 
     ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) end\n")));
     ACE_RETURN(0);
