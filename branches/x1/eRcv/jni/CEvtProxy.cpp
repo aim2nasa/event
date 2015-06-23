@@ -183,15 +183,16 @@ int CEvtProxy::upload(const char* file)
     ssize_t size = _pStream->send_n(&_fSize,sizeof(long));
     if(size!=sizeof(long)) return -20;
 
+	char buffer[BUFSIZ];
     FILE *fp = ACE_OS::fopen(file,ACE_TEXT("rb"));
     if(!fp) return -30;
     size_t readUnit = sizeof(int)+EVENT_SIZE,totalRead=0,totalSent=0;
     while(1){
-        size_t readSize = ACE_OS::fread(_buffer,1,readUnit,fp);
+        size_t readSize = ACE_OS::fread(buffer,1,readUnit,fp);
         if(readSize!=readUnit) break;
         totalRead += readSize;
 
-        size_t size = _pStream->send_n(_buffer,readSize);
+        size_t size = _pStream->send_n(buffer,readSize);
         if(size!=readSize) return -40;
         totalSent += size;
     }
