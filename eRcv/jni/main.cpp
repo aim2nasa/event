@@ -68,11 +68,12 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     ACE_ASSERT(rtn==(evtNos.size()+2)); //include message,size
     er.start();
 
+    ACE_TString filename;
     bool bRun = true;
     while (bRun)
     {
         ACE_DEBUG((LM_INFO,
-            "\n<-Menu: Record[r],Stop[t],Play[p],Close[x]->\n"));
+            "\n<-Menu: Record[r],Stop[t],Play[p],PartPlay[i],Close[x]->\n"));
 	std::cin >> inpBuff;
 	std::cout << "Choice:" << inpBuff << std::endl;
 
@@ -100,6 +101,25 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
                 return -1;
             }
 	    ACE_DEBUG((LM_INFO, "(%P|%t) EVENT Play\n"));
+            break;
+        case 'i':
+            std::cout<<"filename:";
+	    std::cin >> inpBuff;
+            filename=inpBuff;
+	    std::cout << "Given filename:" << filename.c_str() << std::endl;
+            long long loc[2];
+            for(int i=0;i<2;i++){
+                std::cout<<"index["<<i<<"]";
+	        std::cin >> inpBuff;
+                loc[i] = ACE_OS::atol(inpBuff);
+            }
+	    std::cout << "start index:"<<loc[0]<<",end index:" <<loc[1]<< std::endl;
+
+            if((rtn=er.play(filename.c_str(),loc[0],loc[1]))!=0) {
+	        ACE_DEBUG((LM_ERROR, "(%P|%t) Play error(%d)\n",rtn));
+                return -1;
+            }
+	    ACE_DEBUG((LM_INFO, "(%P|%t) EVENT Play Part\n"));
             break;
 	case 'x':
             //Terminate

@@ -140,7 +140,9 @@ int CEvtProxy::recordStop()
 
 long CEvtProxy::fileSize(const char* file)
 {
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("fileSize(%s)\n"),file));
     FILE *fp = ACE_OS::fopen(file,ACE_TEXT("rb"));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("fileSize(%s), fileopen=0x%x\n"),file,fp));
     if(!fp) return -1;
     ACE_OS::fseek(fp,0,SEEK_END);
     long size = ACE_OS::ftell(fp); 
@@ -217,6 +219,31 @@ int CEvtProxy::play(const char* file)
     return 0;
 }
 
+int CEvtProxy::play(const char* file,long long startLoc,long long endLoc)
+{
+    int rtn;
+    if((rtn=upPrepare(file))!=0) return rtn;
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) prepared to upload:%s\n"),file));
+    if((rtn=upload(file))!=0) return rtn;
+
+    size_t length;
+    if((length=ACE_OS::strlen(file))<=0) return -100;
+
+    if(send(EVENT_PLAY_PART)<0) return -110;
+    if(send(length)<0) return -120;
+
+    ssize_t size = _pStream->send_n(file,length);
+    if(size!=length) return -130;
+
+    size = _pStream->send_n(&startLoc,sizeof(long long));
+    if(size!=sizeof(long long)) return -140;
+
+    size = _pStream->send_n(&endLoc,sizeof(long long));
+    if(size!=sizeof(long long)) return -150;
+
+    return 0;
+}
+
 int CEvtProxy::onEventRecordData()
 {
     int size,rcvSize;
@@ -273,6 +300,10 @@ int CEvtProxy::svc()
         case EVENT_PLAY_FULL:
             recv_int(err);
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Play full file done(x%x)=0x%x\n"),msg,err));
+            break;
+        case EVENT_PLAY_PART:
+            recv_int(err);
+	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Play part file done(x%x)=0x%x\n"),msg,err));
             break;
         case TERMINATE_CLIENT:
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Connection Terminated(0x%x)\n"),msg));
