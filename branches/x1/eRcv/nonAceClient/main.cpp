@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
 			cout << "filename:";
 			cin >> inpBuff;
 			cout << "Given filename:" << inpBuff << endl;
+			cout << "Record count:" << CEvt::recordCount(inpBuff) << endl;
 			int rtn;
 			if ((rtn = er.play(inpBuff)) != 0) {
 				cout << "Play error(" << rtn << ")" << endl;
@@ -107,6 +108,7 @@ int main(int argc, char *argv[])
 			std::cin >> inpBuff;
 			filename = inpBuff;
 			std::cout << "Given filename:" << filename.c_str() << std::endl;
+			cout << "Record count:" << CEvt::recordCount(filename.c_str()) << endl;
 			long long loc[2];
 			while (true)
 			{
