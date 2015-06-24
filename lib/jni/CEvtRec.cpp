@@ -67,24 +67,18 @@ int CEvtRec::scanDir(const char *dirname)
     DIR *dir;
     struct dirent *de;
 
-    printf("scan_dir start %s,%d\n",dirname);
-
-    printf("dir(%s) opening...\n",dirname);
     dir = opendir(dirname);
     if(dir == NULL)
         return -1;
-    printf("dir(%s) opened\n",dirname);
 
     strcpy(devname, dirname);
     filename = devname + strlen(devname);
     *filename++ = '/';
 
-    printf("filename=%s\n",filename);
     while((de = readdir(dir))) {
         if(de->d_name[0] == '.' &&
            (de->d_name[1] == '\0' ||
             (de->d_name[1] == '.' && de->d_name[2] == '\0'))) {
-	    printf("continue,d_name:%d,%d,%d\n",de->d_name[0],de->d_name[1],de->d_name[1],de->d_name[2]);
             continue;
 	}
 
@@ -93,12 +87,8 @@ int CEvtRec::scanDir(const char *dirname)
         int no;
         sscanf(devname,DEVICE_FORMAT,&no);
         addDevice(no);
-        printf("device(%s) opening...%d\n",devname,no);
     }
     closedir(dir);
-    printf("dir(%s) closed\n",dirname);
-
-    printf("scan_dir end %s\n",dirname);
     return 0;
 }
 
