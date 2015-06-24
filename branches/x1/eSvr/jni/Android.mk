@@ -26,6 +26,6 @@ LOCAL_LDLIBS += -lz
 LOCAL_C_INCLUDES += /home/skwak/ACE_wrappers \
                     /home/skwak/x1/lib/jni \
                     /home/skwak/x1/common
-LOCAL_CFLAGS := -DACE_NTRACE=1
+LOCAL_CFLAGS := -DACE_NTRACE=0
 
 include $(BUILD_EXECUTABLE)
