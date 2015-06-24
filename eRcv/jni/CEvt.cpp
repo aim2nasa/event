@@ -81,3 +81,8 @@ long CEvt::fileSize(const char* file)
 {
 	return CEvtProxy::fileSize(file);
 }
+
+long CEvt::recordCount(const char* file)
+{
+	return CEvtProxy::recordCount(file);
+}

@@ -27,6 +27,7 @@ public:
 	int play(const char* file, long long startLoc, long long endLoc);
 
 	static long fileSize(const char* file);
+	static long recordCount(const char* file);
 
 protected:
 	CEvtProxy *_proxy;
