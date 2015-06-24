@@ -102,11 +102,12 @@ int main(int argc, char *argv[])
 			long long loc[2];
 			while (true)
 			{
-				std::cout << std::endl << "set index[0] or index[1] as -1 to quit part play" << std::endl;
+				std::cout << std::endl << "set index as -1 to quit part play" << std::endl;
 				for (int i = 0; i < 2; i++){
 					std::cout << "index[" << i << "]: ";
 					std::cin >> inpBuff;
 					loc[i] = atol(inpBuff);
+					if (loc[i] == -1) break;
 				}
 
 				if (loc[0] == -1 || loc[1] == -1) {
