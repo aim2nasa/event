@@ -174,10 +174,14 @@ long CEvtProxy::fileSize(const char* file)
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("fileSize(%s)\n"),file));
     FILE *fp = ACE_OS::fopen(file,ACE_TEXT("rb"));
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("fileSize(%s), fileopen=0x%x\n"),file,fp));
-    if(!fp) return -1;
+	if (!fp) {
+		ACE_DEBUG((LM_ERROR, ACE_TEXT("fileopen(%s) error in fileSize\n"), file));
+		return -1;
+	}
     ACE_OS::fseek(fp,0,SEEK_END);
     long size = ACE_OS::ftell(fp); 
     ACE_OS::fclose(fp);
+	ACE_DEBUG((LM_DEBUG, ACE_TEXT("return fileSize(%s)=%Q\n"), file, size));
     return size;
 }
 
