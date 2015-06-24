@@ -87,6 +87,8 @@ int CEvtProxy::init(const char *addr, unsigned short port)
 		return -30;
 	}
 
+    if(send(EVENT_RECORD_INIT)<0) return -35;
+/*
     std::list<int> seq;
     seq.push_back(EVENT_RECORD_INIT);
     seq.push_back(_devList.size());
@@ -95,7 +97,7 @@ int CEvtProxy::init(const char *addr, unsigned short port)
         seq.push_back(*it);
 
     int sent = send(seq);
-
+*/
     ACE_thread_t tid;
     if(ACE_Thread_Manager::instance()->spawn(CEvtProxy::initResponse,
         (void*)this,THR_NEW_LWP|THR_JOINABLE,&tid)==-1) return -40;
@@ -106,7 +108,7 @@ int CEvtProxy::init(const char *addr, unsigned short port)
     if((wait=_iEvt.wait(&tv,0))!=0) return -50;
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting(%dsec)=%d done\n"),tv.sec(),wait));
 
-    return sent;
+    return 0;
 }
 
 int CEvtProxy::start()

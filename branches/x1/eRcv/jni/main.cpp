@@ -13,9 +13,9 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
     ACE_LOG_MSG->priority_mask( LM_INFO|LM_ERROR|LM_DEBUG, ACE_Log_Msg::PROCESS);
 
-    if(argc<4) {
+    if(argc<3) {
         ACE_DEBUG((LM_DEBUG, "argument is %d\n",argc));
-        ACE_DEBUG((LM_INFO, "usage:eRcv <ip> <port> <event#> ... <event#>\n"));
+        ACE_DEBUG((LM_INFO, "usage:eRcv <ip> <port>\n"));
         ACE_RETURN(-1);
     }
     const char *server_host = argv[1];
@@ -26,14 +26,6 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     CClassResult classResult;
     er.notify(&classResult);
 
-    std::list<int>& evtNos = er.devList();
-    for(int i=3;i<argc;i++) evtNos.push_back(atoi(argv[i]));
-
-    ACE_DEBUG((LM_INFO, "event#: "));
-    for(std::list<int>::iterator it=evtNos.begin();it!=evtNos.end();it++)
-        ACE_DEBUG((LM_INFO, " %d ",*it));
-    ACE_DEBUG((LM_INFO, "\n%d event# read\n",evtNos.size()));
-
     int rtn;
     if((rtn=er.init(server_host,server_port))<0) {
         ACE_DEBUG((LM_ERROR, "init error(%d)",rtn));
@@ -41,7 +33,12 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     }
     ACE_DEBUG((LM_INFO, "init ok(%d)\n",rtn));
 
-    ACE_ASSERT(rtn==(evtNos.size()+2)); //include message,size
+    std::list<int>& evtNos = er.devList();
+    ACE_DEBUG((LM_INFO, "event#: "));
+    for(std::list<int>::iterator it=evtNos.begin();it!=evtNos.end();it++)
+        ACE_DEBUG((LM_INFO, " %d ",*it));
+    ACE_DEBUG((LM_INFO, "\n%d event# read\n",evtNos.size()));
+
     er.start();
 
 	char inpBuff[128];

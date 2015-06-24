@@ -176,6 +176,7 @@ int CStreamHandler::onEventRecordInit()
 {
     ACE_TRACE("onEventRecordInit");
 
+/*
     int bytes;
     if(recv_int(bytes)<0) return ERROR_RECV_INT_SIZE;
 
@@ -191,6 +192,7 @@ int CStreamHandler::onEventRecordInit()
     ACE_DEBUG((LM_DEBUG,"CEvtRec devices:%d\n",CEvtRec::instance()->devices()));
 
     if(CEvtRec::instance()->devices()<=0) return ERROR_EVTREC_NO_DEV;
+*/
     return 0;
 }
 
