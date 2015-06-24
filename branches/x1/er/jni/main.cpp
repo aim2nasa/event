@@ -13,8 +13,8 @@ void sig_handler(int signo)
 int main(int argc, char *argv[])
 {
     printf("get event x1 version\n");
-    if(argc<3) {
-        printf("usage:er <dump file name> <event#> <event#>... <event#>\n");
+    if(argc<2) {
+        printf("usage:er <dump file name>\n");
         return -1;
     }
    
@@ -28,12 +28,6 @@ int main(int argc, char *argv[])
         
     CEvtRec& er=*CEvtRec::instance();
     er.evtDump(&d);
-    for(int i=3;i<=argc;i++) er.addDevice(atoi(argv[i-1]));
-
-    printf("event# :");
-    for(std::list<int>::iterator it=er.devList().begin();it!=er.devList().end();it++) 
-        printf(" %d ",*it);
-    printf("\n%d event# read in\n",er.devices()); 
 
     if(er.devOpen()) {
         printf("%d devices opened\n",er.devices());
@@ -41,6 +35,11 @@ int main(int argc, char *argv[])
         printf("error in opening event#%d\n",er.errDev());
         return -1;
     }
+
+    printf("event# :");
+    for(std::list<int>::iterator it=er.devList().begin();it!=er.devList().end();it++) 
+        printf(" %d ",*it);
+    printf("\n%d event# read in\n",er.devices()); 
  
     struct sigaction act;
     memset(&act,0,sizeof(act));
