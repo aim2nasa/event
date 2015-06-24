@@ -185,6 +185,13 @@ long CEvtProxy::fileSize(const char* file)
     return size;
 }
 
+long CEvtProxy::recordCount(const char* file)
+{
+	long fs;
+	if ((fs=fileSize(file)) == -1) return fs;
+	return fs / sizeof(CRecord);
+}
+
 int CEvtProxy::upPrepare(const char* file)
 {
     size_t length;
