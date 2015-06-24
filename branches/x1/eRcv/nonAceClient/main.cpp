@@ -108,16 +108,27 @@ int main(int argc, char *argv[])
 			filename = inpBuff;
 			std::cout << "Given filename:" << filename.c_str() << std::endl;
 			long long loc[2];
-			for (int i = 0; i < 2; i++){
-				std::cout << "index[" << i << "]";
-				std::cin >> inpBuff;
-				loc[i] = atol(inpBuff);
-			}
-			std::cout << "start index:" << loc[0] << ",end index:" << loc[1] << std::endl;
+			while (true)
+			{
+				std::cout << std::endl << "set index[0] or index[1] as -1 to quit part play" << std::endl;
+				for (int i = 0; i < 2; i++){
+					std::cout << "index[" << i << "]: ";
+					std::cin >> inpBuff;
+					loc[i] = atol(inpBuff);
+				}
 
-			if ((rtn = er.play(filename.c_str(), loc[0], loc[1])) != 0) {
-				cout << "Play error(" << rtn << ")" << endl;
-				return -1;
+				if (loc[0] == -1 || loc[1] == -1) {
+					std::cout << "finish part play(" << filename.c_str() << ")" << std::endl;
+					break;
+				}
+
+				std::cout << "start index:" << loc[0] << ",end index:" << loc[1] << std::endl;
+
+				if ((rtn = er.play(filename.c_str(), loc[0], loc[1])) != 0) {
+					cout << "Play error(" << rtn << ")" << endl;
+					return -1;
+				}
+				std::cout <<"play("<<filename.c_str()<<",start index:" << loc[0] << ",end index:" << loc[1] <<") done"<<std::endl;
 			}
 			cout << "Event Play Part" << endl;
 			break;
