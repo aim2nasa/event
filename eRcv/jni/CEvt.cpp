@@ -37,7 +37,7 @@ void CEvt::notify(IClassifyNoti *p)
 int CEvt::open(const char *addr, unsigned short port)
 {
 	int rtn;
-	if((rtn=_proxy->init(addr, port))<=0) return rtn;
+	if((rtn=_proxy->init(addr, port))!=0) return rtn;
 	_proxy->start();
 	return rtn;
 }
