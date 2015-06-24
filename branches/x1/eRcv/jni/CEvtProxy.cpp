@@ -181,7 +181,7 @@ long CEvtProxy::fileSize(const char* file)
     ACE_OS::fseek(fp,0,SEEK_END);
     long size = ACE_OS::ftell(fp); 
     ACE_OS::fclose(fp);
-	ACE_DEBUG((LM_DEBUG, ACE_TEXT("return fileSize(%s)=%Q\n"), file, size));
+	ACE_DEBUG((LM_DEBUG, ACE_TEXT("return fileSize(%s)=%d\n"), file, size));
     return size;
 }
 
