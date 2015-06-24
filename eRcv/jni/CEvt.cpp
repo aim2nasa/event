@@ -1,15 +1,17 @@
 #include "CEvt.h"
 #include "CEvtProxy.h"
+#include "ace/Init_ACE.h"
 
-CEvt::CEvt()
-:_proxy(new CEvtProxy())
+CEvt::CEvt(bool aceInit)
+	:_proxy(new CEvtProxy()), _aceInit(aceInit)
 {
-
+	if(_aceInit) ACE::init();
 }
 
 CEvt::~CEvt()
 {
 	delete _proxy;
+	if (_aceInit) ACE::fini();
 }
 
 std::size_t CEvt::addDevice(int n)

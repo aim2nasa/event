@@ -8,7 +8,7 @@ class IClassifyNoti;
 
 class DLLEXPORT CEvt{
 public:
-	CEvt();
+	CEvt(bool aceInit=true);
 	virtual ~CEvt();
 
 	std::size_t addDevice(int n);
@@ -31,6 +31,7 @@ public:
 
 protected:
 	CEvtProxy *_proxy;
+	bool _aceInit;
 };
 
 #endif
