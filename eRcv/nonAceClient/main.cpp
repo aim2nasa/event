@@ -34,8 +34,8 @@ public:
 
 int main(int argc, char *argv[])
 {
-	if (argc < 4) {
-		cout << "usage:eRcv <ip> <port> <event#> ... <event#>" << endl;
+	if (argc < 3) {
+		cout << "usage:eRcv <ip> <port>" << endl;
 		return -1;
 	}
 
@@ -47,22 +47,12 @@ int main(int argc, char *argv[])
 	CClassResult classResult;
 	er.notify(&classResult);
 
-	std::list<int>& evtNos = er.devList();
-	for (int i = 3; i < argc; i++) evtNos.push_back(atoi(argv[i]));
-
-	cout << "event#: ";
-	for (std::list<int>::iterator it = evtNos.begin(); it != evtNos.end(); it++)
-		cout << " " << *it << " ";
-	cout << endl << evtNos.size() << " evet# read" << endl;
-
 	int rtn;
 	if ((rtn = er.open(server_host, server_port)) < 0) {
 		cout << "init error(" << rtn << ")";
 		return -1;
 	}
 	cout << "init ok(" << rtn << ")" << endl;
-
-	assert(rtn == (evtNos.size() + 2)); //include message,size
 
 	char inpBuff[128];
 	std::string filename;
