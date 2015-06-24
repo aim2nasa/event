@@ -56,14 +56,13 @@ int main(int argc, char *argv[])
 	cout << endl << evtNos.size() << " evet# read" << endl;
 
 	int rtn;
-	if ((rtn = er.init(server_host, server_port)) < 0) {
+	if ((rtn = er.open(server_host, server_port)) < 0) {
 		cout << "init error(" << rtn << ")";
 		return -1;
 	}
 	cout << "init ok(" << rtn << ")" << endl;
 
 	assert(rtn == (evtNos.size() + 2)); //include message,size
-	er.start();
 
 	char inpBuff[128];
 	std::string filename;
@@ -126,7 +125,7 @@ int main(int argc, char *argv[])
 			//Terminate
 			bRun = false;
 			cout << "terminating..." << endl;
-			er.stop();
+			er.close();
 			break;
 		default:
 			break;

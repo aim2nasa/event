@@ -16,9 +16,8 @@ public:
 	std::list<int>& devList();
 	void notify(IClassifyNoti *p);
 
-	int init(const char *addr, unsigned short port);
-	int start();
-	int stop();
+	int open(const char *addr, unsigned short port);
+	int close();
 
 	int recordStart();
 	int recordStop();
