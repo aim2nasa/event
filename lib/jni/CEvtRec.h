@@ -24,7 +24,6 @@ protected:
 public:
     virtual ~CEvtRec();
 
-    std::size_t addDevice(int n);
     std::size_t devices();
     std::list<int>& devList();
     void evtDump(IEvtDump *p);
@@ -41,7 +40,9 @@ public:
     static void delInstance();
 
 protected:
+    std::size_t addDevice(int n);
     static void* readEvent(void *arg);
+    int scanDir(const char *dirname);
 
 protected:
     std::list<int> _devList;
