@@ -21,11 +21,12 @@ public:
 CStreamHandler::CStreamHandler()
 : noti_(0, this, ACE_Event_Handler::WRITE_MASK),snd_(NULL),fSize_(0)
 {
-
+    ACE_TRACE("CStreamHandler constructor");
 }
 
 CStreamHandler::~CStreamHandler()
 {
+    ACE_TRACE("CStreamHandler destructor");
     CEvtRec::delInstance();
 }
 
@@ -155,6 +156,7 @@ int CStreamHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask)
 
 int CStreamHandler::send(int msg)
 {
+    ACE_TRACE("Stream_Handler::send");
     ssize_t rcvSize = this->peer().send_n(&msg,sizeof(int));
     if (rcvSize <= 0)
         ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) send error(0x%x)\n"),msg),-1);
@@ -163,6 +165,7 @@ int CStreamHandler::send(int msg)
 
 int CStreamHandler::recv_int(int& msg)
 {
+    ACE_TRACE("Stream_Handler::recv_int");
     ssize_t size;
     if((size = this->peer().recv_n(&msg,sizeof(int))) <= 0)
 	return -1;
@@ -193,12 +196,14 @@ int CStreamHandler::onEventRecordInit()
 
 int CStreamHandler::onEventRecordStart()
 {
+    ACE_TRACE("Stream_Handler::onEventRecordStart");
     if(!CEvtRec::instance()->devOpen()) return ERROR_EVTREC_DEVOPEN;
     return CEvtRec::instance()->start();
 }
 
 int CStreamHandler::onEventRecordStop()
 {
+    ACE_TRACE("Stream_Handler::onEventRecordStop");
     CEvtRec::instance()->stop();
     CEvtRec::instance()->wait();
     CEvtRec::instance()->devClose();
