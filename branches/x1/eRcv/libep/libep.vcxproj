@@ -93,10 +93,12 @@
   <ItemGroup>
     <ClCompile Include="..\jni\CEvt.cpp" />
     <ClCompile Include="..\jni\CEvtProxy.cpp" />
+    <ClCompile Include="..\jni\CFileInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\jni\CEvt.h" />
     <ClInclude Include="..\jni\CEvtProxy.h" />
+    <ClInclude Include="..\jni\CFileInfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
