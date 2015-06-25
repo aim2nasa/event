@@ -9,6 +9,7 @@ class ACE_SOCK_Stream;
 class ACE_Auto_Event;
 class CClassifier;
 class IClassifyNoti;
+class CResult;
 
 class DLLEXPORT CEvtProxy : public ACE_Task < ACE_MT_SYNCH >
 {
@@ -20,6 +21,7 @@ public:
     int start();
     int stop();
 
+	CResult *eventsInfo();
 	int recordStart(IClassifyNoti *p);
     int recordStop();
     int upPrepare(const char* file);
@@ -45,6 +47,7 @@ protected:
     long _fSize;
     CClassifier* _pClass;
     long _index;
+	CResult *_pEventsInfo;
 };
 
 #endif
