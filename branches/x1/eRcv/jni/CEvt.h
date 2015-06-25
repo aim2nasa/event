@@ -1,8 +1,6 @@
 #ifndef __CEVT_H__
 #define __CEVT_H__
 
-#include <list>
-
 class CEvtProxy;
 class IClassifyNoti;
 
