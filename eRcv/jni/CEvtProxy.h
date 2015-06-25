@@ -4,6 +4,7 @@
 #include "ace/Task.h"
 #include <list>
 #include "ace/Auto_Event.h"
+#include "CFileInfo.h"
 
 class ACE_SOCK_Stream;
 class ACE_Auto_Event;
@@ -22,12 +23,15 @@ public:
     int stop();
 
 	CResult *eventsInfo();
+	int retrieveEventsInfo(const char* file);
 	int recordStart(IClassifyNoti *p);
     int recordStop();
     int upPrepare(const char* file);
     int upload(const char* file);
     int play(const char* file);
     int play(const char* file,long long startLoc,long long endLoc);
+	int playFirst(const char* file);
+	int playNext();
 
     static long fileSize(const char* file);
 	static long recordCount(const char* file);
@@ -48,6 +52,8 @@ protected:
     CClassifier* _pClass;
     long _index;
 	CResult *_pEventsInfo;
+	UEVT_LIST::iterator _it;
+	ACE_TString _filename;
 };
 
 #endif
