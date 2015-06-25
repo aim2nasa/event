@@ -179,20 +179,25 @@ int main(int argc, char *argv[])
 				cout << "PlayFirst error(" << rtn << ")" << endl;
 				return -1;
 			}
+			{
+				long evtIdx = 1;
+				while (true){
+					std::cout << "[" << evtIdx << "] Play next[n] or escape[q]:";
+					std::cin >> inpBuff;
+					cout << "Choice:" << inpBuff << endl;
 
-			while (true){
-				std::cout << "Play next[n] or escape[q]:";
-				std::cin >> inpBuff;
-				cout << "Choice:" << inpBuff << endl;
-
-				if (inpBuff[0] == 'n') {
-					if ((rtn = er.playNext()) != 0) {
-						cout << "PlayNext End of events(" << rtn << ")" << endl;
+					if (inpBuff[0] == 'n') {
+						if ((rtn = er.playNext()) != 0) {
+							cout << "PlayNext, End of events(" << rtn << "), total events="<<evtIdx << endl;
+							break;
+						}
+						cout << "[" << ++evtIdx << "] event Played" << endl;
+					}
+					else if (inpBuff[0] == 'q') {
 						break;
 					}
-				}else if (inpBuff[0] == 'q') {
-					break;
 				}
+
 			}
 			cout << "Event Play Step" << endl;
 			break;
