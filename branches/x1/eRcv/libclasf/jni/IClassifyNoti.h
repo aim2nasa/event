@@ -4,7 +4,7 @@
 class DLLEXPORT IClassifyNoti{
 public:
 	enum DEV_TYPE{ TOUCH, KEY };
-	enum TOUCH_TYPE{ TAP, SWIPE, MULTITOUCH };
+	enum TOUCH_TYPE{ INVALID_TOUCH=-1,TAP, SWIPE, MULTITOUCH };
 	enum ERR_CODE{ DEV_MIXED, KEY_SEQ };
 
 	virtual ~IClassifyNoti(){}
