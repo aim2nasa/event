@@ -14,21 +14,6 @@ CEvt::~CEvt()
 	if (_aceInit) ACE::fini();
 }
 
-std::size_t CEvt::addDevice(int n)
-{
-	return _proxy->addDevice(n);
-}
-
-std::size_t CEvt::devices()
-{
-	return _proxy->devices();
-}
-
-std::list<int>& CEvt::devList()
-{
-	return _proxy->devList();
-}
-
 int CEvt::open(const char *addr, unsigned short port)
 {
 	int rtn;
