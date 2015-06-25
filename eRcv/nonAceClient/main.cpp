@@ -38,6 +38,23 @@ int fileInfo(const char *file, CResult *result)
 	return CFileInfo::analyze(file, result);
 }
 
+int dispFileInfo(char *buffer)
+{
+	cout << "filename:";
+	cin >> buffer;
+	cout << "Given filename:" << buffer << endl;
+	cout << "Record count:" << CEvt::recordCount(buffer) << endl;
+
+	int rtn;
+	CResult result;
+	if ((rtn = fileInfo(buffer, &result)) < 0) {
+		cout << "Error(" << rtn << ") in fileInfo(" << buffer << ")" << endl;
+		return -1;
+	}
+	cout << "User Events :" << result.list().size() << endl;
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	if (argc < 3) {
@@ -89,17 +106,10 @@ int main(int argc, char *argv[])
 			cout << "Event record stop" << endl;
 			break;
 		case 'p':
-			cout << "filename:";
-			cin >> inpBuff;
-			cout << "Given filename:" << inpBuff << endl;
-			cout << "Record count:" << CEvt::recordCount(inpBuff) << endl;
-
-			if ((rtn = fileInfo(inpBuff, &result))<0) {
-				cout << "Error(" << rtn << ") in fileInfo(" << inpBuff << ")" << endl;
+			if ((rtn=dispFileInfo(inpBuff)) < 0) {
+				cout << "Error(" << rtn << ") in dispFileInfo(" << inpBuff << ")" << endl;
 				return -1;
 			}
-			plist = &result.list();
-			cout << "User Events :" << plist->size() << endl;
 
 			if ((rtn = er.play(inpBuff)) != 0) {
 				cout << "Play error(" << rtn << ")" << endl;
@@ -108,18 +118,11 @@ int main(int argc, char *argv[])
 			cout << "Event Play" << endl;
 			break;
 		case 'i':
-			std::cout << "filename:";
-			std::cin >> inpBuff;
-			filename = inpBuff;
-			std::cout << "Given filename:" << filename.c_str() << std::endl;
-			cout << "Record count:" << CEvt::recordCount(filename.c_str()) << endl;
-
-			if ((rtn = fileInfo(inpBuff, &result)) < 0) {
-				cout << "Error(" << rtn << ") in fileInfo(" << inpBuff << ")" << endl;
+			if ((rtn = dispFileInfo(inpBuff)) < 0) {
+				cout << "Error(" << rtn << ") in dispFileInfo(" << inpBuff << ")" << endl;
 				return -1;
 			}
-			plist = &result.list();
-			cout << "User Events :" << plist->size() << endl;
+			filename = inpBuff;
 
 			long long loc[2];
 			while (true)
