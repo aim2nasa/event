@@ -47,6 +47,16 @@ int CEvt::play(const char* file, long long startLoc, long long endLoc)
 	return _proxy->play(file, startLoc, endLoc);
 }
 
+int CEvt::playFirst(const char* file)
+{
+	return _proxy->playFirst(file);
+}
+
+int CEvt::playNext()
+{
+	return _proxy->playNext();
+}
+
 long CEvt::fileSize(const char* file)
 {
 	return CEvtProxy::fileSize(file);
