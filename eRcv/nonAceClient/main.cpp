@@ -87,8 +87,6 @@ int main(int argc, char *argv[])
 	}
 	cout << "init ok(" << rtn << ")" << endl;
 
-	CResult result;
-	UEVT_LIST *plist = NULL;
 	char inpBuff[128];
 	std::string filename;
 	bool bRun = true;
