@@ -350,10 +350,9 @@ int CEvtProxy::svc()
 
 int CEvtProxy::playFirst(const char* file)
 {
-	if (_pEventsInfo->list().size() == 0) return -10;
-
 	_filename = file;
-	if (retrieveEventsInfo(file) != 0) return -20;
+	if (retrieveEventsInfo(file) != 0) return -10;
+	if (_pEventsInfo->list().size() == 0) return -20;
 
 	_it = _pEventsInfo->list().begin();
 	ACE_ASSERT(_it != _pEventsInfo->list().end());
