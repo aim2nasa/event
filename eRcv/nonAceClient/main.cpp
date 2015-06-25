@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
 	bool bRun = true;
 	while (bRun)
 	{
-		cout << endl << "<-Menu: Record[r],Stop[t],Play[p],PartPlay[i],Close[x]->" << endl;
+		cout << endl << "<-Menu: Record[r],Stop[t],Play[p],PartPlay[i],StepPlay[s],Close[x]->" << endl;
 		cin >> inpBuff;
 		cout << "Choice:" << inpBuff << endl;
 
@@ -166,6 +166,35 @@ int main(int argc, char *argv[])
 				std::cout <<"play("<<filename.c_str()<<",start index:" << loc[0] << ",end index:" << loc[1] <<") done"<<std::endl;
 			}
 			cout << "Event Play Part" << endl;
+			break;
+		case 's':
+			cout << "Event Play Step chosen" << endl;
+			if ((rtn = dispFileInfo(inpBuff)) < 0) {
+				cout << "Error(" << rtn << ") in dispFileInfo(" << inpBuff << ")" << endl;
+				return -1;
+			}
+			filename = inpBuff;
+
+			if ((rtn = er.playFirst(filename.c_str())) != 0) {
+				cout << "PlayFirst error(" << rtn << ")" << endl;
+				return -1;
+			}
+
+			while (true){
+				std::cout << "Play next[n] or escape[q]:";
+				std::cin >> inpBuff;
+				cout << "Choice:" << inpBuff << endl;
+
+				if (inpBuff[0] == 'n') {
+					if ((rtn = er.playNext()) != 0) {
+						cout << "PlayNext End of events(" << rtn << ")" << endl;
+						break;
+					}
+				}else if (inpBuff[0] == 'q') {
+					break;
+				}
+			}
+			cout << "Event Play Step" << endl;
 			break;
 		case 'x':
 			//Terminate
