@@ -2,6 +2,7 @@
 #include "CEvt.h"
 #include "IClassifyNoti.h"
 #include "CFileInfo.h"
+#include <stdio.h>
 #include <assert.h>
 
 using namespace std;
@@ -52,6 +53,16 @@ int dispFileInfo(char *buffer)
 		return -1;
 	}
 	cout << "User Events :" << result.list().size() << endl;
+
+	std::string name(buffer);
+	name += ".inf";
+	FILE *fp = fopen(name.c_str(),"w");
+	if (!fp) return -2;
+	for (UEVT_LIST::iterator it = result.list().begin(); it != result.list().end(); it++) {
+		int rtn = fprintf(fp, "%s(%d) %d %d\n", (it->_devType == IClassifyNoti::KEY) ? "Key" : "Touch", it->_device,it->_startIndex,it->_endIndex);
+		if (rtn <= 0) return -3;
+	}
+	fclose(fp);
 	return 0;
 }
 
