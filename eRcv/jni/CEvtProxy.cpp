@@ -9,7 +9,7 @@
 #include "CRecord.h"
 
 CEvtProxy::CEvtProxy()
-:_pStream(NULL),_fp(NULL),_fSize(0),_pClass(new CClassifier()),_pNoti(NULL),_index(0)
+:_pStream(NULL),_fp(NULL),_fSize(0),_pClass(new CClassifier()),_index(0)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy Constructor\n")));
 }
@@ -19,11 +19,6 @@ CEvtProxy::~CEvtProxy()
     delete _pClass;
 	delete reinterpret_cast<ACE_SOCK_Stream*>(_pStream);
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy() Destructor\n")));
-}
-
-void CEvtProxy::notify(IClassifyNoti *p)
-{
-    _pNoti = p;
 }
 
 ACE_THR_FUNC_RETURN CEvtProxy::initResponse(void *p)
@@ -124,7 +119,7 @@ int CEvtProxy::recv_int(int& msg)
     return rcvSize;
 }
 
-int CEvtProxy::recordStart()
+int CEvtProxy::recordStart(IClassifyNoti *p)
 {
     ACE_TRACE("CEvtProxy::recordStart");
 
@@ -134,7 +129,7 @@ int CEvtProxy::recordStart()
         dt.year(), dt.month(), dt.day(), dt.hour(), dt.minute(), dt.second(), dt.microsec());
 
     _fp = ACE_OS::fopen(filename, ACE_TEXT("wb"));
-    _pClass->notify(_pNoti);
+    _pClass->notify(p);
     _index = 0;
     return send(EVENT_RECORD_START);
 }

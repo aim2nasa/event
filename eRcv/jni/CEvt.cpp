@@ -29,8 +29,7 @@ int CEvt::close()
 
 int CEvt::recordStart(IClassifyNoti *p)
 {
-	_proxy->notify(p);
-	return _proxy->recordStart();
+	return _proxy->recordStart(p);
 }
 
 int CEvt::recordStop()
