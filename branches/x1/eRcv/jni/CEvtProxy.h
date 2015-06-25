@@ -16,12 +16,11 @@ public:
     CEvtProxy();
     virtual ~CEvtProxy();
 
-    void notify(IClassifyNoti *p);
     int init(const char *addr,unsigned short port);
     int start();
     int stop();
 
-    int recordStart();
+	int recordStart(IClassifyNoti *p);
     int recordStop();
     int upPrepare(const char* file);
     int upload(const char* file);
@@ -45,7 +44,6 @@ protected:
     FILE *_fp;
     long _fSize;
     CClassifier* _pClass;
-    IClassifyNoti* _pNoti;
     long _index;
 };
 
