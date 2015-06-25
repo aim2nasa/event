@@ -1,6 +1,7 @@
 #include <iostream>
 #include "CEvt.h"
 #include "IClassifyNoti.h"
+#include "CFileInfo.h"
 #include <assert.h>
 
 using namespace std;
@@ -32,6 +33,11 @@ public:
 	}
 };
 
+int fileInfo(const char *file, CResult *result)
+{
+	return CFileInfo::analyze(file, result);
+}
+
 int main(int argc, char *argv[])
 {
 	if (argc < 3) {
@@ -53,6 +59,8 @@ int main(int argc, char *argv[])
 	}
 	cout << "init ok(" << rtn << ")" << endl;
 
+	CResult result;
+	UEVT_LIST *plist = NULL;
 	char inpBuff[128];
 	std::string filename;
 	bool bRun = true;
@@ -85,7 +93,14 @@ int main(int argc, char *argv[])
 			cin >> inpBuff;
 			cout << "Given filename:" << inpBuff << endl;
 			cout << "Record count:" << CEvt::recordCount(inpBuff) << endl;
-			int rtn;
+
+			if ((rtn = fileInfo(inpBuff, &result))<0) {
+				cout << "Error(" << rtn << ") in fileInfo(" << inpBuff << ")" << endl;
+				return -1;
+			}
+			plist = &result.list();
+			cout << "User Events :" << plist->size() << endl;
+
 			if ((rtn = er.play(inpBuff)) != 0) {
 				cout << "Play error(" << rtn << ")" << endl;
 				return -1;
@@ -98,6 +113,14 @@ int main(int argc, char *argv[])
 			filename = inpBuff;
 			std::cout << "Given filename:" << filename.c_str() << std::endl;
 			cout << "Record count:" << CEvt::recordCount(filename.c_str()) << endl;
+
+			if ((rtn = fileInfo(inpBuff, &result)) < 0) {
+				cout << "Error(" << rtn << ") in fileInfo(" << inpBuff << ")" << endl;
+				return -1;
+			}
+			plist = &result.list();
+			cout << "User Events :" << plist->size() << endl;
+
 			long long loc[2];
 			while (true)
 			{
