@@ -29,11 +29,6 @@ std::list<int>& CEvt::devList()
 	return _proxy->devList();
 }
 
-void CEvt::notify(IClassifyNoti *p)
-{
-	_proxy->notify(p);
-}
-
 int CEvt::open(const char *addr, unsigned short port)
 {
 	int rtn;
@@ -47,8 +42,9 @@ int CEvt::close()
 	return _proxy->stop();
 }
 
-int CEvt::recordStart()
+int CEvt::recordStart(IClassifyNoti *p)
 {
+	_proxy->notify(p);
 	return _proxy->recordStart();
 }
 

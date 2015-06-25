@@ -14,12 +14,11 @@ public:
 	std::size_t addDevice(int n);
 	std::size_t devices();
 	std::list<int>& devList();
-	void notify(IClassifyNoti *p);
 
 	int open(const char *addr, unsigned short port);
 	int close();
 
-	int recordStart();
+	int recordStart(IClassifyNoti *p);
 	int recordStop();
 	int upPrepare(const char* file);
 	int upload(const char* file);

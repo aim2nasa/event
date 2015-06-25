@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
 
 	CEvt er;
 	CClassResult classResult;
-	er.notify(&classResult);
 
 	int rtn;
 	if ((rtn = er.open(server_host, server_port)) < 0) {
@@ -67,7 +66,7 @@ int main(int argc, char *argv[])
 		{
 		case 'r':
 			//Record start
-			if (er.recordStart() < 0){
+			if (er.recordStart(&classResult) < 0){
 				cout << "error record start" << endl;
 				return -1;
 			}
