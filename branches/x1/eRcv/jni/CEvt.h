@@ -11,10 +11,6 @@ public:
 	CEvt(bool aceInit=true);
 	virtual ~CEvt();
 
-	std::size_t addDevice(int n);
-	std::size_t devices();
-	std::list<int>& devList();
-
 	int open(const char *addr, unsigned short port);
 	int close();
 
