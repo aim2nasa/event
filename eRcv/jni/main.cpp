@@ -33,12 +33,6 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     }
     ACE_DEBUG((LM_INFO, "init ok(%d)\n",rtn));
 
-    std::list<int>& evtNos = er.devList();
-    ACE_DEBUG((LM_INFO, "event#: "));
-    for(std::list<int>::iterator it=evtNos.begin();it!=evtNos.end();it++)
-        ACE_DEBUG((LM_INFO, " %d ",*it));
-    ACE_DEBUG((LM_INFO, "\n%d event# read\n",evtNos.size()));
-
     er.start();
 
 	char inpBuff[128];
