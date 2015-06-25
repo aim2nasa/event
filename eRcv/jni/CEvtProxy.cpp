@@ -7,18 +7,25 @@
 #include "CClassifier.h"
 #include "input.h"
 #include "CRecord.h"
+#include "CFileInfo.h"
 
 CEvtProxy::CEvtProxy()
-:_pStream(NULL),_fp(NULL),_fSize(0),_pClass(new CClassifier()),_index(0)
+:_pStream(NULL), _fp(NULL), _fSize(0), _pClass(new CClassifier()), _index(0), _pEventsInfo(new CResult())
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy Constructor\n")));
 }
 
 CEvtProxy::~CEvtProxy()
 {
+	delete _pEventsInfo;
     delete _pClass;
 	delete reinterpret_cast<ACE_SOCK_Stream*>(_pStream);
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy() Destructor\n")));
+}
+
+CResult *CEvtProxy::eventsInfo()
+{
+	return _pEventsInfo;
 }
 
 ACE_THR_FUNC_RETURN CEvtProxy::initResponse(void *p)
@@ -212,6 +219,9 @@ int CEvtProxy::upload(const char* file)
     }
     ACE_OS::fclose(fp);
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) readin:%dbytes sent:%dbytes\n"),totalRead,totalSent));
+
+	_pEventsInfo->reset();
+	if(CFileInfo::analyze(file, _pEventsInfo)!=0) return -45;
     return 0;
 }
 
