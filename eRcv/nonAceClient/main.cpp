@@ -14,19 +14,19 @@ public:
 		cout << "New device(" << device << ") type:" << devType << endl;
 	}
 
-	void CClassResult::onKeyEvent(int device, int startIndex, int endIndex)
+	void onKeyEvent(int device, int startIndex, int endIndex)
 	{
 		cout << "+Key(" << device << "): index(" << startIndex <<","<<endIndex<<")"<< endl;
 	}
 
-	void CClassResult::onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex)
+	void onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex)
 	{
 		cout << "+Touch(" << device << "): ";
 		(type == SWIPE)? cout << "Swipe" : cout << "Tap";
 		cout << "index(" << startIndex << "," << endIndex << ")" << endl;
 	}
 
-	void CClassResult::onError(ERR_CODE code)
+	void onError(ERR_CODE code)
 	{
 		cout << "****Error:" << code <<"****"<< endl;
 	}
