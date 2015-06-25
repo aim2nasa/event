@@ -69,7 +69,7 @@ void CResult::onKeyEvent(int device, int startIndex, int endIndex)
 
 void CResult::onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex)
 {
-	CUserEvent ue(TOUCH, device, startIndex, endIndex);
+	CUserEvent ue(TOUCH, device, startIndex, endIndex, type);
 	_pList->push_back(ue);
 }
 

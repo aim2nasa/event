@@ -54,13 +54,21 @@ int dispFileInfo(char *buffer)
 	}
 	cout << "User Events :" << result.list().size() << endl;
 
+	char* touchType[] = { "TAP", "SWIPE", "MULTITOUCH" };
 	std::string name(buffer);
 	name += ".inf";
 	FILE *fp = fopen(name.c_str(),"w");
 	if (!fp) return -2;
 	for (UEVT_LIST::iterator it = result.list().begin(); it != result.list().end(); it++) {
-		int rtn = fprintf(fp, "%s(%d) %d %d\n", (it->_devType == IClassifyNoti::KEY) ? "Key" : "Touch", it->_device,it->_startIndex,it->_endIndex);
+		int rtn = fprintf(fp, "%s(%d) %d %d", (it->_devType == IClassifyNoti::KEY) ? "Key" : "Touch", it->_device,it->_startIndex,it->_endIndex);
 		if (rtn <= 0) return -3;
+
+		if (it->_tchType != IClassifyNoti::INVALID_TOUCH){
+			rtn = fprintf(fp, " %s", touchType[it->_tchType]);
+			if (rtn <= 0) return -4;
+		}
+		rtn = fprintf(fp, "\n");
+		if (rtn <= 0) return -5;
 	}
 	fclose(fp);
 	return 0;
