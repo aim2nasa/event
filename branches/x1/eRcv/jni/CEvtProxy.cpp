@@ -28,6 +28,13 @@ CResult *CEvtProxy::eventsInfo()
 	return _pEventsInfo;
 }
 
+int CEvtProxy::retrieveEventsInfo(const char* file)
+{
+	_pEventsInfo->reset();
+	if (CFileInfo::analyze(file, _pEventsInfo) != 0) return -1;
+	return 0;
+}
+
 ACE_THR_FUNC_RETURN CEvtProxy::initResponse(void *p)
 {
     CEvtProxy *pThis = reinterpret_cast<CEvtProxy*>(p);
@@ -219,9 +226,6 @@ int CEvtProxy::upload(const char* file)
     }
     ACE_OS::fclose(fp);
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) readin:%dbytes sent:%dbytes\n"),totalRead,totalSent));
-
-	_pEventsInfo->reset();
-	if(CFileInfo::analyze(file, _pEventsInfo)!=0) return -45;
     return 0;
 }
 
@@ -342,4 +346,24 @@ int CEvtProxy::svc()
         }
     }
     return 0;
+}
+
+int CEvtProxy::playFirst(const char* file)
+{
+	if (_pEventsInfo->list().size() == 0) return -10;
+
+	_filename = file;
+	if (retrieveEventsInfo(file) != 0) return -20;
+
+	_it = _pEventsInfo->list().begin();
+	ACE_ASSERT(_it != _pEventsInfo->list().end());
+	return play(_filename.c_str(), (*_it)._startIndex, (*_it)._endIndex);
+}
+
+int CEvtProxy::playNext()
+{
+	++_it;
+	if (_it == _pEventsInfo->list().end()) return -1;
+	
+	return play(_filename.c_str(), (*_it)._startIndex, (*_it)._endIndex);
 }
