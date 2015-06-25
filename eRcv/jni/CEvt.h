@@ -20,8 +20,6 @@ public:
 
 	int recordStart(IClassifyNoti *p);
 	int recordStop();
-	int upPrepare(const char* file);
-	int upload(const char* file);
 	int play(const char* file);
 	int play(const char* file, long long startLoc, long long endLoc);
 

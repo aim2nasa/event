@@ -52,16 +52,6 @@ int CEvt::recordStop()
 {
 	return _proxy->recordStop();
 }
-	
-int CEvt::upPrepare(const char* file)
-{
-	return _proxy->upPrepare(file);
-}
-
-int CEvt::upload(const char* file)
-{
-	return _proxy->upload(file);
-}
 
 int CEvt::play(const char* file)
 {
