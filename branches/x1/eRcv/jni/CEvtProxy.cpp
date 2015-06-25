@@ -21,22 +21,6 @@ CEvtProxy::~CEvtProxy()
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy() Destructor\n")));
 }
 
-std::size_t CEvtProxy::addDevice(int n)
-{
-    _devList.push_back(n);
-    return devices();
-}
-
-std::size_t CEvtProxy::devices()
-{
-    return _devList.size();
-}
-
-std::list<int>& CEvtProxy::devList()
-{
-    return _devList;
-}
-
 void CEvtProxy::notify(IClassifyNoti *p)
 {
     _pNoti = p;

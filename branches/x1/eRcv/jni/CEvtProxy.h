@@ -16,11 +16,7 @@ public:
     CEvtProxy();
     virtual ~CEvtProxy();
 
-    std::size_t addDevice(int n);
-    std::size_t devices();
-    std::list<int>& devList();
     void notify(IClassifyNoti *p);
-
     int init(const char *addr,unsigned short port);
     int start();
     int stop();
@@ -44,7 +40,6 @@ protected:
 
 protected:
     void* _pStream;
-    std::list<int> _devList;
     ACE_Auto_Event _iEvt;
     ACE_Auto_Event _upEvt;
     FILE *_fp;
