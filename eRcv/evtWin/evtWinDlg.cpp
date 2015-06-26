@@ -164,17 +164,19 @@ void CEvtWinDlg::CStringToCharBuffer(char* pBuffer, int nBufferSize, CString& st
 
 void CEvtWinDlg::OnBnClickedConnectButton()
 {
-	LCString(_T("Connecting..."));
 	UpdateData(TRUE);
 
 	BYTE nField0, nFiled1, nField2, nField3;
 	m_ctrlServerIp.GetAddress(nField0, nFiled1, nField2, nField3);
+	m_strIp.Format(_T("%d.%d.%d.%d"), nField0, nFiled1, nField2, nField3);
+	iniWrite();
 
-	CString ip;
-	ip.Format(_T("%d.%d.%d.%d"), nField0, nFiled1, nField2, nField3);
+	CString str;
+	str.Format(_T("Connecting to ip:%s port:%u"),m_strIp.GetBuffer(),m_uServerport);
+	LCString(str);
 
 	char buffer[MAX_PATH];
-	CStringToCharBuffer(buffer, sizeof(buffer), ip);
+	CStringToCharBuffer(buffer, sizeof(buffer), m_strIp);
 	int rtn;
 	if ((rtn = m_er.open(buffer,m_uServerport)) < 0) {
 		CString msg;
