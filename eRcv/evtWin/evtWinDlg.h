@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+#include "CEvt.h"
 
 // CEvtWinDlg 대화 상자
 class CEvtWinDlg : public CDialogEx
