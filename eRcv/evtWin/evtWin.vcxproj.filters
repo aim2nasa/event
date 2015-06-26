@@ -60,5 +60,14 @@
     <Image Include="res\evtWin.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\Green.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Grey.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Red.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

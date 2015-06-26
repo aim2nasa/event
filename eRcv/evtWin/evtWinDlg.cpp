@@ -63,6 +63,7 @@ void CEvtWinDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SERVER_IPADDRESS, m_ctrlServerIp);
 	DDX_Text(pDX, IDC_SERVER_PORT_EDIT, m_uServerport);
 	DDX_Control(pDX, IDC_LOG_LIST, m_logList);
+	DDX_Control(pDX, IDC_CONNECT_LED_STATIC, m_ctrlConnLED);
 }
 
 BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
@@ -110,6 +111,12 @@ BOOL CEvtWinDlg::OnInitDialog()
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 	iniRead();
+
+	m_ctrlBmpGrey.LoadBitmap(IDB_GREY);
+	m_ctrlBmpGreen.LoadBitmap(IDB_GREEN);
+	m_ctrlBmpRed.LoadBitmap(IDB_RED);
+
+	m_ctrlConnLED.SetBitmap(m_ctrlBmpGrey);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -251,6 +258,7 @@ void CEvtWinDlg::LCString(CString str)
 void CEvtWinDlg::OnBnClickedConnectionCloseButton()
 {
 	m_er.close();
+	m_ctrlConnLED.SetBitmap(m_ctrlBmpGrey);
 	LCString(_T("Connection closed"));
 }
 
@@ -272,14 +280,18 @@ UINT CEvtWinDlg::connect(LPVOID pParam)
 
 LRESULT CEvtWinDlg::OnConnectionFailed(WPARAM wParam, LPARAM lParam)
 {
+	m_ctrlConnLED.SetBitmap(m_ctrlBmpRed);
 	CString str;
 	str.Format(_T("Connection failed to server, error code(%d)"),(int)wParam);
 	LCString(str);
+	UpdateData(FALSE);
 	return 0;
 }
 
 LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 {
+	m_ctrlConnLED.SetBitmap(m_ctrlBmpGreen);
 	LCString(_T("Connected to server"));
+	UpdateData(FALSE);
 	return 0;
 }
