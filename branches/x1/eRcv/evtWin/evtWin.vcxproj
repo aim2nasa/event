@@ -138,6 +138,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\evtWin.ico" />
+    <Image Include="res\Green.bmp" />
+    <Image Include="res\Grey.bmp" />
+    <Image Include="res\Red.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,6 +5,7 @@
 #pragma once
 #include "CEvt.h"
 #include "afxcmn.h"
+#include "afxwin.h"
 
 #define MAX_LOG	(1024*8)
 
@@ -50,4 +51,9 @@ protected:
 	UINT m_uServerport;
 	CListBox m_logList;
 	CWinThread *m_pConThread;
+
+	CBitmap	m_ctrlBmpGrey;
+	CBitmap	m_ctrlBmpGreen;
+	CBitmap m_ctrlBmpRed;
+	CStatic m_ctrlConnLED;
 };
