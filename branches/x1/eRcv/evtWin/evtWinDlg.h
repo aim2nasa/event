@@ -36,6 +36,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	void iniRead();
+	void iniWrite();
 	void LCString(CString str);
 	static void CStringToCharBuffer(char* pBuffer, int nBufferSize, CString& str);
 
