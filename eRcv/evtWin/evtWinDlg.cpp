@@ -325,7 +325,7 @@ LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 void CEvtWinDlg::OnBnClickedRecordButton()
 {
 	if (!m_bRecord){
-		if (m_er.recordStart(NULL) < 0){
+		if (m_er.recordStart(&m_classRes) < 0){
 			LCString(_T("recordStart error"));
 			return;
 		}

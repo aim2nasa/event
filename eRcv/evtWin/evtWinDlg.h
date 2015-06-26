@@ -4,6 +4,7 @@
 
 #pragma once
 #include "CEvt.h"
+#include "CClassRes.h"
 #include "afxcmn.h"
 #include "afxwin.h"
 
@@ -45,6 +46,7 @@ protected:
 	static UINT connect(LPVOID pParam);
 
 	CEvt m_er;
+	CClassRes m_classRes;
 	CIPAddressCtrl m_ctrlServerIp;
 	CString m_strIp;
 	UINT m_uServerport;
