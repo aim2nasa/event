@@ -56,4 +56,5 @@ protected:
 	CBitmap	m_ctrlBmpGreen;
 	CBitmap m_ctrlBmpRed;
 	CStatic m_ctrlConnLED;
+	BOOL	m_bConnect;
 };

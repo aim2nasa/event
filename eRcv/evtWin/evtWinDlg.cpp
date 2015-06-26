@@ -53,6 +53,7 @@ CEvtWinDlg::CEvtWinDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CEvtWinDlg::IDD, pParent)
 	, m_uServerport(0)
 	, m_pConThread(NULL)
+	, m_bConnect(FALSE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -257,9 +258,12 @@ void CEvtWinDlg::LCString(CString str)
 
 void CEvtWinDlg::OnBnClickedConnectionCloseButton()
 {
-	m_er.close();
-	m_ctrlConnLED.SetBitmap(m_ctrlBmpGrey);
-	LCString(_T("Connection closed"));
+	if (m_bConnect) {
+		m_er.close();
+		m_bConnect = FALSE;
+		m_ctrlConnLED.SetBitmap(m_ctrlBmpGrey);
+		LCString(_T("Connection closed"));
+	}
 }
 
 UINT CEvtWinDlg::connect(LPVOID pParam)
@@ -280,6 +284,7 @@ UINT CEvtWinDlg::connect(LPVOID pParam)
 
 LRESULT CEvtWinDlg::OnConnectionFailed(WPARAM wParam, LPARAM lParam)
 {
+	m_bConnect = FALSE;
 	m_ctrlConnLED.SetBitmap(m_ctrlBmpRed);
 	CString str;
 	str.Format(_T("Connection failed to server, error code(%d)"),(int)wParam);
@@ -290,6 +295,7 @@ LRESULT CEvtWinDlg::OnConnectionFailed(WPARAM wParam, LPARAM lParam)
 
 LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 {
+	m_bConnect = TRUE;
 	m_ctrlConnLED.SetBitmap(m_ctrlBmpGreen);
 	LCString(_T("Connected to server"));
 	UpdateData(FALSE);
