@@ -37,4 +37,6 @@ protected:
 	CEvt m_er;
 	CIPAddressCtrl m_ctrlServerIp;
 	UINT m_uServerport;
+public:
+	afx_msg void OnBnClickedExitButton();
 };
