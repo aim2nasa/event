@@ -35,11 +35,13 @@ protected:
 	afx_msg void OnBnClickedExitButton();
 	DECLARE_MESSAGE_MAP()
 
+	void iniRead();
 	void LCString(CString str);
 	static void CStringToCharBuffer(char* pBuffer, int nBufferSize, CString& str);
 
 	CEvt m_er;
 	CIPAddressCtrl m_ctrlServerIp;
+	CString m_strIp;
 	UINT m_uServerport;
 	CListBox m_logList;
 };

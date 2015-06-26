@@ -103,6 +103,7 @@ BOOL CEvtWinDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	iniRead();
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -189,6 +190,25 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 void CEvtWinDlg::OnBnClickedExitButton()
 {
 	OnOK();
+}
+
+void CEvtWinDlg::iniRead()
+{
+	TCHAR szPathName[MAX_PATH],szSection[MAX_PATH],sztemp[MAX_PATH];
+
+	GetModuleFileName(NULL, szPathName, MAX_PATH);
+	PathRenameExtension(szPathName, _T(".ini"));
+
+	CString strFileName(szPathName);
+
+	_stprintf_s(szSection, _T("%s"), _T("SERVER"));
+	GetPrivateProfileString(szSection, _T("ip"), _T(""), sztemp, sizeof(sztemp), strFileName);
+	m_strIp = sztemp;
+	m_uServerport = GetPrivateProfileInt(szSection, _T("port"), 0, strFileName);
+
+	CString str;
+	str.Format(_T("server ip:%s port:%u"),m_strIp.GetBuffer(m_strIp.GetLength()),m_uServerport);
+	LCString(str);
 }
 
 void CEvtWinDlg::LCString(CString str)
