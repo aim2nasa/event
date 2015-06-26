@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nonAceClient", "nonAceClien
 		{0EAC126C-A461-4CD7-A224-052CF52FAC30} = {0EAC126C-A461-4CD7-A224-052CF52FAC30}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "evtWin", "evtWin\evtWin.vcxproj", "{DEF317A3-DB9B-4CEF-9BD9-A0FAD159A927}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -51,6 +53,10 @@ Global
 		{7E7C5AA8-1BBC-4458-80F9-99508770F207}.Debug|Win32.Build.0 = Debug|Win32
 		{7E7C5AA8-1BBC-4458-80F9-99508770F207}.Release|Win32.ActiveCfg = Release|Win32
 		{7E7C5AA8-1BBC-4458-80F9-99508770F207}.Release|Win32.Build.0 = Release|Win32
+		{DEF317A3-DB9B-4CEF-9BD9-A0FAD159A927}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DEF317A3-DB9B-4CEF-9BD9-A0FAD159A927}.Debug|Win32.Build.0 = Debug|Win32
+		{DEF317A3-DB9B-4CEF-9BD9-A0FAD159A927}.Release|Win32.ActiveCfg = Release|Win32
+		{DEF317A3-DB9B-4CEF-9BD9-A0FAD159A927}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
