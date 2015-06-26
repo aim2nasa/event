@@ -72,7 +72,6 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_CONNECT_BUTTON, &CEvtWinDlg::OnBnClickedConnectButton)
-	ON_BN_CLICKED(IDC_EXIT_BUTTON, &CEvtWinDlg::OnBnClickedExitButton)
 	ON_BN_CLICKED(IDC_CONNECTION_CLOSE_BUTTON, &CEvtWinDlg::OnBnClickedConnectionCloseButton)
 	ON_MESSAGE(WM_CONNECION_FAILED, OnConnectionFailed)
 	ON_MESSAGE(WM_CONNECTED, OnConnected)
@@ -201,11 +200,6 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 	LCString(str);
 
 	m_pConThread = AfxBeginThread(connect, (LPVOID)this);
-}
-
-void CEvtWinDlg::OnBnClickedExitButton()
-{
-	OnOK();
 }
 
 void CEvtWinDlg::iniRead()
