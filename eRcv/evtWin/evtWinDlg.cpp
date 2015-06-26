@@ -335,6 +335,7 @@ void CEvtWinDlg::OnBnClickedRecordButton()
 		}
 		m_bRecord = TRUE;
 		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Stop"));
+		LCString(_T("recording started"));
 	}else{
 		if (m_er.recordStop() < 0){
 			LCString(_T("recordStop error"));
@@ -342,5 +343,6 @@ void CEvtWinDlg::OnBnClickedRecordButton()
 		}
 		m_bRecord = FALSE;
 		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Record"));
+		LCString(_T("recording stopped"));
 	}
 }
