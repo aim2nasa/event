@@ -32,6 +32,8 @@ protected:
 	afx_msg void OnBnClickedConnectButton();
 	DECLARE_MESSAGE_MAP()
 
+	static void CStringToCharBuffer(char* pBuffer, int nBufferSize, CString& str);
+
 	CEvt m_er;
 	CIPAddressCtrl m_ctrlServerIp;
 	UINT m_uServerport;

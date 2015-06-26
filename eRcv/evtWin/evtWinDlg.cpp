@@ -154,6 +154,11 @@ HCURSOR CEvtWinDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CEvtWinDlg::CStringToCharBuffer(char* pBuffer, int nBufferSize, CString& str)
+{
+	WideCharToMultiByte(CP_ACP, 0, str.GetBuffer(str.GetLength()), -1, pBuffer, nBufferSize, NULL, NULL);
+}
+
 void CEvtWinDlg::OnBnClickedConnectButton()
 {
 	UpdateData(TRUE);
@@ -161,7 +166,19 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 	BYTE nField0, nFiled1, nField2, nField3;
 	m_ctrlServerIp.GetAddress(nField0, nFiled1, nField2, nField3);
 
-	CString str;
-	str.Format(_T("ip:%d.%d.%d.%d port:%d"), nField0, nFiled1, nField2, nField3, m_uServerport);
-	AfxMessageBox(str);
+	CString ip;
+	ip.Format(_T("%d.%d.%d.%d"), nField0, nFiled1, nField2, nField3);
+
+	char buffer[MAX_PATH];
+	CStringToCharBuffer(buffer, sizeof(buffer), ip);
+	int rtn;
+	if ((rtn = m_er.open(buffer,m_uServerport)) < 0) {
+		CString msg;
+		msg.Format(_T("Event proxy open error(%d)"),rtn);
+		AfxMessageBox(msg);
+		return;
+	}
+	AfxMessageBox(_T("Connected to server"));
+
+	m_er.close();
 }
