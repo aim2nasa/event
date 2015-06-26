@@ -66,6 +66,7 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_CONNECT_BUTTON, &CEvtWinDlg::OnBnClickedConnectButton)
+	ON_BN_CLICKED(IDC_EXIT_BUTTON, &CEvtWinDlg::OnBnClickedExitButton)
 END_MESSAGE_MAP()
 
 
@@ -181,4 +182,9 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 	AfxMessageBox(_T("Connected to server"));
 
 	m_er.close();
+}
+
+void CEvtWinDlg::OnBnClickedExitButton()
+{
+	OnOK();
 }
