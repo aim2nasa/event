@@ -33,6 +33,7 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnBnClickedConnectButton();
 	afx_msg void OnBnClickedExitButton();
+	afx_msg void OnBnClickedConnectionCloseButton();
 	DECLARE_MESSAGE_MAP()
 
 	void iniRead();

@@ -68,6 +68,7 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_CONNECT_BUTTON, &CEvtWinDlg::OnBnClickedConnectButton)
 	ON_BN_CLICKED(IDC_EXIT_BUTTON, &CEvtWinDlg::OnBnClickedExitButton)
+	ON_BN_CLICKED(IDC_CONNECTION_CLOSE_BUTTON, &CEvtWinDlg::OnBnClickedConnectionCloseButton)
 END_MESSAGE_MAP()
 
 
@@ -185,8 +186,6 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 		return;
 	}
 	LCString(_T("Connected to server"));
-
-	m_er.close();
 }
 
 void CEvtWinDlg::OnBnClickedExitButton()
@@ -251,4 +250,10 @@ void CEvtWinDlg::LCString(CString str)
 
 	m_logList.AddString(strTime + str);
 	m_logList.SetTopIndex((m_logList.GetCount() > 0) ? m_logList.GetCount() - 1 : 0);
+}
+
+void CEvtWinDlg::OnBnClickedConnectionCloseButton()
+{
+	m_er.close();
+	LCString(_T("Connection closed"));
 }
