@@ -111,7 +111,12 @@ BOOL CEvtWinDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	LCString(_T("Loading parameters..."));
 	iniRead();
+
+	CString str;
+	str.Format(_T("server ip:%s port:%u"), m_strIp.GetBuffer(m_strIp.GetLength()), m_uServerport);
+	LCString(str);
 
 	m_ctrlBmpGrey.LoadBitmap(IDB_GREY);
 	m_ctrlBmpGreen.LoadBitmap(IDB_GREEN);
@@ -119,6 +124,7 @@ BOOL CEvtWinDlg::OnInitDialog()
 
 	m_ctrlConnLED.SetBitmap(m_ctrlBmpGrey);
 
+	UpdateData(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -227,12 +233,6 @@ void CEvtWinDlg::iniRead()
 		nField[i] = _ttoi(resToken.GetBuffer(resToken.GetLength()));
 	}
 	m_ctrlServerIp.SetAddress(nField[0], nField[1], nField[2], nField[3]);
-
-	CString str;
-	str.Format(_T("server ip:%s port:%u"),m_strIp.GetBuffer(m_strIp.GetLength()),m_uServerport);
-	LCString(str);
-
-	UpdateData(FALSE);
 }
 
 void CEvtWinDlg::iniWrite()
