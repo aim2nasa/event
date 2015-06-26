@@ -33,7 +33,6 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnBnClickedConnectButton();
-	afx_msg void OnBnClickedConnectionCloseButton();
 	afx_msg LRESULT OnConnectionFailed(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnConnected(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedRecordButton();
