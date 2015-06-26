@@ -54,6 +54,7 @@ CEvtWinDlg::CEvtWinDlg(CWnd* pParent /*=NULL*/)
 	, m_uServerport(0)
 	, m_pConThread(NULL)
 	, m_bConnect(FALSE)
+	, m_bRecord(FALSE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -75,6 +76,7 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CONNECTION_CLOSE_BUTTON, &CEvtWinDlg::OnBnClickedConnectionCloseButton)
 	ON_MESSAGE(WM_CONNECION_FAILED, OnConnectionFailed)
 	ON_MESSAGE(WM_CONNECTED, OnConnected)
+	ON_BN_CLICKED(IDC_RECORD_BUTTON, &CEvtWinDlg::OnBnClickedRecordButton)
 END_MESSAGE_MAP()
 
 
@@ -123,6 +125,11 @@ BOOL CEvtWinDlg::OnInitDialog()
 
 	m_ctrlConnLED.SetBitmap(m_ctrlBmpGrey);
 
+	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(TRUE);
+	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 	UpdateData(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -187,6 +194,7 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 
 	UpdateData(TRUE);
 
@@ -267,6 +275,7 @@ void CEvtWinDlg::OnBnClickedConnectionCloseButton()
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 }
 
 UINT CEvtWinDlg::connect(LPVOID pParam)
@@ -297,6 +306,7 @@ LRESULT CEvtWinDlg::OnConnectionFailed(WPARAM wParam, LPARAM lParam)
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 	UpdateData(FALSE);
 	return 0;
 }
@@ -311,6 +321,26 @@ LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
 	UpdateData(FALSE);
 	return 0;
+}
+
+void CEvtWinDlg::OnBnClickedRecordButton()
+{
+	if (!m_bRecord){
+		if (m_er.recordStart(NULL) < 0){
+			LCString(_T("recordStart error"));
+			return;
+		}
+		m_bRecord = TRUE;
+		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Stop"));
+	}else{
+		if (m_er.recordStop() < 0){
+			LCString(_T("recordStop error"));
+			return;
+		}
+		m_bRecord = FALSE;
+		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Record"));
+	}
 }

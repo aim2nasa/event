@@ -36,6 +36,7 @@ protected:
 	afx_msg void OnBnClickedConnectionCloseButton();
 	afx_msg LRESULT OnConnectionFailed(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnConnected(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnBnClickedRecordButton();
 	DECLARE_MESSAGE_MAP()
 
 	void iniRead();
@@ -56,4 +57,5 @@ protected:
 	CBitmap m_ctrlBmpRed;
 	CStatic m_ctrlConnLED;
 	BOOL	m_bConnect;
+	BOOL	m_bRecord;
 };
