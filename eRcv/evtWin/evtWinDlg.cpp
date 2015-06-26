@@ -178,6 +178,11 @@ void CEvtWinDlg::CStringToCharBuffer(char* pBuffer, int nBufferSize, CString& st
 
 void CEvtWinDlg::OnBnClickedConnectButton()
 {
+	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(FALSE);
+	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
+
 	UpdateData(TRUE);
 
 	BYTE nField0, nFiled1, nField2, nField3;
@@ -264,6 +269,10 @@ void CEvtWinDlg::OnBnClickedConnectionCloseButton()
 		m_ctrlConnLED.SetBitmap(m_ctrlBmpGrey);
 		LCString(_T("Connection closed"));
 	}
+	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(TRUE);
+	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
 }
 
 UINT CEvtWinDlg::connect(LPVOID pParam)
@@ -289,6 +298,11 @@ LRESULT CEvtWinDlg::OnConnectionFailed(WPARAM wParam, LPARAM lParam)
 	CString str;
 	str.Format(_T("Connection failed to server, error code(%d)"),(int)wParam);
 	LCString(str);
+
+	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(TRUE);
+	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
 	UpdateData(FALSE);
 	return 0;
 }
@@ -298,6 +312,11 @@ LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 	m_bConnect = TRUE;
 	m_ctrlConnLED.SetBitmap(m_ctrlBmpGreen);
 	LCString(_T("Connected to server"));
+
+	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(FALSE);
+	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(TRUE);
 	UpdateData(FALSE);
 	return 0;
 }
