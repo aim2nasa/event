@@ -6,6 +6,8 @@
 #include "CEvt.h"
 #include "afxcmn.h"
 
+#define MAX_LOG	(1024*8)
+
 // CEvtWinDlg 대화 상자
 class CEvtWinDlg : public CDialogEx
 {
@@ -30,13 +32,14 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnBnClickedConnectButton();
+	afx_msg void OnBnClickedExitButton();
 	DECLARE_MESSAGE_MAP()
 
+	void LCString(CString str);
 	static void CStringToCharBuffer(char* pBuffer, int nBufferSize, CString& str);
 
 	CEvt m_er;
 	CIPAddressCtrl m_ctrlServerIp;
 	UINT m_uServerport;
-public:
-	afx_msg void OnBnClickedExitButton();
+	CListBox m_logList;
 };
