@@ -73,7 +73,6 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_CONNECT_BUTTON, &CEvtWinDlg::OnBnClickedConnectButton)
-	ON_BN_CLICKED(IDC_CONNECTION_CLOSE_BUTTON, &CEvtWinDlg::OnBnClickedConnectionCloseButton)
 	ON_MESSAGE(WM_CONNECION_FAILED, OnConnectionFailed)
 	ON_MESSAGE(WM_CONNECTED, OnConnected)
 	ON_BN_CLICKED(IDC_RECORD_BUTTON, &CEvtWinDlg::OnBnClickedRecordButton)
@@ -127,9 +126,8 @@ BOOL CEvtWinDlg::OnInitDialog()
 
 	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(TRUE);
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
-	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
-	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	UpdateData(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -190,24 +188,37 @@ void CEvtWinDlg::CStringToCharBuffer(char* pBuffer, int nBufferSize, CString& st
 
 void CEvtWinDlg::OnBnClickedConnectButton()
 {
-	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(FALSE);
-	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(FALSE);
-	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
-	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
-	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
+	if (!m_bConnect){
+		GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(FALSE);
+		GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(FALSE);
+		GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
+		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
+		GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Connecting"));
 
-	UpdateData(TRUE);
+		UpdateData(TRUE);
 
-	BYTE nField0, nFiled1, nField2, nField3;
-	m_ctrlServerIp.GetAddress(nField0, nFiled1, nField2, nField3);
-	m_strIp.Format(_T("%d.%d.%d.%d"), nField0, nFiled1, nField2, nField3);
-	iniWrite();
+		BYTE nField0, nFiled1, nField2, nField3;
+		m_ctrlServerIp.GetAddress(nField0, nFiled1, nField2, nField3);
+		m_strIp.Format(_T("%d.%d.%d.%d"), nField0, nFiled1, nField2, nField3);
+		iniWrite();
 
-	CString str;
-	str.Format(_T("Connecting to ip:%s port:%u"),m_strIp.GetBuffer(),m_uServerport);
-	LCString(str);
+		CString str;
+		str.Format(_T("Connecting to ip:%s port:%u..."), m_strIp.GetBuffer(), m_uServerport);
+		LCString(str);
 
-	m_pConThread = AfxBeginThread(connect, (LPVOID)this);
+		m_pConThread = AfxBeginThread(connect, (LPVOID)this);
+	}else{
+		m_er.close();
+		m_bConnect = FALSE;
+		m_ctrlConnLED.SetBitmap(m_ctrlBmpGrey);
+		LCString(_T("Connection closed"));
+
+		GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(TRUE);
+		GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
+		GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
+		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+		GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Connect"));
+	}
 }
 
 void CEvtWinDlg::iniRead()
@@ -263,21 +274,6 @@ void CEvtWinDlg::LCString(CString str)
 	m_logList.SetTopIndex((m_logList.GetCount() > 0) ? m_logList.GetCount() - 1 : 0);
 }
 
-void CEvtWinDlg::OnBnClickedConnectionCloseButton()
-{
-	if (m_bConnect) {
-		m_er.close();
-		m_bConnect = FALSE;
-		m_ctrlConnLED.SetBitmap(m_ctrlBmpGrey);
-		LCString(_T("Connection closed"));
-	}
-	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(TRUE);
-	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
-	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
-	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
-	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
-}
-
 UINT CEvtWinDlg::connect(LPVOID pParam)
 {
 	CEvtWinDlg *pDlg = reinterpret_cast<CEvtWinDlg*>(pParam);
@@ -304,9 +300,9 @@ LRESULT CEvtWinDlg::OnConnectionFailed(WPARAM wParam, LPARAM lParam)
 
 	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(TRUE);
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
-	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
-	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Connect"));
 	UpdateData(FALSE);
 	return 0;
 }
@@ -319,9 +315,9 @@ LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 
 	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(FALSE);
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(FALSE);
-	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
-	GetDlgItem(IDC_CONNECTION_CLOSE_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Disconnect"));
 	UpdateData(FALSE);
 	return 0;
 }
@@ -335,6 +331,7 @@ void CEvtWinDlg::OnBnClickedRecordButton()
 		}
 		m_bRecord = TRUE;
 		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Stop"));
+		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
 		LCString(_T("recording started"));
 	}else{
 		if (m_er.recordStop() < 0){
@@ -343,6 +340,7 @@ void CEvtWinDlg::OnBnClickedRecordButton()
 		}
 		m_bRecord = FALSE;
 		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Record"));
+		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 		LCString(_T("recording stopped"));
 	}
 }
