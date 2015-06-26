@@ -59,6 +59,7 @@ void CEvtWinDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SERVER_IPADDRESS, m_ctrlServerIp);
 	DDX_Text(pDX, IDC_SERVER_PORT_EDIT, m_uServerport);
+	DDX_Control(pDX, IDC_LOG_LIST, m_logList);
 }
 
 BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
@@ -162,6 +163,7 @@ void CEvtWinDlg::CStringToCharBuffer(char* pBuffer, int nBufferSize, CString& st
 
 void CEvtWinDlg::OnBnClickedConnectButton()
 {
+	LCString(_T("Connecting..."));
 	UpdateData(TRUE);
 
 	BYTE nField0, nFiled1, nField2, nField3;
@@ -176,10 +178,10 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 	if ((rtn = m_er.open(buffer,m_uServerport)) < 0) {
 		CString msg;
 		msg.Format(_T("Event proxy open error(%d)"),rtn);
-		AfxMessageBox(msg);
+		LCString(msg);
 		return;
 	}
-	AfxMessageBox(_T("Connected to server"));
+	LCString(_T("Connected to server"));
 
 	m_er.close();
 }
@@ -187,4 +189,14 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 void CEvtWinDlg::OnBnClickedExitButton()
 {
 	OnOK();
+}
+
+void CEvtWinDlg::LCString(CString str)
+{
+	if (m_logList.GetCount() >= MAX_LOG) m_logList.ResetContent();
+
+	CString strTime = CTime::GetCurrentTime().Format(_T("[%m.%d %H:%M:%S] "));
+
+	m_logList.AddString(strTime + str);
+	m_logList.SetTopIndex((m_logList.GetCount() > 0) ? m_logList.GetCount() - 1 : 0);
 }
