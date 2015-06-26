@@ -266,6 +266,11 @@ int CStreamHandler::onEventPlayFull()
 
     ep.play(0,ep.events()-1);
     ACE_DEBUG((LM_DEBUG,"Playing full file(%s) done\n",fname.c_str()));
+
+    ACE_TString cmd("rm ");
+    cmd+=fname;
+    rtn = ACE_OS::system(cmd.c_str()); 
+    ACE_DEBUG((LM_DEBUG,"system(%s)=%d\n",cmd.c_str(),rtn));
     return 0;
 }
 
