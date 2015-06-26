@@ -26,6 +26,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nonAceClient", "nonAceClien
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "evtWin", "evtWin\evtWin.vcxproj", "{DEF317A3-DB9B-4CEF-9BD9-A0FAD159A927}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0EAC126C-A461-4CD7-A224-052CF52FAC30} = {0EAC126C-A461-4CD7-A224-052CF52FAC30}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
