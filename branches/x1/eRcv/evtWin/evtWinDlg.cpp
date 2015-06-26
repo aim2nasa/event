@@ -49,6 +49,7 @@ END_MESSAGE_MAP()
 
 CEvtWinDlg::CEvtWinDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CEvtWinDlg::IDD, pParent)
+	, m_uServerport(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -56,12 +57,15 @@ CEvtWinDlg::CEvtWinDlg(CWnd* pParent /*=NULL*/)
 void CEvtWinDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_SERVER_IPADDRESS, m_ctrlServerIp);
+	DDX_Text(pDX, IDC_SERVER_PORT_EDIT, m_uServerport);
 }
 
 BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_CONNECT_BUTTON, &CEvtWinDlg::OnBnClickedConnectButton)
 END_MESSAGE_MAP()
 
 
@@ -150,3 +154,14 @@ HCURSOR CEvtWinDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CEvtWinDlg::OnBnClickedConnectButton()
+{
+	UpdateData(TRUE);
+
+	BYTE nField0, nFiled1, nField2, nField3;
+	m_ctrlServerIp.GetAddress(nField0, nFiled1, nField2, nField3);
+
+	CString str;
+	str.Format(_T("ip:%d.%d.%d.%d port:%d"), nField0, nFiled1, nField2, nField3, m_uServerport);
+	AfxMessageBox(str);
+}

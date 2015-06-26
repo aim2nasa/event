@@ -4,6 +4,7 @@
 
 #pragma once
 #include "CEvt.h"
+#include "afxcmn.h"
 
 // CEvtWinDlg 대화 상자
 class CEvtWinDlg : public CDialogEx
@@ -28,7 +29,10 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	afx_msg void OnBnClickedConnectButton();
 	DECLARE_MESSAGE_MAP()
 
 	CEvt m_er;
+	CIPAddressCtrl m_ctrlServerIp;
+	UINT m_uServerport;
 };
