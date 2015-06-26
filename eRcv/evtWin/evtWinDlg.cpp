@@ -206,9 +206,23 @@ void CEvtWinDlg::iniRead()
 	m_strIp = sztemp;
 	m_uServerport = GetPrivateProfileInt(szSection, _T("port"), 0, strFileName);
 
+	BYTE nField[4];
+	CString resToken;
+	int curPos = 0, i=0;
+	resToken = m_strIp.Tokenize(_T("."), curPos);
+	nField[0] = _ttoi(resToken.GetBuffer(resToken.GetLength()));
+	for (int i = 1; i < 4;i++)
+	{
+		resToken = m_strIp.Tokenize(_T("."), curPos);
+		nField[i] = _ttoi(resToken.GetBuffer(resToken.GetLength()));
+	}
+	m_ctrlServerIp.SetAddress(nField[0], nField[1], nField[2], nField[3]);
+
 	CString str;
 	str.Format(_T("server ip:%s port:%u"),m_strIp.GetBuffer(m_strIp.GetLength()),m_uServerport);
 	LCString(str);
+
+	UpdateData(FALSE);
 }
 
 void CEvtWinDlg::LCString(CString str)
