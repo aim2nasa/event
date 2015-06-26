@@ -59,4 +59,6 @@ protected:
 	CStatic m_ctrlConnLED;
 	BOOL	m_bConnect;
 	BOOL	m_bRecord;
+public:
+	afx_msg void OnDestroy();
 };

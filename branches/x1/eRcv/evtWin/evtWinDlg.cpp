@@ -76,6 +76,7 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_MESSAGE(WM_CONNECION_FAILED, OnConnectionFailed)
 	ON_MESSAGE(WM_CONNECTED, OnConnected)
 	ON_BN_CLICKED(IDC_RECORD_BUTTON, &CEvtWinDlg::OnBnClickedRecordButton)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -343,4 +344,12 @@ void CEvtWinDlg::OnBnClickedRecordButton()
 		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 		LCString(_T("recording stopped"));
 	}
+}
+
+
+void CEvtWinDlg::OnDestroy()
+{
+	CDialogEx::OnDestroy();
+
+	m_er.close();
 }
