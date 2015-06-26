@@ -225,6 +225,22 @@ void CEvtWinDlg::iniRead()
 	UpdateData(FALSE);
 }
 
+void CEvtWinDlg::iniWrite()
+{
+	TCHAR szPathName[MAX_PATH], szSection[MAX_PATH], sztemp[MAX_PATH];
+
+	GetModuleFileName(NULL, szPathName, MAX_PATH);
+	PathRenameExtension(szPathName, _T(".ini"));
+
+	CString strFileName(szPathName);
+
+	_stprintf_s(szSection, _T("%s"), _T("SERVER"));
+	WritePrivateProfileString(szSection, _T("ip"), m_strIp.GetBuffer(), strFileName);
+
+	_stprintf_s(sztemp, _T("%u"), m_uServerport);
+	WritePrivateProfileString(szSection, _T("port"), sztemp, strFileName);
+}
+
 void CEvtWinDlg::LCString(CString str)
 {
 	if (m_logList.GetCount() >= MAX_LOG) m_logList.ResetContent();
