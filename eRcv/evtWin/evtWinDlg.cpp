@@ -11,6 +11,8 @@
 #define new DEBUG_NEW
 #endif
 
+#define WM_CONNECION_FAILED		(WM_USER+100)
+#define WM_CONNECTED			(WM_USER+101)
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
@@ -50,6 +52,7 @@ END_MESSAGE_MAP()
 CEvtWinDlg::CEvtWinDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CEvtWinDlg::IDD, pParent)
 	, m_uServerport(0)
+	, m_pConThread(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -69,6 +72,8 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CONNECT_BUTTON, &CEvtWinDlg::OnBnClickedConnectButton)
 	ON_BN_CLICKED(IDC_EXIT_BUTTON, &CEvtWinDlg::OnBnClickedExitButton)
 	ON_BN_CLICKED(IDC_CONNECTION_CLOSE_BUTTON, &CEvtWinDlg::OnBnClickedConnectionCloseButton)
+	ON_MESSAGE(WM_CONNECION_FAILED, OnConnectionFailed)
+	ON_MESSAGE(WM_CONNECTED, OnConnected)
 END_MESSAGE_MAP()
 
 
@@ -176,16 +181,7 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 	str.Format(_T("Connecting to ip:%s port:%u"),m_strIp.GetBuffer(),m_uServerport);
 	LCString(str);
 
-	char buffer[MAX_PATH];
-	CStringToCharBuffer(buffer, sizeof(buffer), m_strIp);
-	int rtn;
-	if ((rtn = m_er.open(buffer,m_uServerport)) < 0) {
-		CString msg;
-		msg.Format(_T("Event proxy open error(%d)"),rtn);
-		LCString(msg);
-		return;
-	}
-	LCString(_T("Connected to server"));
+	m_pConThread = AfxBeginThread(connect, (LPVOID)this);
 }
 
 void CEvtWinDlg::OnBnClickedExitButton()
@@ -256,4 +252,34 @@ void CEvtWinDlg::OnBnClickedConnectionCloseButton()
 {
 	m_er.close();
 	LCString(_T("Connection closed"));
+}
+
+UINT CEvtWinDlg::connect(LPVOID pParam)
+{
+	CEvtWinDlg *pDlg = reinterpret_cast<CEvtWinDlg*>(pParam);
+	ASSERT(pDlg);
+
+	char buffer[MAX_PATH];
+	CStringToCharBuffer(buffer, sizeof(buffer), pDlg->m_strIp);
+	int rtn;
+	if ((rtn = pDlg->m_er.open(buffer, pDlg->m_uServerport)) < 0) {
+		pDlg->PostMessage(WM_CONNECION_FAILED, (WPARAM)rtn);
+		return -1;
+	}
+	pDlg->PostMessage(WM_CONNECTED);
+	return 0;
+}
+
+LRESULT CEvtWinDlg::OnConnectionFailed(WPARAM wParam, LPARAM lParam)
+{
+	CString str;
+	str.Format(_T("Connection failed to server, error code(%d)"),(int)wParam);
+	LCString(str);
+	return 0;
+}
+
+LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
+{
+	LCString(_T("Connected to server"));
+	return 0;
 }
