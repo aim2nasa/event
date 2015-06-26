@@ -54,6 +54,7 @@
     <None Include="res\evtWin.rc2">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="evtWin.ini" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\evtWin.ico">
