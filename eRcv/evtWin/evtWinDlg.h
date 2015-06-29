@@ -4,7 +4,7 @@
 
 #pragma once
 #include "CEvt.h"
-#include "CClassRes.h"
+#include "IClassifyNoti.h"
 #include "afxcmn.h"
 #include "afxwin.h"
 
@@ -52,7 +52,6 @@ protected:
 	void onError(ERR_CODE code);
 
 	CEvt m_er;
-	CClassRes m_classRes;
 	CIPAddressCtrl m_ctrlServerIp;
 	CString m_strIp;
 	UINT m_uServerport;
