@@ -129,6 +129,12 @@ BOOL CEvtWinDlg::OnInitDialog()
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+
+	GetDlgItem(IDC_USER_EVENTS_STATIC)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_RECORDS_STATIC)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_TOUCH_STATIC)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_KEY_STATIC)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_ERRORS_STATIC)->ShowWindow(SW_HIDE);
 	UpdateData(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -219,6 +225,11 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 		GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 		GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Connect"));
+		GetDlgItem(IDC_USER_EVENTS_STATIC)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_RECORDS_STATIC)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_TOUCH_STATIC)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_KEY_STATIC)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_ERRORS_STATIC)->ShowWindow(SW_SHOW);
 	}
 }
 
@@ -319,6 +330,11 @@ LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Disconnect"));
+	GetDlgItem(IDC_USER_EVENTS_STATIC)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_RECORDS_STATIC)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_TOUCH_STATIC)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_KEY_STATIC)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_ERRORS_STATIC)->ShowWindow(SW_SHOW);
 	UpdateData(FALSE);
 	return 0;
 }
@@ -364,20 +380,20 @@ void CEvtWinDlg::onNewDevice(int device, DEV_TYPE devType, int index)
 void CEvtWinDlg::onKeyEvent(int device, int startIndex, int endIndex)
 {
 	CString str;
-	str.Format(_T("+Key(%d): index(%d~%d)\n"), device, startIndex, endIndex);
+	str.Format(_T("Key(%d): index(%d~%d)\n"), device, startIndex, endIndex);
 	LCString(str);
 }
 
 void CEvtWinDlg::onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex)
 {
 	CString str;
-	str.Format(_T("-Touch(%d): %s,index(%d~%d)\n"), device, (type == SWIPE) ? _T("Swipe") : _T("Tap"), startIndex, endIndex);
+	str.Format(_T("Touch(%d): %s,index(%d~%d)\n"), device, (type == SWIPE) ? _T("Swipe") : _T("Tap"), startIndex, endIndex);
 	LCString(str);
 }
 
 void CEvtWinDlg::onError(ERR_CODE code)
 {
 	CString str;
-	str.Format(_T("***Error:%d***\n"), code);
+	str.Format(_T("Error:%d\n"), code);
 	LCString(str);
 }
