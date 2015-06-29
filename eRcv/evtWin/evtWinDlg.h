@@ -10,6 +10,18 @@
 
 #define MAX_LOG	(1024*8)
 
+class CRecCount{
+public:
+	CRecCount(){ reset(); }
+	void reset() { m_uNewDev = m_uKeyEvt = m_uTouchEvt = m_uErr = m_uRecords = 0; }
+
+	unsigned int m_uNewDev;
+	unsigned int m_uKeyEvt;
+	unsigned int m_uTouchEvt;
+	unsigned int m_uErr;
+	unsigned int m_uRecords;
+};
+
 // CEvtWinDlg 대화 상자
 class CEvtWinDlg : public CDialogEx, public IClassifyNoti
 {
@@ -38,6 +50,7 @@ protected:
 	afx_msg LRESULT OnConnected(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedRecordButton();
 	afx_msg void OnDestroy();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	DECLARE_MESSAGE_MAP()
 
 	void iniRead();
@@ -64,4 +77,11 @@ protected:
 	CStatic m_ctrlConnLED;
 	BOOL	m_bConnect;
 	BOOL	m_bRecord;
+
+	CRecCount m_recCount;
+	CString m_strUserEvents;
+	CString m_strRecords;
+	CString m_strTouch;
+	CString m_strKey;
+	CString m_strErrors;
 };
