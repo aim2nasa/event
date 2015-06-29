@@ -11,7 +11,7 @@
 #define MAX_LOG	(1024*8)
 
 // CEvtWinDlg 대화 상자
-class CEvtWinDlg : public CDialogEx
+class CEvtWinDlg : public CDialogEx, public IClassifyNoti
 {
 // 생성입니다.
 public:
@@ -45,6 +45,11 @@ protected:
 	void LCString(CString str);
 	static void CStringToCharBuffer(char* pBuffer, int nBufferSize, CString& str);
 	static UINT connect(LPVOID pParam);
+
+	void onNewDevice(int device, DEV_TYPE devType, int index);
+	void onKeyEvent(int device, int startIndex, int endIndex);
+	void onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex);
+	void onError(ERR_CODE code);
 
 	CEvt m_er;
 	CClassRes m_classRes;

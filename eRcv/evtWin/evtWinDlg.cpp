@@ -326,7 +326,7 @@ LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 void CEvtWinDlg::OnBnClickedRecordButton()
 {
 	if (!m_bRecord){
-		if (m_er.recordStart(&m_classRes) < 0){
+		if (m_er.recordStart(this) < 0){
 			LCString(_T("recordStart error"));
 			return;
 		}
@@ -352,4 +352,32 @@ void CEvtWinDlg::OnDestroy()
 	CDialogEx::OnDestroy();
 
 	m_er.close();
+}
+
+void CEvtWinDlg::onNewDevice(int device, DEV_TYPE devType, int index)
+{
+	CString str;
+	str.Format(_T("New device(%d) type:%d\n"), device, devType);
+	LCString(str);
+}
+
+void CEvtWinDlg::onKeyEvent(int device, int startIndex, int endIndex)
+{
+	CString str;
+	str.Format(_T("+Key(%d): index(%d~%d)\n"), device, startIndex, endIndex);
+	LCString(str);
+}
+
+void CEvtWinDlg::onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex)
+{
+	CString str;
+	str.Format(_T("-Touch(%d): %s,index(%d~%d)\n"), device, (type == SWIPE) ? _T("Swipe") : _T("Tap"), startIndex, endIndex);
+	LCString(str);
+}
+
+void CEvtWinDlg::onError(ERR_CODE code)
+{
+	CString str;
+	str.Format(_T("***Error:%d***\n"), code);
+	LCString(str);
 }
