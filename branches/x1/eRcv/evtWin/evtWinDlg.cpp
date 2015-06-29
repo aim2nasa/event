@@ -14,6 +14,9 @@
 #define WM_CONNECION_FAILED		(WM_USER+100)
 #define WM_CONNECTED			(WM_USER+101)
 
+#define RECORD_UI_REFRESH_TIMER	1000
+#define RECORD_UI_REFRESH_UNIT	100
+
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
 class CAboutDlg : public CDialogEx
@@ -55,6 +58,11 @@ CEvtWinDlg::CEvtWinDlg(CWnd* pParent /*=NULL*/)
 	, m_pConThread(NULL)
 	, m_bConnect(FALSE)
 	, m_bRecord(FALSE)
+	, m_strUserEvents(_T(""))
+	, m_strRecords(_T(""))
+	, m_strTouch(_T(""))
+	, m_strKey(_T(""))
+	, m_strErrors(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -66,6 +74,11 @@ void CEvtWinDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_SERVER_PORT_EDIT, m_uServerport);
 	DDX_Control(pDX, IDC_LOG_LIST, m_logList);
 	DDX_Control(pDX, IDC_CONNECT_LED_STATIC, m_ctrlConnLED);
+	DDX_Text(pDX, IDC_USER_EVENTS_STATIC, m_strUserEvents);
+	DDX_Text(pDX, IDC_RECORDS_STATIC, m_strRecords);
+	DDX_Text(pDX, IDC_TOUCH_STATIC, m_strTouch);
+	DDX_Text(pDX, IDC_KEY_STATIC, m_strKey);
+	DDX_Text(pDX, IDC_ERRORS_STATIC, m_strErrors);
 }
 
 BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
@@ -77,6 +90,7 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_MESSAGE(WM_CONNECTED, OnConnected)
 	ON_BN_CLICKED(IDC_RECORD_BUTTON, &CEvtWinDlg::OnBnClickedRecordButton)
 	ON_WM_DESTROY()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -342,15 +356,18 @@ LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 void CEvtWinDlg::OnBnClickedRecordButton()
 {
 	if (!m_bRecord){
+		m_recCount.reset();
 		if (m_er.recordStart(this) < 0){
 			LCString(_T("recordStart error"));
 			return;
 		}
+		SetTimer(RECORD_UI_REFRESH_TIMER, RECORD_UI_REFRESH_UNIT, NULL);
 		m_bRecord = TRUE;
 		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Stop"));
 		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
 		LCString(_T("recording started"));
 	}else{
+		KillTimer(RECORD_UI_REFRESH_TIMER);
 		if (m_er.recordStop() < 0){
 			LCString(_T("recordStop error"));
 			return;
@@ -372,6 +389,7 @@ void CEvtWinDlg::OnDestroy()
 
 void CEvtWinDlg::onNewDevice(int device, DEV_TYPE devType, int index)
 {
+	m_recCount.m_uNewDev++;
 	CString str;
 	str.Format(_T("New device(%d) type:%d\n"), device, devType);
 	LCString(str);
@@ -379,6 +397,8 @@ void CEvtWinDlg::onNewDevice(int device, DEV_TYPE devType, int index)
 
 void CEvtWinDlg::onKeyEvent(int device, int startIndex, int endIndex)
 {
+	m_recCount.m_uKeyEvt++;
+	m_recCount.m_uRecords += (endIndex - startIndex) + 1;
 	CString str;
 	str.Format(_T("Key(%d): index(%d~%d)\n"), device, startIndex, endIndex);
 	LCString(str);
@@ -386,6 +406,8 @@ void CEvtWinDlg::onKeyEvent(int device, int startIndex, int endIndex)
 
 void CEvtWinDlg::onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex)
 {
+	m_recCount.m_uTouchEvt++;
+	m_recCount.m_uRecords += (endIndex - startIndex) + 1;
 	CString str;
 	str.Format(_T("Touch(%d): %s,index(%d~%d)\n"), device, (type == SWIPE) ? _T("Swipe") : _T("Tap"), startIndex, endIndex);
 	LCString(str);
@@ -393,7 +415,23 @@ void CEvtWinDlg::onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int e
 
 void CEvtWinDlg::onError(ERR_CODE code)
 {
+	m_recCount.m_uErr++;
 	CString str;
 	str.Format(_T("Error:%d\n"), code);
 	LCString(str);
+}
+
+void CEvtWinDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	if (nIDEvent == RECORD_UI_REFRESH_TIMER){
+		m_strUserEvents.Format(_T("UserEvents: %u"),m_recCount.m_uKeyEvt+m_recCount.m_uTouchEvt);
+		m_strRecords.Format(_T("Records: %u"),m_recCount.m_uRecords);
+		m_strTouch.Format(_T("Touch: %u"),m_recCount.m_uTouchEvt);
+		m_strKey.Format(_T("Key: %u"),m_recCount.m_uKeyEvt);
+		m_strErrors.Format(_T("Errors: %u"), m_recCount.m_uErr);
+	}
+
+	UpdateData(FALSE);
+	__super::OnTimer(nIDEvent);
 }
