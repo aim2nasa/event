@@ -51,6 +51,9 @@ protected:
 	afx_msg void OnBnClickedRecordButton();
 	afx_msg void OnDestroy();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedPlayButton();
+	afx_msg void OnBnClickedPartPlayButton();
+	afx_msg void OnBnClickedStepPlayButton();
 	DECLARE_MESSAGE_MAP()
 
 	void iniRead();

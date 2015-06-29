@@ -89,6 +89,9 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_RECORD_BUTTON, &CEvtWinDlg::OnBnClickedRecordButton)
 	ON_WM_DESTROY()
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_PLAY_BUTTON, &CEvtWinDlg::OnBnClickedPlayButton)
+	ON_BN_CLICKED(IDC_PART_PLAY_BUTTON, &CEvtWinDlg::OnBnClickedPartPlayButton)
+	ON_BN_CLICKED(IDC_STEP_PLAY_BUTTON, &CEvtWinDlg::OnBnClickedStepPlayButton)
 END_MESSAGE_MAP()
 
 
@@ -443,4 +446,48 @@ void CEvtWinDlg::OnTimer(UINT_PTR nIDEvent)
 
 	UpdateData(FALSE);
 	__super::OnTimer(nIDEvent);
+}
+
+void CEvtWinDlg::OnBnClickedPlayButton()
+{
+	GetDlgItem(IDC_PLAY_BUTTON)->SetWindowText(_T("Playing"));
+	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(FALSE);
+
+	TCHAR szFilter[] = _T("All Files(*.*) | *.*");
+	CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY, szFilter);
+	if (IDOK == dlg.DoModal()) {
+		CString str = dlg.GetPathName();
+
+		char buffer[256];
+		CStringToCharBuffer(buffer,sizeof(buffer),str);
+
+		LCString(CString(_T("Playing "))+str);
+		int rtn;
+		if ((rtn = m_er.play(buffer)) != 0) {
+			CString msg(_T("play error:"));
+			LCString(msg + str);
+			return;
+		}
+		LCString(CString(_T("Play requested")));
+	}
+	GetDlgItem(IDC_PLAY_BUTTON)->SetWindowText(_T("Play"));
+	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
+}
+
+void CEvtWinDlg::OnBnClickedPartPlayButton()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+void CEvtWinDlg::OnBnClickedStepPlayButton()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
