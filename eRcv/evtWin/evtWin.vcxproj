@@ -115,7 +115,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CClassRes.h" />
     <ClInclude Include="evtWin.h" />
     <ClInclude Include="evtWinDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -123,7 +122,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CClassRes.cpp" />
     <ClCompile Include="evtWin.cpp" />
     <ClCompile Include="evtWinDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
