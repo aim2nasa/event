@@ -141,6 +141,9 @@ BOOL CEvtWinDlg::OnInitDialog()
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(FALSE);
 
 	GetDlgItem(IDC_RECORDS_STATIC)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_TOUCH_STATIC)->ShowWindow(SW_HIDE);
@@ -323,6 +326,9 @@ LRESULT CEvtWinDlg::OnConnectionFailed(WPARAM wParam, LPARAM lParam)
 	GetDlgItem(IDC_SERVER_IPADDRESS)->EnableWindow(TRUE);
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Connect"));
 	UpdateData(FALSE);
@@ -339,6 +345,9 @@ LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(FALSE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Disconnect"));
 	GetDlgItem(IDC_RECORDS_STATIC)->ShowWindow(SW_SHOW);
 	GetDlgItem(IDC_TOUCH_STATIC)->ShowWindow(SW_SHOW);
@@ -360,6 +369,9 @@ void CEvtWinDlg::OnBnClickedRecordButton()
 		m_bRecord = TRUE;
 		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Stop"));
 		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
+		GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(FALSE);
+		GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(FALSE);
+		GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(FALSE);
 		LCString(_T("recording started"));
 	}else{
 		KillTimer(RECORD_UI_REFRESH_TIMER);
@@ -370,6 +382,9 @@ void CEvtWinDlg::OnBnClickedRecordButton()
 		m_bRecord = FALSE;
 		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Record"));
 		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+		GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
+		GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(TRUE);
+		GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
 		LCString(_T("recording stopped"));
 	}
 }
