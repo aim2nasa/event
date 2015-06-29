@@ -58,7 +58,6 @@ CEvtWinDlg::CEvtWinDlg(CWnd* pParent /*=NULL*/)
 	, m_pConThread(NULL)
 	, m_bConnect(FALSE)
 	, m_bRecord(FALSE)
-	, m_strUserEvents(_T(""))
 	, m_strRecords(_T(""))
 	, m_strTouch(_T(""))
 	, m_strKey(_T(""))
@@ -74,7 +73,6 @@ void CEvtWinDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_SERVER_PORT_EDIT, m_uServerport);
 	DDX_Control(pDX, IDC_LOG_LIST, m_logList);
 	DDX_Control(pDX, IDC_CONNECT_LED_STATIC, m_ctrlConnLED);
-	DDX_Text(pDX, IDC_USER_EVENTS_STATIC, m_strUserEvents);
 	DDX_Text(pDX, IDC_RECORDS_STATIC, m_strRecords);
 	DDX_Text(pDX, IDC_TOUCH_STATIC, m_strTouch);
 	DDX_Text(pDX, IDC_KEY_STATIC, m_strKey);
@@ -144,7 +142,6 @@ BOOL CEvtWinDlg::OnInitDialog()
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 
-	GetDlgItem(IDC_USER_EVENTS_STATIC)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_RECORDS_STATIC)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_TOUCH_STATIC)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_KEY_STATIC)->ShowWindow(SW_HIDE);
@@ -239,7 +236,6 @@ void CEvtWinDlg::OnBnClickedConnectButton()
 		GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 		GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Connect"));
-		GetDlgItem(IDC_USER_EVENTS_STATIC)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_RECORDS_STATIC)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_TOUCH_STATIC)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_KEY_STATIC)->ShowWindow(SW_SHOW);
@@ -344,7 +340,6 @@ LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Disconnect"));
-	GetDlgItem(IDC_USER_EVENTS_STATIC)->ShowWindow(SW_SHOW);
 	GetDlgItem(IDC_RECORDS_STATIC)->ShowWindow(SW_SHOW);
 	GetDlgItem(IDC_TOUCH_STATIC)->ShowWindow(SW_SHOW);
 	GetDlgItem(IDC_KEY_STATIC)->ShowWindow(SW_SHOW);
@@ -425,7 +420,6 @@ void CEvtWinDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	if (nIDEvent == RECORD_UI_REFRESH_TIMER){
-		m_strUserEvents.Format(_T("UserEvents: %u"),m_recCount.m_uKeyEvt+m_recCount.m_uTouchEvt);
 		m_strRecords.Format(_T("Records: %u"),m_recCount.m_uRecords);
 		m_strTouch.Format(_T("Touch: %u"),m_recCount.m_uTouchEvt);
 		m_strKey.Format(_T("Key: %u"),m_recCount.m_uKeyEvt);
