@@ -79,7 +79,6 @@ protected:
 	BOOL	m_bRecord;
 
 	CRecCount m_recCount;
-	CString m_strUserEvents;
 	CString m_strRecords;
 	CString m_strTouch;
 	CString m_strKey;
