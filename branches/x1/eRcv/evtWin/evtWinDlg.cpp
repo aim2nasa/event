@@ -92,6 +92,7 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_PLAY_BUTTON, &CEvtWinDlg::OnBnClickedPlayButton)
 	ON_BN_CLICKED(IDC_PART_PLAY_BUTTON, &CEvtWinDlg::OnBnClickedPartPlayButton)
 	ON_BN_CLICKED(IDC_STEP_PLAY_BUTTON, &CEvtWinDlg::OnBnClickedStepPlayButton)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -490,4 +491,21 @@ void CEvtWinDlg::OnBnClickedPartPlayButton()
 void CEvtWinDlg::OnBnClickedStepPlayButton()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CEvtWinDlg::OnSize(UINT nType, int cx, int cy)
+{
+	__super::OnSize(nType, cx, cy);
+
+	if (m_logList.GetSafeHwnd()) {
+		CRect rc;
+		GetClientRect(&rc);
+
+		rc.left = 0;
+		rc.top = 131;
+		rc.bottom -= 0;
+		rc.right -= 0;
+		m_logList.MoveWindow(&rc);
+	}
 }

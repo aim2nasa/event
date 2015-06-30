@@ -54,6 +54,7 @@ protected:
 	afx_msg void OnBnClickedPlayButton();
 	afx_msg void OnBnClickedPartPlayButton();
 	afx_msg void OnBnClickedStepPlayButton();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 	DECLARE_MESSAGE_MAP()
 
 	void iniRead();
