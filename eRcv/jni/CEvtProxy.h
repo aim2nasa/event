@@ -11,6 +11,7 @@ class ACE_Auto_Event;
 class CClassifier;
 class IClassifyNoti;
 class CResult;
+class IPlayNoti;
 
 class DLLEXPORT CEvtProxy : public ACE_Task < ACE_MT_SYNCH >
 {
@@ -22,6 +23,7 @@ public:
     int start();
     int stop();
 
+	void playNoti(IPlayNoti *p);
 	CResult *eventsInfo();
 	int retrieveEventsInfo(const char* file);
 	int recordStart(IClassifyNoti *p);
@@ -54,6 +56,7 @@ protected:
 	CResult *_pEventsInfo;
 	UEVT_LIST::iterator _it;
 	ACE_TString _filename;
+	IPlayNoti *_playNoti;
 };
 
 #endif
