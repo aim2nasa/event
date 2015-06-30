@@ -7,10 +7,11 @@
 #include "CClassifier.h"
 #include "input.h"
 #include "CRecord.h"
+#include "IPlayNoti.h"
 #include "CFileInfo.h"
 
 CEvtProxy::CEvtProxy()
-:_pStream(NULL), _fp(NULL), _fSize(0), _pClass(new CClassifier()), _index(0), _pEventsInfo(new CResult())
+:_pStream(NULL), _fp(NULL), _fSize(0), _pClass(new CClassifier()), _index(0), _pEventsInfo(new CResult()),_playNoti(NULL)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy Constructor\n")));
 }
@@ -21,6 +22,11 @@ CEvtProxy::~CEvtProxy()
     delete _pClass;
 	delete reinterpret_cast<ACE_SOCK_Stream*>(_pStream);
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) CEvtProxy() Destructor\n")));
+}
+
+void CEvtProxy::playNoti(IPlayNoti *p)
+{
+	_playNoti = p;
 }
 
 CResult *CEvtProxy::eventsInfo()
@@ -330,10 +336,12 @@ int CEvtProxy::svc()
             break;
         case EVENT_PLAY_FULL:
             recv_int(err);
+            if(_playNoti) _playNoti->fullPlay(err);
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Play full file done(x%x)=0x%x\n"),msg,err));
             break;
         case EVENT_PLAY_PART:
             recv_int(err);
+            if(_playNoti) _playNoti->partPlay(err);
 	    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %T Play part file done(x%x)=0x%x\n"),msg,err));
             break;
         case TERMINATE_CLIENT:
