@@ -153,6 +153,8 @@ BOOL CEvtWinDlg::OnInitDialog()
 	GetDlgItem(IDC_TOUCH_STATIC)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_KEY_STATIC)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_ERRORS_STATIC)->ShowWindow(SW_HIDE);
+
+	m_er.playNoti(this);
 	UpdateData(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -508,4 +510,18 @@ void CEvtWinDlg::OnSize(UINT nType, int cx, int cy)
 		rc.right -= 0;
 		m_logList.MoveWindow(&rc);
 	}
+}
+
+void CEvtWinDlg::fullPlay(int err)
+{
+	CString str;
+	str.Format(_T("full play done(%d)"),err);
+	LCString(str);
+}
+
+void CEvtWinDlg::partPlay(int err)
+{
+	CString str;
+	str.Format(_T("part play done(%d)"), err);
+	LCString(str);
 }

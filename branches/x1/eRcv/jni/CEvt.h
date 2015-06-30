@@ -3,6 +3,7 @@
 
 class CEvtProxy;
 class IClassifyNoti;
+class IPlayNoti;
 
 class DLLEXPORT CEvt{
 public:
@@ -12,6 +13,7 @@ public:
 	int open(const char *addr, unsigned short port);
 	int close();
 
+	void playNoti(IPlayNoti *p);
 	int recordStart(IClassifyNoti *p);
 	int recordStop();
 	int play(const char* file);

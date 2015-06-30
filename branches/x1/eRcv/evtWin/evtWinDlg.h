@@ -5,6 +5,7 @@
 #pragma once
 #include "CEvt.h"
 #include "IClassifyNoti.h"
+#include "IPlayNoti.h"
 #include "afxcmn.h"
 #include "afxwin.h"
 
@@ -23,7 +24,7 @@ public:
 };
 
 // CEvtWinDlg 대화 상자
-class CEvtWinDlg : public CDialogEx, public IClassifyNoti
+class CEvtWinDlg : public CDialogEx, public IClassifyNoti, public IPlayNoti
 {
 // 생성입니다.
 public:
@@ -67,6 +68,9 @@ protected:
 	void onKeyEvent(int device, int startIndex, int endIndex);
 	void onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex);
 	void onError(ERR_CODE code);
+
+	void fullPlay(int err);
+	void partPlay(int err);
 
 	CEvt m_er;
 	CIPAddressCtrl m_ctrlServerIp;
