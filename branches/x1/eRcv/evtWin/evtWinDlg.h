@@ -91,4 +91,5 @@ protected:
 	CString m_strTouch;
 	CString m_strKey;
 	CString m_strErrors;
+	int	m_nPartPlayCount;
 };
