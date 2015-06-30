@@ -90,7 +90,6 @@ BEGIN_MESSAGE_MAP(CEvtWinDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_PLAY_BUTTON, &CEvtWinDlg::OnBnClickedPlayButton)
-	ON_BN_CLICKED(IDC_PART_PLAY_BUTTON, &CEvtWinDlg::OnBnClickedPartPlayButton)
 	ON_BN_CLICKED(IDC_STEP_PLAY_BUTTON, &CEvtWinDlg::OnBnClickedStepPlayButton)
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
@@ -146,7 +145,6 @@ BOOL CEvtWinDlg::OnInitDialog()
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(FALSE);
-	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(FALSE);
 
 	GetDlgItem(IDC_RECORDS_STATIC)->ShowWindow(SW_HIDE);
@@ -333,7 +331,6 @@ LRESULT CEvtWinDlg::OnConnectionFailed(WPARAM wParam, LPARAM lParam)
 	GetDlgItem(IDC_SERVER_PORT_EDIT)->EnableWindow(TRUE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(FALSE);
-	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Connect"));
@@ -352,7 +349,6 @@ LRESULT CEvtWinDlg::OnConnected(WPARAM wParam, LPARAM lParam)
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
-	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->SetWindowText(_T("Disconnect"));
 	GetDlgItem(IDC_RECORDS_STATIC)->ShowWindow(SW_SHOW);
@@ -376,7 +372,6 @@ void CEvtWinDlg::OnBnClickedRecordButton()
 		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Stop"));
 		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
 		GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(FALSE);
-		GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(FALSE);
 		GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(FALSE);
 		LCString(_T("recording started"));
 	}else{
@@ -389,7 +384,6 @@ void CEvtWinDlg::OnBnClickedRecordButton()
 		GetDlgItem(IDC_RECORD_BUTTON)->SetWindowText(_T("Record"));
 		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 		GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
-		GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(TRUE);
 		GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
 		LCString(_T("recording stopped"));
 	}
@@ -457,7 +451,6 @@ void CEvtWinDlg::OnBnClickedPlayButton()
 	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
-	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(FALSE);
 
 	TCHAR szFilter[] = _T("All Files(*.*) | *.*");
@@ -481,7 +474,6 @@ void CEvtWinDlg::OnBnClickedPlayButton()
 	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
-	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
 }
 
@@ -495,7 +487,6 @@ void CEvtWinDlg::OnBnClickedStepPlayButton()
 	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
-	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(FALSE);
 
 	TCHAR szFilter[] = _T("All Files(*.*) | *.*");
@@ -515,7 +506,6 @@ void CEvtWinDlg::OnBnClickedStepPlayButton()
 			GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
 			GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 			GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
-			GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(TRUE);
 			GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
 			return;
 		}
@@ -548,7 +538,6 @@ void CEvtWinDlg::OnBnClickedStepPlayButton()
 	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
-	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
 }
 
