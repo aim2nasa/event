@@ -20,6 +20,7 @@ public:
 	int play(const char* file, long long startLoc, long long endLoc);
 	int playFirst(const char* file);
 	int playNext();
+	int stepCount(const char* file);
 
 	static long fileSize(const char* file);
 	static long recordCount(const char* file);
