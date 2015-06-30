@@ -71,3 +71,9 @@ long CEvt::recordCount(const char* file)
 {
 	return CEvtProxy::recordCount(file);
 }
+
+int CEvt::stepCount(const char* file)
+{
+	if (_proxy->retrieveEventsInfo(file) != 0) return -1;
+	return _proxy->eventsInfo()->list().size();
+}

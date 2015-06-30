@@ -492,9 +492,44 @@ void CEvtWinDlg::OnBnClickedPartPlayButton()
 
 void CEvtWinDlg::OnBnClickedStepPlayButton()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-}
+	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(FALSE);
 
+	TCHAR szFilter[] = _T("All Files(*.*) | *.*");
+	CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY, szFilter);
+	if (IDOK == dlg.DoModal()) {
+		CString str = dlg.GetPathName();
+
+		char buffer[256];
+		CStringToCharBuffer(buffer, sizeof(buffer), str);
+
+		int nCount;
+		if ((nCount = m_er.stepCount(buffer)) < 0) {
+			CString msg;
+			msg.Format(_T("error stepCount"));
+			LCString(msg);
+			GetDlgItem(IDC_PLAY_BUTTON)->SetWindowText(_T("Step Play"));
+			GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
+			GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+			GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
+			GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(TRUE);
+			GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
+			return;
+		}
+		CString msg;
+		msg.Format(_T("%d Steps for "),nCount);
+		LCString( msg+str);
+	}
+	GetDlgItem(IDC_PLAY_BUTTON)->SetWindowText(_T("Step Play"));
+	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_PART_PLAY_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
+}
 
 void CEvtWinDlg::OnSize(UINT nType, int cx, int cy)
 {
