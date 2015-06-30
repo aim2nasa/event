@@ -87,21 +87,18 @@ int CStreamHandler::handle_input(ACE_HANDLE handle)
         ACE_DEBUG((LM_DEBUG, "Event file upload command(0x%x)...\n",msg));
         send(EVENT_FILE_UPLOAD); //ack
         send(onEventFileUpload());
-        send(EVENT_FILE_UPLOAD_DONE);
         ACE_DEBUG((LM_DEBUG, "Event file upload command(0x%x) processed\n",msg));
         break; 
     case EVENT_PLAY_FULL:
         ACE_DEBUG((LM_DEBUG, "Event Play full command(0x%x)...\n",msg));
         send(EVENT_PLAY_FULL); //ack
         send(onEventPlayFull());
-        send(EVENT_PLAY_FULL_DONE);
         ACE_DEBUG((LM_DEBUG, "Event Play full command(0x%x) processed\n",msg));
         break; 
     case EVENT_PLAY_PART:
         ACE_DEBUG((LM_DEBUG, "Event Play part command(0x%x)...\n",msg));
         send(EVENT_PLAY_PART); //ack
         send(onEventPlayPart());
-        send(EVENT_PLAY_PART_DONE);
         ACE_DEBUG((LM_DEBUG, "Event Play part command(0x%x) processed\n",msg));
         break; 
     case TERMINATE_SERVER:

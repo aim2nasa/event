@@ -9,9 +9,6 @@
 #define EVENT_FILE_UPLOAD       (0xffabc005)
 #define EVENT_PLAY_FULL         (0xffabc006)
 #define EVENT_PLAY_PART         (0xffabc007)
-#define EVENT_FILE_UPLOAD_DONE  (0xffabc008)
-#define EVENT_PLAY_FULL_DONE    (0xffabc009)
-#define EVENT_PLAY_PART_DONE    (0xffabc010)
 #define TERMINATE_CLIENT        (0xffabcffe)
 #define TERMINATE_SERVER        (0xffabcfff)
 
