@@ -534,7 +534,7 @@ void CEvtWinDlg::OnBnClickedStepPlayButton()
 		}
 	}
 
-	GetDlgItem(IDC_PLAY_BUTTON)->SetWindowText(_T("Step Play"));
+	GetDlgItem(IDC_STEP_PLAY_BUTTON)->SetWindowText(_T("Step Play"));
 	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
