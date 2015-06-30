@@ -27,6 +27,11 @@ int CEvt::close()
 	return _proxy->stop();
 }
 
+void CEvt::playNoti(IPlayNoti *p)
+{
+	_proxy->playNoti(p);
+}
+
 int CEvt::recordStart(IClassifyNoti *p)
 {
 	return _proxy->recordStart(p);
