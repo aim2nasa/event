@@ -522,7 +522,28 @@ void CEvtWinDlg::OnBnClickedStepPlayButton()
 		CString msg;
 		msg.Format(_T("%d Steps for "),nCount);
 		LCString( msg+str);
+
+		int rtn;
+		for (int i = 0; i < nCount ; i++){
+			msg.Format(_T("Play Step [%d/%d]?"),i+1,nCount);
+			if (IDYES == AfxMessageBox(msg, MB_YESNO)){
+				if (i == 0) {
+					if ((rtn = m_er.playFirst(buffer)) != 0) {
+						msg.Format(_T("%d Step playFirst error"), i);
+						LCString(msg);
+					}
+				}else{
+					if ((rtn = m_er.playNext()) != 0) {
+						msg.Format(_T("%d Step playNext error"), i);
+						LCString(msg);
+					}
+				}
+			}else{
+				break;
+			}
+		}
 	}
+
 	GetDlgItem(IDC_PLAY_BUTTON)->SetWindowText(_T("Step Play"));
 	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
