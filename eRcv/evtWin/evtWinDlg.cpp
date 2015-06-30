@@ -470,11 +470,6 @@ void CEvtWinDlg::OnBnClickedPlayButton()
 		}
 		LCString(CString(_T("Play requested")));
 	}
-	GetDlgItem(IDC_PLAY_BUTTON)->SetWindowText(_T("Play"));
-	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
-	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
-	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
-	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
 }
 
 void CEvtWinDlg::OnBnClickedPartPlayButton()
@@ -562,6 +557,12 @@ void CEvtWinDlg::fullPlay(int err)
 	CString str;
 	str.Format(_T("full play done(%d)"),err);
 	LCString(str);
+
+	GetDlgItem(IDC_PLAY_BUTTON)->SetWindowText(_T("Play"));
+	GetDlgItem(IDC_PLAY_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_RECORD_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STEP_PLAY_BUTTON)->EnableWindow(TRUE);
 }
 
 void CEvtWinDlg::partPlay(int err)
