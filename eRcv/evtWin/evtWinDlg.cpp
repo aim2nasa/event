@@ -62,6 +62,7 @@ CEvtWinDlg::CEvtWinDlg(CWnd* pParent /*=NULL*/)
 	, m_strTouch(_T(""))
 	, m_strKey(_T(""))
 	, m_strErrors(_T(""))
+	, m_nPartPlayCount(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -508,6 +509,7 @@ void CEvtWinDlg::OnBnClickedStepPlayButton()
 		msg.Format(_T("%d Steps for "),nCount);
 		LCString( msg+str);
 
+		m_nPartPlayCount = 0;
 		int rtn;
 		for (int i = 0; i < nCount ; i++){
 			msg.Format(_T("Play Step [%d/%d]?"),i+1,nCount);
@@ -568,6 +570,6 @@ void CEvtWinDlg::fullPlay(int err)
 void CEvtWinDlg::partPlay(int err)
 {
 	CString str;
-	str.Format(_T("part play done(%d)"), err);
+	str.Format(_T("[%d] part play done(%d)"), ++m_nPartPlayCount,err);
 	LCString(str);
 }
