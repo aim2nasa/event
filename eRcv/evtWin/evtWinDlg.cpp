@@ -568,6 +568,6 @@ void CEvtWinDlg::fullPlay(int err)
 void CEvtWinDlg::partPlay(int err)
 {
 	CString str;
-	str.Format(_T("part pdone(%d)"), err);
+	str.Format(_T("part play done(%d)"), err);
 	LCString(str);
 }
