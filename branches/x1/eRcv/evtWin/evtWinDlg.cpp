@@ -468,7 +468,7 @@ void CEvtWinDlg::OnBnClickedPlayButton()
 			LCString(msg + str);
 			return;
 		}
-		LCString(CString(_T("Play requested")));
+		LCString(CString(_T("Playing...")));
 	}
 }
 
@@ -568,6 +568,6 @@ void CEvtWinDlg::fullPlay(int err)
 void CEvtWinDlg::partPlay(int err)
 {
 	CString str;
-	str.Format(_T("part play done(%d)"), err);
+	str.Format(_T("part pdone(%d)"), err);
 	LCString(str);
 }
