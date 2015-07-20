@@ -76,7 +76,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>copy $(ProjectName).ini $(SolutionDir)\bin\$(Configuration)</Command>
+      <Command>copy "$(SolutionDir)$(ProjectName)\$(ProjectName).ini" "$(SolutionDir)bin\$(Configuration)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -108,7 +108,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>copy $(ProjectName).ini $(SolutionDir)\bin\$(Configuration)</Command>
+      <Command>copy "$(SolutionDir)$(ProjectName)\$(ProjectName).ini" "$(SolutionDir)bin\$(Configuration)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
