@@ -119,6 +119,12 @@ void CClassifier::onAbsMtTrackingId(long index, int device, long sec, long usec,
 			_pMt->_index = index;
 			_pMt->_tracking = true;
 		}
+
+		if (_pMt->_count > 0 && value == 0) {
+			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d), val(%08x), Skip count when value=0 during tracking\n", _pMt->_count, value));
+			return;
+		}
+
 		_pMt->_max = ++_pMt->_count;
 		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) started, val(%08x)\n", _pMt->_count, value));
 	}else{
