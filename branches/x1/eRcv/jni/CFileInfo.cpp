@@ -61,7 +61,7 @@ void CResult::onNewDevice(int device, DEV_TYPE type, int index)
 
 }
 
-void CResult::onKeyEvent(int device, int startIndex, int endIndex)
+void CResult::onKeyEvent(int device, int code, int value, int startIndex, int endIndex)
 {
 	CUserEvent ue(KEY,device,startIndex,endIndex);
 	_pList->push_back(ue);
