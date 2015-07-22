@@ -26,7 +26,7 @@ public:
 	void playNoti(IPlayNoti *p);
 	CResult *eventsInfo();
 	int retrieveEventsInfo(const char* file);
-	int recordStart(IClassifyNoti *p);
+	int recordStart(IClassifyNoti *p,const char *file);
     int recordStop();
     int upPrepare(const char* file);
     int upload(const char* file);

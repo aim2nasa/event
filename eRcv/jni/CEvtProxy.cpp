@@ -139,16 +139,20 @@ int CEvtProxy::recv_int(int& msg)
     return rcvSize;
 }
 
-int CEvtProxy::recordStart(IClassifyNoti *p)
+int CEvtProxy::recordStart(IClassifyNoti *p,const char *file)
 {
     ACE_TRACE("CEvtProxy::recordStart");
 
-    ACE_Date_Time dt(ACE_OS::gettimeofday());
-    ACE_TCHAR filename[512];
-    ACE_OS::sprintf(filename,ACE_TEXT("Evt_%04d%02d%02d_%02d%02d%02d_%03d.bin"),
-        dt.year(), dt.month(), dt.day(), dt.hour(), dt.minute(), dt.second(), dt.microsec());
+	if (file==NULL) {
+		ACE_Date_Time dt(ACE_OS::gettimeofday());
+		ACE_TCHAR filename[512];
+		ACE_OS::sprintf(filename, ACE_TEXT("Evt_%04d%02d%02d_%02d%02d%02d_%03d.bin"),
+			dt.year(), dt.month(), dt.day(), dt.hour(), dt.minute(), dt.second(), dt.microsec());
 
-    _fp = ACE_OS::fopen(filename, ACE_TEXT("wb"));
+		_fp = ACE_OS::fopen(filename, ACE_TEXT("wb"));
+	}else{
+		_fp = ACE_OS::fopen(file, ACE_TEXT("wb"));
+	}
     _pClass->notify(p);
     _index = 0;
     return send(EVENT_RECORD_START);

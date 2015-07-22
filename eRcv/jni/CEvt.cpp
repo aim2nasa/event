@@ -32,9 +32,9 @@ void CEvt::playNoti(IPlayNoti *p)
 	_proxy->playNoti(p);
 }
 
-int CEvt::recordStart(IClassifyNoti *p)
+int CEvt::recordStart(IClassifyNoti *p,const char *file)
 {
-	return _proxy->recordStart(p);
+	return _proxy->recordStart(p,file);
 }
 
 int CEvt::recordStop()
