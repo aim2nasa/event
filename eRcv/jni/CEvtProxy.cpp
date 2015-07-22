@@ -201,7 +201,7 @@ int CEvtProxy::upPrepare(const char* file)
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) %s filesize:%dbytes\n"),file,fSize));
 
 	size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(&fSize, sizeof(long));
-    if(size!=sizeof(long)) -60;
+    if(size!=sizeof(long)) return -60;
 
     ACE_Time_Value tv(3);
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) waiting for prepare response(%dsec)...\n"),tv.sec()));
