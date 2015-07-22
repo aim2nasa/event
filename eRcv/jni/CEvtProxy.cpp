@@ -186,12 +186,13 @@ long CEvtProxy::recordCount(const char* file)
 
 int CEvtProxy::upPrepare(const char* file)
 {
+	ACE_TString name = CEvtProxy::extractName(file);
     size_t length;
-    if((length=ACE_OS::strlen(file))<=0) return -10;
+    if((length=name.length())<=0) return -10;
     if(send(EVENT_FILE_UP_PREPARE)<0) return -20;
     if(send(length)<0) return -30;
 
-	ssize_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(file, length);
+	ssize_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(name.c_str(), length);
     if(size!=length) return -40;
 
     long fSize = fileSize(file);
@@ -242,13 +243,14 @@ int CEvtProxy::play(const char* file)
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) prepared to upload:%s\n"),file));
     if((rtn=upload(file))!=0) return rtn;
 
+	ACE_TString name = CEvtProxy::extractName(file);
     size_t length;
-    if((length=ACE_OS::strlen(file))<=0) return -100;
+    if((length=name.length())<=0) return -100;
 
     if(send(EVENT_PLAY_FULL)<0) return -110;
     if(send(length)<0) return -120;
 
-	ssize_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(file, length);
+	ssize_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(name.c_str(), length);
     if(size!=length) return -130;
 
     return 0;
@@ -263,13 +265,14 @@ int CEvtProxy::play(const char* file,long long startLoc,long long endLoc)
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) prepared to upload:%s\n"),file));
     if((rtn=upload(file))!=0) return rtn;
 
+	ACE_TString name = CEvtProxy::extractName(file);
     size_t length;
-    if((length=ACE_OS::strlen(file))<=0) return -100;
+    if((length=name.length())<=0) return -100;
 
     if(send(EVENT_PLAY_PART)<0) return -110;
     if(send(length)<0) return -120;
 
-	ssize_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(file, length);
+	ssize_t size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(name.c_str(), length);
     if(size!=length) return -130;
 
 	size = reinterpret_cast<ACE_SOCK_Stream*>(_pStream)->send_n(&startLoc, sizeof(long long));
@@ -373,4 +376,18 @@ int CEvtProxy::playNext()
 	if (_it == _pEventsInfo->list().end()) return -1;
 	
 	return play(_filename.c_str(), (*_it)._startIndex, (*_it)._endIndex);
+}
+
+ACE_TString CEvtProxy::extractName(const char* file)
+{
+	char str[512];
+	ACE_OS::strcpy(str, file);
+
+	char *name = NULL;
+	char *ptr = ACE_OS::strtok(str, "\\");
+	while (ptr != NULL){
+		ptr = ACE_OS::strtok(NULL, "\\");
+		if (ptr) name = ptr;
+	}
+	return ACE_TString(name);
 }

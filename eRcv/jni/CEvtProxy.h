@@ -44,6 +44,7 @@ protected:
     int recv_int(int& msg);
     int onEventRecordData();
     static ACE_THR_FUNC_RETURN initResponse(void *p);
+	static ACE_TString extractName(const char* file);
 
 protected:
     void* _pStream;
