@@ -406,12 +406,12 @@ void CEvtWinDlg::onNewDevice(int device, DEV_TYPE devType, int index)
 	LCString(str);
 }
 
-void CEvtWinDlg::onKeyEvent(int device, int startIndex, int endIndex)
+void CEvtWinDlg::onKeyEvent(int device, int code, int value, int startIndex, int endIndex)
 {
 	m_recCount.m_uKeyEvt++;
 	m_recCount.m_uRecords += (endIndex - startIndex) + 1;
 	CString str;
-	str.Format(_T("Key(%d): index(%d~%d)\n"), device, startIndex, endIndex);
+	str.Format(_T("Key(%d) Code(%d) Value(%d) index(%d~%d)\n"), device, code, value, startIndex, endIndex);
 	LCString(str);
 }
 

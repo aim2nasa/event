@@ -16,9 +16,9 @@ public:
 		cout << "New device(" << device << ") type:" << devType << endl;
 	}
 
-	void onKeyEvent(int device, int startIndex, int endIndex)
+	void onKeyEvent(int device, int code, int value, int startIndex, int endIndex)
 	{
-		cout << "+Key(" << device << "): index(" << startIndex <<","<<endIndex<<")"<< endl;
+		cout << "+Key(" << device << "): code:"<<code<<" value:"<<value<<" index(" << startIndex <<","<<endIndex<<")"<< endl;
 	}
 
 	void onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex)

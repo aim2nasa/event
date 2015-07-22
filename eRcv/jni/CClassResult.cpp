@@ -17,7 +17,7 @@ void CClassResult::onNewDevice(int device, DEV_TYPE devType, int index)
     ACE_DEBUG((LM_DEBUG, "%INew device(%d) type:%d\n", device, devType));
 }
 
-void CClassResult::onKeyEvent(int device, int startIndex, int endIndex)
+void CClassResult::onKeyEvent(int device, int code, int value, int startIndex, int endIndex)
 {
     ACE_DEBUG((LM_DEBUG, "%I+Key(%d): index(%d~%d)\n",device,startIndex,endIndex));
 }

@@ -26,7 +26,7 @@ void CClassResult::onNewDevice(int device, DEV_TYPE devType, int index)
 	ACE_DEBUG((LM_DEBUG, "%INew device(%d) type:%d\n", device, devType));
 }
 
-void CClassResult::onKeyEvent(int device, int startIndex, int endIndex)
+void CClassResult::onKeyEvent(int device, int code, int value, int startIndex, int endIndex)
 {
 	writeIndex(KEY,device,startIndex,endIndex);
 	ACE_OS::fprintf(_fp, "\n");
