@@ -14,7 +14,7 @@ public:
 	int close();
 
 	void playNoti(IPlayNoti *p);
-	int recordStart(IClassifyNoti *p);
+	int recordStart(IClassifyNoti *p, const char *file);
 	int recordStop();
 	int play(const char* file);
 	int play(const char* file, long long startLoc, long long endLoc);

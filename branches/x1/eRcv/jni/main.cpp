@@ -48,7 +48,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	{
 	case 'r':
             //Record start
-            if(er.recordStart(&classResult)<0)
+            if(er.recordStart(&classResult,"c:\\eRcv_event.bin")<0)
                 ACE_ERROR_RETURN((LM_ERROR,"(%P|%t) %p\n","error recordStart"),-1); ;
 	    ACE_DEBUG((LM_INFO, "(%P|%t) EVENT Record start\n"));
 	    break;

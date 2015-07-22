@@ -364,7 +364,7 @@ void CEvtWinDlg::OnBnClickedRecordButton()
 {
 	if (!m_bRecord){
 		m_recCount.reset();
-		if (m_er.recordStart(this) < 0){
+		if (m_er.recordStart(this, "c:\\evtWin_event.bin") < 0){
 			LCString(_T("recordStart error"));
 			return;
 		}
