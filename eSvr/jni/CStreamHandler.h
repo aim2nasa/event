@@ -38,6 +38,8 @@ private:
     char buffer_[BUFSIZ];
     ACE_TString fName_;
     long fSize_;
+
+    static bool sConnected_;
 };
 
 #endif
