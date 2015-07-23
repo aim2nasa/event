@@ -68,6 +68,7 @@ protected:
 	void onKeyEvent(int device, int code, int value, int startIndex, int endIndex);
 	void onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex);
 	void onError(ERR_CODE code);
+	void onAbsTrackingID(int value, int trackingCount);
 
 	void fullPlay(int err);
 	void partPlay(int err);
