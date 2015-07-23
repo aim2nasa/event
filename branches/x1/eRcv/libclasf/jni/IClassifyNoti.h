@@ -13,6 +13,7 @@ public:
 	virtual void onKeyEvent(int device, int code, int value, int startIndex, int endIndex) = 0;
 	virtual void onTouchEvent(int device, TOUCH_TYPE type, int startIndex, int endIndex) = 0;
 	virtual void onError(ERR_CODE code) = 0;
+	virtual void onAbsTrackingID(int value,int trackingCount){}
 };
 
 #endif

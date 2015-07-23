@@ -114,6 +114,7 @@ void CClassifier::onExistingTouchDevice(long index, int device, long sec, long u
 
 void CClassifier::onAbsMtTrackingId(long index, int device, long sec, long usec, int type, int code, int value)
 {
+	if (_pNoti) _pNoti->onAbsTrackingID(value, _pMt->_count);
 	if (value != 0xffffffff) {
 		if (_pMt->_count == 0) {
 			_pMt->_value = value;
