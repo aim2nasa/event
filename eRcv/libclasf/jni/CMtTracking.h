@@ -10,9 +10,10 @@ public:
 	{
 		CTracking::reset();
 		_count = _max = _swipe = 0;
-		_index = _initialX = _initialY = _latestX = _latestY = -1;
+		_value = _index = _initialX = _initialY = _latestX = _latestY = -1;
 	}
 
+	int _value;
 	int _index;
 	int _count;
 	int _max;

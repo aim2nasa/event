@@ -116,17 +116,19 @@ void CClassifier::onAbsMtTrackingId(long index, int device, long sec, long usec,
 {
 	if (value != 0xffffffff) {
 		if (_pMt->_count == 0) {
+			_pMt->_value = value;
 			_pMt->_index = index;
 			_pMt->_tracking = true;
 		}
 
-		if (_pMt->_count > 0 && value == 0) {
-			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d), val(%08x), Skip count when value=0 during tracking\n", _pMt->_count, value));
-			return;
+	
+		if (_pMt->_count > 0 && (value<_pMt->_value)) {
+			//LG G Flex와 LG Vu3에서는 ABS_MT_TRACKING_ID사이에 ABS_MT_TRACKING_ID가 -1이 아닌 값이 나타나서 이 경우에는 카운트를 하지 않는다
+			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d), Skip count value(prev:%d,cur:%d)\n", _pMt->_count, _pMt->_value,value));
+		}else{
+			_pMt->_max = ++_pMt->_count;
+			ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) started, val(%08x)\n", _pMt->_count, value));
 		}
-
-		_pMt->_max = ++_pMt->_count;
-		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d) started, val(%08x)\n", _pMt->_count, value));
 	}else{
 		_pMt->_count--;
 		ACE_DEBUG((LM_DEBUG, "[%T] MT Tracking(%d), val(%08x)\n", _pMt->_count, value));
