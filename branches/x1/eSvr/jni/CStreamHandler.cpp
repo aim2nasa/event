@@ -18,6 +18,8 @@ public:
     }
 };
 
+bool CStreamHandler::sConnected_ = false;
+
 CStreamHandler::CStreamHandler()
 : noti_(0, this, ACE_Event_Handler::WRITE_MASK),snd_(NULL),fSize_(0)
 {
@@ -33,6 +35,13 @@ CStreamHandler::~CStreamHandler()
 int CStreamHandler::open(void *)
 {
     ACE_TRACE("Stream_Handler::open");
+
+    if(sConnected_) {
+        ACE_DEBUG((LM_INFO, "Already connected with client\n"));
+        return 0;
+    }
+    ACE_DEBUG((LM_INFO, "Fresh connection try with client\n"));
+
     if (super::open() == -1)
         return -1;
 
@@ -45,6 +54,7 @@ int CStreamHandler::open(void *)
         snd_->_pPeer = &peer();
         CEvtRec::instance()->evtDump(snd_);
     }
+    sConnected_ = true;
     return 0;
 }
 
@@ -149,6 +159,7 @@ int CStreamHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask)
 {
     ACE_TRACE("Stream_Handler::handle_close");
     delete snd_;
+    sConnected_ = false;
     ACE_DEBUG((LM_INFO, "(%t) Close connection %s:%u\n",
         remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
     return super::handle_close(handle, close_mask);
