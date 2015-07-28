@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 		{
 		case 'r':
 			//Record start
-			if (er.recordStart(&classResult, "c:\\nonAceClient_event.bin") < 0){
+			if (er.recordStart(&classResult, "nonAceClient_event.bin") < 0){
 				cout << "error record start" << endl;
 				return -1;
 			}
