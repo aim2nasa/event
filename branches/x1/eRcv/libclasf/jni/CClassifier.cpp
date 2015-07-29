@@ -84,6 +84,10 @@ void CClassifier::onExistingKeyDevice(long index, int device, long sec, long use
 void CClassifier::onKey(long index, int device, long sec, long usec, int type, int code, int value)
 {
 	if (isTouchDevice(device)) {
+		if (((code >= 0x0) && (code <= 0xff)) || ((code >= 0x160) && (code <= 0x265))) {
+			//KEY_RESERVED~RESERVED , KEY_OK 0x160 ~ KEY_KBDINPUTASSIST_CANCEL 0x265
+			_pKt->set(true, index, device, code, value);
+		}
 		ACE_DEBUG((LM_DEBUG, "[%T] Key event(code:%04x,val:%08x) from Touch device(%d), neglect\n", code,value,device));
 		return;	//터치장치에서 키이벤트가 발생을 하면 무시하도록 한다 (삼성폰등에서 발생됨)
 	}else{
@@ -94,11 +98,7 @@ void CClassifier::onKey(long index, int device, long sec, long usec, int type, i
 			return;
 		}
 	}
-	_pKt->_index = index;
-	_pKt->_tracking = true;
-	_pKt->_device = device;
-	_pKt->_code = code;
-	_pKt->_value = value;
+	_pKt->set(true,index,device,code,value);
 }
 
 void CClassifier::onNewTouchDevice(long index, int device, long sec, long usec, int type, int code, int value)
